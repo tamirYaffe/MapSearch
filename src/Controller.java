@@ -1,9 +1,7 @@
 import View.MapGrid;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 
 public class Controller {
@@ -16,16 +14,22 @@ public class Controller {
     public Button btn_generateMap;
     public Button btn_solveMap;
     public MapGrid mapGrid;
+    public TextArea solution;
 
 
     public void setModel(Model model) {
         this.model = model;
+        solution.setWrapText(true);
+        solution.setEditable(false);
+        solution.setMinHeight(250);
+        solution.setMinWidth(150);
     }
 
     /**
      * Generates maze by the user rows and columns input in the text filed.
      */
     public void generateMap(){
+        solution.setText("");
         String rowSize=textField_rowSize.getText();
         String columnSize=textField_columnSize.getText();
 
@@ -47,6 +51,9 @@ public class Controller {
     public void solveMap() {
         model.solveMap();
         mapGrid.setMap(model.map);
+        String solutionString=model.consoleString;
+        solution.setText(solutionString);
+
     }
 
     private boolean isInteger( String input ) {
