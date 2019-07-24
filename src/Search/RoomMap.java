@@ -5,7 +5,7 @@ import java.util.HashSet;
 
 public class RoomMap implements IProblem {
 
-    private byte[][] room;         //map array
+    private int[][] room;         //map array
     private Position startPosition;
     private IHeuristic heuristic;  //Room problem heuristic
     private int numOfPositions;
@@ -15,19 +15,33 @@ public class RoomMap implements IProblem {
         heuristic = new RoomMapHeuristic();
     }
 
-    public RoomMap(byte[][] room) {
+    public RoomMap(int[][] room) {
         this.room = getRoomMapCopy(room);
+        startPosition = findPositionOnMap(2);
         heuristic = new RoomMapHeuristic();
     }
 
-    public RoomMap(byte[][] room, Position startPosition) {
+    private Position findPositionOnMap(int posIndex) {
+        for (int i = 0; i < room.length; i++) {
+            for (int j = 0; j < room[0].length; j++) {
+                if (room[i][j] == posIndex) {
+                    numOfPositions++;
+                    room[i][j] = 0;
+                    return new Position(i, j);
+                }
+            }
+        }
+        return null;
+    }
+
+    public RoomMap(int[][] room, Position startPosition) {
         this.room = getRoomMapCopy(room);
         this.startPosition = new Position(startPosition);
         heuristic = new RoomMapHeuristic();
     }
 
-    private byte[][] getRoomMapCopy(byte[][] room) {
-        byte[][] newRoomMap = new byte[room.length][room[0].length];
+    private int[][] getRoomMapCopy(int[][] room) {
+        int[][] newRoomMap = new int[room.length][room[0].length];
         for (int i = 0; i < room.length; i++) {
             for (int j = 0; j < room[i].length; j++) {
                 if (room[i][j] == 0) numOfPositions++;
@@ -37,7 +51,7 @@ public class RoomMap implements IProblem {
         return newRoomMap;
     }
 
-    byte[][] getRoomMap() {
+    int[][] getRoomMap() {
         return room;
     }
 

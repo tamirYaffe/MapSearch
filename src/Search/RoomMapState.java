@@ -1,7 +1,6 @@
 package Search;
 
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -22,7 +21,6 @@ public class RoomMapState implements IProblemState {
 
     @Override
     public List<IProblemState> getNeighborStates() {
-//        printSeen();
         List<IProblemState> neighborStates = new ArrayList<>();
         List<RoomStep> legalMoves = getLegalMoves();
         for (RoomStep move : legalMoves) {
@@ -33,8 +31,9 @@ public class RoomMapState implements IProblemState {
         return neighborStates;
     }
 
-    private void printSeen() {
+    public String toString() {
         String[][] room = new String[roomMap.getRoomMap().length][roomMap.getRoomMap()[0].length];
+        String s = "";
         for (int i = 0; i < room.length; i++) {
             for (int j = 0; j < room[0].length; j++) {
                 room[i][j] = "   ";
@@ -44,10 +43,15 @@ public class RoomMapState implements IProblemState {
         for (Position p : seen) {
             room[p.getY()][p.getX()] = "///";
         }
+
+        s += lastStep + "\n";
+//        System.out.println(lastStep);
         for (int i = 0; i < room.length; i++) {
-            System.out.println(Arrays.toString(room[i]));;
+            s += Arrays.toString(room[i]) + "\n";
+//            System.out.println(Arrays.toString(room[i]));
         }
-        System.out.println();
+//        System.out.println();
+        return s + "\n";
     }
 
     private List<RoomStep> getLegalMoves() {
@@ -78,6 +82,7 @@ public class RoomMapState implements IProblemState {
 
     @Override
     public IProblemMove getStateLastMove() {
+        toString();
         return lastStep;
     }
 
@@ -118,10 +123,13 @@ public class RoomMapState implements IProblemState {
     }
 
     private boolean outOfBoundaries(int y, int x) {
-        byte[][] room = roomMap.getRoomMap();
+        int[][] room = roomMap.getRoomMap();
         int height = room.length;
         int width = room[0].length;
         return x < 0 || y < 0 || y >= height || x >= width || room[y][x] != 0;
     }
 
+    public Position getPosition() {
+        return new Position(position);
+    }
 }
