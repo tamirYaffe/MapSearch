@@ -6,7 +6,7 @@ import java.util.LinkedList;
 public class BreadthFirstSearch extends ASearch {
     // Define lists here ...
     LinkedList<ASearchNode> openList;
-    HashMap<String, String> antiregenerator;
+//    HashMap<String, String> antiregenerator;
     HashMap<String, ASearchNode> closedList;
 
     @Override
@@ -24,7 +24,7 @@ public class BreadthFirstSearch extends ASearch {
     public void initLists() {
         openList = new LinkedList<>();
         closedList = new HashMap<>();
-        antiregenerator = new HashMap<>();
+//        antiregenerator = new HashMap<>();
     }
 
     @Override
@@ -36,7 +36,8 @@ public class BreadthFirstSearch extends ASearch {
 
     @Override
     public boolean isOpen(ASearchNode node) {
-        return antiregenerator.containsKey(node._currentProblemState.toString());
+//        return antiregenerator.containsKey(node._currentProblemState.toString());
+        return openList.contains(node._currentProblemState);
     }
 
     @Override
@@ -47,7 +48,7 @@ public class BreadthFirstSearch extends ASearch {
     @Override
     public void addToOpen(ASearchNode node) {
         openList.add(node);
-        antiregenerator.put(node._currentProblemState.toString(),"");
+//        antiregenerator.put(node._currentProblemState.toString(),"");
     }
 
     @Override
