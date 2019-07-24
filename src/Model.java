@@ -9,11 +9,13 @@ public class Model {
     public void generateMap(int rows, int columns) {
 //        MapGenerator mapGenerator=new MapGenerator();
 //        map=mapGenerator.generate(rows,columns);
-        int map[][] = {{0, 0, 0, 0, 0},
-                {0, 1, 0, 1, 0},
-                {0, 1, 0, 0, 0},
-                {0, 1, 0, 1, 1},
-                {0, 0, 0, 0, 2}};
+        int map[][] = { {0, 0, 0, 0, 0,1,1},
+                        {1, 1, 1, 1, 0,1,1},
+                        {0, 0, 0, 0, 0,1,1},
+                        {0, 1, 0, 1, 0,1,1},
+                        {1, 1, 0, 0, 0,1,1},
+                        {0, 1, 0, 0, 1,1,1},
+                        {0, 0, 0, 0,0,0, 2}};
 
         this.map = map;
     }
@@ -43,7 +45,7 @@ public class Model {
     private void solveInstances(List<ASearch> solvers, String instancesType) {
         {
             long totalTime = 0;
-            String instance = "";
+            String instance = instancesType;
             RoomMap problem = new RoomMap(map);
             for (ASearch solver : solvers) {
                 System.out.println("Solver: " + solver.getSolverName());

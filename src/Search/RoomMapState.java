@@ -44,7 +44,7 @@ public class RoomMapState implements IProblemState {
         for (Position p : seen) {
             room[p.getY()][p.getX()] = "///";
         }
-
+        s += "position: " + position.getX() + "," + position.getY() + "\n";
         s += lastStep + "\n";
 //        System.out.println(lastStep);
         for (int i = 0; i < room.length; i++) {
