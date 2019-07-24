@@ -1,8 +1,6 @@
 import Search.*;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Model {
@@ -21,11 +19,24 @@ public class Model {
     }
 
     public void solveMap() {
+        bfsRun();
+        generateMap(1, 1);
+        AstarRun();
+    }
 
+    private void bfsRun() {
         System.out.println("---------- run 1 ----------");
         List<ASearch> solvers = new ArrayList<ASearch>();
         BreadthFirstSearch bfs = new BreadthFirstSearch();
         solvers.add(bfs);
+        solveInstances(solvers, "roomMap");
+    }
+
+    private void AstarRun() {
+        System.out.println("---------- run 2 ----------");
+        List<ASearch> solvers = new ArrayList<ASearch>();
+        AStarSearch aStar = new AStarSearch();
+        solvers.add(aStar);
         solveInstances(solvers, "roomMap");
     }
 
@@ -42,7 +53,7 @@ public class Model {
                 double cost = checkSolution(problem, solution);
                 if (cost >= 0)        // valid solution
                 {
-                    printSolution(problem, solution);
+//                    printSolution(problem, solution);
                     updateSolution(problem, solution);
                     System.out.println("Closed: " + solver.closed);
                     System.out.println("Cost:  " + cost);
@@ -83,9 +94,6 @@ public class Model {
             RoomStep m = (RoomStep) move;
             currentState = currentState.performMove(m);
             map[((RoomMapState) currentState).getPosition().getY()][((RoomMapState) currentState).getPosition().getX()] = 2;
-        }
-        for (int i = 0; i < map.length; i++) {
-            System.out.println(Arrays.toString(map[i]));
         }
     }
 
