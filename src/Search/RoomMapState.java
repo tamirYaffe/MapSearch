@@ -31,6 +31,7 @@ public class RoomMapState implements IProblemState {
         return neighborStates;
     }
 
+    @Override
     public String toString() {
         String[][] room = new String[roomMap.getRoomMap().length][roomMap.getRoomMap()[0].length];
         String s = "";
@@ -43,14 +44,13 @@ public class RoomMapState implements IProblemState {
         for (Position p : seen) {
             room[p.getY()][p.getX()] = "///";
         }
-
+        s += "position: " + position.getX() + "," + position.getY() + "\n";
         s += lastStep + "\n";
 //        System.out.println(lastStep);
         for (int i = 0; i < room.length; i++) {
             s += Arrays.toString(room[i]) + "\n";
 //            System.out.println(Arrays.toString(room[i]));
         }
-//        System.out.println();
         return s + "\n";
     }
 
@@ -131,5 +131,9 @@ public class RoomMapState implements IProblemState {
 
     public Position getPosition() {
         return new Position(position);
+    }
+
+    public HashSet<Position> getSeen() {
+        return seen;
     }
 }

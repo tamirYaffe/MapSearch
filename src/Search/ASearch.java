@@ -17,7 +17,7 @@ abstract public class ASearch
 		IProblemState 		problemState	= problem.getProblemState();
 		ASearchNode			goal			= abstractSearch(problemState);
 		List<IProblemMove> 	solution		= goalNodeToSolutionPath(goal);
-		System.out.println("list size: "+openSize());
+//		System.out.println("list size: "+openSize());
 		return solution;
 	}
 	
@@ -50,6 +50,7 @@ abstract public class ASearch
 					addToOpen(Vn);
 			}
 			addToClosed(current);
+//			System.out.println(current._currentProblemState.toString());
 			closed++;
 		}
 		return null;
