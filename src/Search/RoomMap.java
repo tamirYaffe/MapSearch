@@ -1,6 +1,5 @@
 package Search;
 
-import Algorithms.Position;
 
 import java.util.HashSet;
 

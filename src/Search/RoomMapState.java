@@ -1,6 +1,5 @@
 package Search;
 
-import Algorithms.Position;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
