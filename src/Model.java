@@ -59,7 +59,7 @@ public class Model {
                 double cost = checkSolution(problem, solution);
                 if (cost >= 0)        // valid solution
                 {
-                    printSolution(problem, solution);
+//                    printSolution(problem, solution);
                     updateSolution(problem, solution);
 //                    System.out.println("Closed: " + solver.closed);
 //                    System.out.println("Cost:  " + cost);
