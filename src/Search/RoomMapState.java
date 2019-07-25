@@ -67,6 +67,14 @@ public class RoomMapState implements IProblemState {
             moveList.add(new RoomStep(RoomStep.MOVE.LEFT));
         if (position.getX() < width - 1)
             moveList.add(new RoomStep(RoomStep.MOVE.RIGHT));
+        if (position.getY() > 0 && position.getX() < width - 1)
+            moveList.add(new RoomStep(RoomStep.MOVE.UP_RIGHT));
+        if (position.getY() > 0 && position.getX() > 0)
+            moveList.add(new RoomStep(RoomStep.MOVE.UP_LEFT));
+        if (position.getY() < height - 1 && position.getX() < width - 1)
+            moveList.add(new RoomStep(RoomStep.MOVE.DOWN_RIGHT));
+        if (position.getY() < height - 1 && position.getX() > 0)
+            moveList.add(new RoomStep(RoomStep.MOVE.DOWN_LEFT));
         return moveList;
     }
 
@@ -88,7 +96,10 @@ public class RoomMapState implements IProblemState {
 
     @Override
     public double getStateLastMoveCost() {
-        return 1;
+        if (lastStep!=null && (lastStep._move == RoomStep.MOVE.DOWN || lastStep._move == RoomStep.MOVE.UP
+                || lastStep._move == RoomStep.MOVE.RIGHT || lastStep._move == RoomStep.MOVE.LEFT))
+            return 1;
+        else return Math.sqrt(2);
     }
 
     @Override
@@ -111,6 +122,19 @@ public class RoomMapState implements IProblemState {
             newPosition.setX(x + 1);
         else if (roomStep._move == RoomStep.MOVE.LEFT)
             newPosition.setX(x - 1);
+        else if (roomStep._move == RoomStep.MOVE.UP_RIGHT) {
+            newPosition.setY(y - 1);
+            newPosition.setX(x + 1);
+        } else if (roomStep._move == RoomStep.MOVE.UP_LEFT) {
+            newPosition.setY(y - 1);
+            newPosition.setX(x - 1);
+        } else if (roomStep._move == RoomStep.MOVE.DOWN_RIGHT) {
+            newPosition.setY(y + 1);
+            newPosition.setX(x + 1);
+        } else if (roomStep._move == RoomStep.MOVE.DOWN_LEFT) {
+            newPosition.setY(y + 1);
+            newPosition.setX(x - 1);
+        }
 
         // Validation
         if (outOfBoundaries(newPosition.getY(), newPosition.getX()))
