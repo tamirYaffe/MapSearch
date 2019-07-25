@@ -6,6 +6,7 @@ import java.util.List;
 public class Model {
     int[][] map=null;
     String consoleString = "";
+    ArrayList<Position> solutionList = new ArrayList<>();
 
     public void generateMap(int rows, int columns) {
 //        MapGenerator mapGenerator=new MapGenerator();
@@ -106,11 +107,13 @@ public class Model {
 
     private void updateSolution(RoomMap problem, List<IProblemMove> solution) {
         IProblemState currentState = problem.getProblemState();
-        map[((RoomMapState) currentState).getPosition().getY()][((RoomMapState) currentState).getPosition().getX()] = 2;
+        solutionList.add(new Position(((RoomMapState) currentState).getPosition()));
+//        map[((RoomMapState) currentState).getPosition().getY()][((RoomMapState) currentState).getPosition().getX()] = 2;
         for (IProblemMove move : solution) {
             RoomStep m = (RoomStep) move;
             currentState = currentState.performMove(m);
-            map[((RoomMapState) currentState).getPosition().getY()][((RoomMapState) currentState).getPosition().getX()] = 2;
+            solutionList.add(new Position(((RoomMapState) currentState).getPosition()));
+//            map[((RoomMapState) currentState).getPosition().getY()][((RoomMapState) currentState).getPosition().getX()] = 2;
         }
     }
 
