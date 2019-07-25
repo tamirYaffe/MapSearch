@@ -141,7 +141,7 @@ public class RoomMapState implements IProblemState {
             return null;
 
         newSeen.addAll(roomMap.getVisualNeighbors(newPosition));
-
+//        System.out.println(this);
         // Create new state
         return new RoomMapState(newProblem, newPosition, newSeen, roomStep);
     }
