@@ -1,7 +1,7 @@
 package Search;
 
 public class RoomStep implements IProblemMove {
-    public enum MOVE {UP, DOWN, LEFT, RIGHT}
+    public enum MOVE {UP, DOWN, LEFT, RIGHT, UP_RIGHT, UP_LEFT, DOWN_RIGHT, DOWN_LEFT}
 
     MOVE _move;
 
@@ -22,6 +22,14 @@ public class RoomStep implements IProblemMove {
             return "LEFT";
         if (_move == MOVE.RIGHT)
             return "RIGHT";
+        if (_move == MOVE.UP_RIGHT)
+            return "UP_RIGHT";
+        if (_move == MOVE.UP_LEFT)
+            return "UP_LEFT";
+        if (_move == MOVE.DOWN_RIGHT)
+            return "DOWN_RIGHT";
+        if (_move == MOVE.DOWN_LEFT)
+            return "DOWN_LEFT";
         return null;
     }
 }
