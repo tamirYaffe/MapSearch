@@ -7,7 +7,6 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -17,7 +16,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="borderPane" xmlns="http://javafx.com/javafx/8.0.999-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
+<BorderPane fx:id="borderPane" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
     <top>
         <VBox BorderPane.alignment="CENTER">
             <children>
@@ -64,11 +63,6 @@
                         <TextField fx:id="textField_columnSize" text="10" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                         <Button id="button_generateMap" fx:id="btn_generateMap" mnemonicParsing="false" onAction="#generateMap" prefHeight="27.0" prefWidth="156.0" text="Generate Map" GridPane.columnSpan="2" GridPane.rowIndex="2" />
                         <Button id="button_solveMap" fx:id="btn_solveMap" mnemonicParsing="false" onAction="#solveMap" prefHeight="27.0" prefWidth="161.0" text="Solve Map" GridPane.columnSpan="2" GridPane.rowIndex="3" />
-                        <Label text="solution:" GridPane.rowIndex="4" />
-                        <TextArea fx:id="solution" text="" GridPane.rowIndex="5">
-                     <GridPane.margin>
-                        <Insets top="150.0" />
-                     </GridPane.margin></TextArea>
                     </children>
                 </GridPane>
             </children>

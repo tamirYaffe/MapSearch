@@ -1,6 +1,11 @@
 package Search;
 
 
+import rlforj.examples.ExampleBoard;
+import rlforj.los.BresLos;
+import rlforj.los.IFovAlgorithm;
+import rlforj.los.PrecisePermissive;
+
 import java.util.HashSet;
 
 public class RoomMap implements IProblem {
@@ -78,56 +83,78 @@ public class RoomMap implements IProblem {
         int x = position.getX(), y = position.getY();
         HashSet<Position> neighbors = new HashSet<>();
         neighbors.add(new Position(y, x));
-
-        //RIGHT
-        while (x < room[0].length - 1 && room[y][++x] == 0) {
-            neighbors.add(new Position(y, x));
+        int w = room[0].length;
+        int h = room.length;
+        ExampleBoard b = new ExampleBoard(w, h);
+        for (int i = 0; i < room.length; i++) {
+            for (int j = 0; j < room[0].length; j++) {
+                if (room[i][j] == 1)
+                    b.setObstacle(j, i);
+            }
         }
-        x = position.getX();
-
-        //LEFT
-        while (x > 0 && room[y][--x] == 0) {
-            neighbors.add(new Position(y, x));
+        b.resetVisitedAndMarks();
+//        IFovAlgorithm a = new PrecisePermissive();
+//        a.visitFieldOfView(b, x, y, w + h);
+        BresLos a = new BresLos(false);
+//        b.print(x, y);
+        for (int i = 0; i < w; i++) {
+            for (int j = 0; j < h; j++) {
+//                if (b.wasVisited(i, j) && room[i][j] != 1)
+                if (a.existsLineOfSight(b,x,y,j,i,true) && room[i][j] != 1)
+                    neighbors.add(new Position(i, j));
+            }
         }
-        x = position.getX();
 
-        //DOWN
-        while (y < room.length - 1 && room[++y][x] == 0) {
-            neighbors.add(new Position(y, x));
-        }
-        y = position.getY();
-
-        //UP
-        while (y > 0 && room[--y][x] == 0) {
-            neighbors.add(new Position(y, x));
-        }
-        y = position.getY();
-
-        //UP RIGHT
-        while (x < room[0].length - 1 && y > 0 && room[--y][++x] == 0) {
-            neighbors.add(new Position(y, x));
-        }
-        x = position.getX();
-        y = position.getY();
-
-        //DOWN RIGHT
-        while (x < room[0].length - 1 && y < room.length - 1 && room[++y][++x] == 0) {
-            neighbors.add(new Position(y, x));
-        }
-        x = position.getX();
-        y = position.getY();
-
-        //UP LEFT
-        while (x > 0 && y > 0 && room[--y][--x] == 0) {
-            neighbors.add(new Position(y, x));
-        }
-        x = position.getX();
-        y = position.getY();
-
-        //DOWN LEFT
-        while (x > 0 && y < room.length - 1 && room[++y][--x] == 0) {
-            neighbors.add(new Position(y, x));
-        }
+//
+//        //RIGHT
+//        while (x < room[0].length - 1 && room[y][++x] == 0) {
+//            neighbors.add(new Position(y, x));
+//        }
+//        x = position.getX();
+//
+//        //LEFT
+//        while (x > 0 && room[y][--x] == 0) {
+//            neighbors.add(new Position(y, x));
+//        }
+//        x = position.getX();
+//
+//        //DOWN
+//        while (y < room.length - 1 && room[++y][x] == 0) {
+//            neighbors.add(new Position(y, x));
+//        }
+//        y = position.getY();
+//
+//        //UP
+//        while (y > 0 && room[--y][x] == 0) {
+//            neighbors.add(new Position(y, x));
+//        }
+//        y = position.getY();
+//
+//        //UP RIGHT
+//        while (x < room[0].length - 1 && y > 0 && room[--y][++x] == 0) {
+//            neighbors.add(new Position(y, x));
+//        }
+//        x = position.getX();
+//        y = position.getY();
+//
+//        //DOWN RIGHT
+//        while (x < room[0].length - 1 && y < room.length - 1 && room[++y][++x] == 0) {
+//            neighbors.add(new Position(y, x));
+//        }
+//        x = position.getX();
+//        y = position.getY();
+//
+//        //UP LEFT
+//        while (x > 0 && y > 0 && room[--y][--x] == 0) {
+//            neighbors.add(new Position(y, x));
+//        }
+//        x = position.getX();
+//        y = position.getY();
+//
+//        //DOWN LEFT
+//        while (x > 0 && y < room.length - 1 && room[++y][--x] == 0) {
+//            neighbors.add(new Position(y, x));
+//        }
         return neighbors;
     }
 

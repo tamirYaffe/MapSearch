@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Model {
-    int[][] map=null;
+    int[][] map;
     String consoleString = "";
 
     public void generateMap(int rows, int columns) {
@@ -22,9 +22,8 @@ public class Model {
     }
 
     public void solveMap() {
-        if(map==null)
-            generateMap(0,0);
         bfsRun();
+        generateMap(1, 1);
         AstarRun();
     }
 
@@ -60,7 +59,7 @@ public class Model {
                 double cost = checkSolution(problem, solution);
                 if (cost >= 0)        // valid solution
                 {
-//                    printSolution(problem, solution);
+                    printSolution(problem, solution);
                     updateSolution(problem, solution);
 //                    System.out.println("Closed: " + solver.closed);
 //                    System.out.println("Cost:  " + cost);

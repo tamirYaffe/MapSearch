@@ -8,7 +8,7 @@ import javafx.stage.Stage;
 public class Main extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) throws Exception {
         Model model = new Model();
 
         primaryStage.setTitle("Map Search");
@@ -21,6 +21,7 @@ public class Main extends Application {
         Controller controller = fxmlLoader.getController();
         controller.setModel(model);
         primaryStage.show();
+
     }
 
 
