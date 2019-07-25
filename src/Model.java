@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Model {
-    int[][] map;
+    int[][] map=null;
     String consoleString = "";
 
     public void generateMap(int rows, int columns) {
@@ -22,8 +22,9 @@ public class Model {
     }
 
     public void solveMap() {
+        if(map==null)
+            generateMap(0,0);
         bfsRun();
-        generateMap(1, 1);
         AstarRun();
     }
 

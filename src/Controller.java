@@ -3,6 +3,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 
@@ -16,10 +17,15 @@ public class Controller {
     public Button btn_generateMap;
     public Button btn_solveMap;
     public MapGrid mapGrid;
+    public TextArea solution;
 
 
     public void setModel(Model model) {
         this.model = model;
+        solution.setWrapText(true);
+        solution.setEditable(false);
+        solution.setMinHeight(250);
+        solution.setMinWidth(150);
     }
 
     /**
@@ -47,6 +53,7 @@ public class Controller {
     public void solveMap() {
         model.solveMap();
         mapGrid.setMap(model.map);
+        solution.setText(model.consoleString);
     }
 
     private boolean isInteger( String input ) {
