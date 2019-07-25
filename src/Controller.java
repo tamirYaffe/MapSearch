@@ -5,6 +5,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 
 public class Controller {
@@ -31,17 +32,17 @@ public class Controller {
     /**
      * Generates maze by the user rows and columns input in the text filed.
      */
-    public void generateMap(){
-        String rowSize=textField_rowSize.getText();
-        String columnSize=textField_columnSize.getText();
+    public void generateMap() {
+        solution.setText("");
+        String rowSize = textField_rowSize.getText();
+        String columnSize = textField_columnSize.getText();
 
-        if(isInteger(rowSize) && isInteger(columnSize) && Integer.valueOf(rowSize)>4 && Integer.valueOf(columnSize)>4){
+        if (isInteger(rowSize) && isInteger(columnSize) && Integer.valueOf(rowSize) > 4 && Integer.valueOf(columnSize) > 4) {
             int rows = Integer.valueOf(rowSize);
             int columns = Integer.valueOf(columnSize);
             model.generateMap(rows, columns);
-            mapGrid.setMap(model.map);
-        }
-        else{
+            mapGrid.setMap(model.map, model.agent);
+        } else {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("input alert");
             alert.setHeaderText("Generate Maze");
@@ -50,18 +51,18 @@ public class Controller {
         }
 
     }
+
     public void solveMap() {
         model.solveMap();
-        mapGrid.setMap(model.map);
+        mapGrid.setMap(model.map, model.agent);
         solution.setText(model.consoleString);
     }
 
-    private boolean isInteger( String input ) {
+    private boolean isInteger(String input) {
         try {
-            Integer.parseInt( input );
+            Integer.parseInt(input);
             return true;
-        }
-        catch( NumberFormatException e ) {
+        } catch (NumberFormatException e) {
             return false;
         }
     }
@@ -70,4 +71,20 @@ public class Controller {
         mapGrid.requestFocus();
     }
 
+    public void KeyPressed(KeyEvent keyEvent) {
+        System.out.println(keyEvent.getCode());
+        if (solution.getText() != "") {
+            if (keyEvent.getCode().toString() == "UP") {
+                model.showNextMove();
+            }
+            if (keyEvent.getCode().toString() == "DOWN") {
+                model.showBeforeMove();
+            }
+            if (keyEvent.getCode().toString() == "SPACE") {
+                model.showAllSolution();
+            }
+            mapGrid.setMap(model.map, model.agent);
+        }
+        keyEvent.consume();
+    }
 }
