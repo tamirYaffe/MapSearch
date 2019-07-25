@@ -25,12 +25,13 @@ public class Model {
         if(map==null)
             generateMap(0,0);
         bfsRun();
+        generateMap(0,0);
         AstarRun();
     }
 
     private void bfsRun() {
 //        System.out.println("---------- run 1 ----------");
-        consoleString = "---------- run 1 ----------";
+        consoleString = "------ run 1 ------";
         List<ASearch> solvers = new ArrayList<ASearch>();
         BreadthFirstSearch bfs = new BreadthFirstSearch();
         solvers.add(bfs);
@@ -39,7 +40,7 @@ public class Model {
 
     private void AstarRun() {
 //        System.out.println("---------- run 2 ----------");
-        consoleString = "---------- run 2 ----------";
+        consoleString = "------ run 2 ------";
         List<ASearch> solvers = new ArrayList<ASearch>();
         AStarSearch aStar = new AStarSearch();
         solvers.add(aStar);
