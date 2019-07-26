@@ -15,7 +15,7 @@ public class AStarSearch   extends ASearch
 	@Override
 	public String getSolverName() 
 	{
-		return "AStar";
+		return "A*";
 	}
 	
 	@Override

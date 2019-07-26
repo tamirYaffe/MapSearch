@@ -1,5 +1,6 @@
 package View;
 
+import Search.Position;
 import javafx.scene.Node;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
@@ -8,7 +9,7 @@ public class MapGrid extends GridPane {
     private int[][] map;
 
 
-    public void setMap(int[][] map) {
+    public void setMap(int[][] map, Position agent) {
         this.map = map;
         int numCols = map[0].length;
         int numRows = map.length;
@@ -23,6 +24,7 @@ public class MapGrid extends GridPane {
             }
         }
         //drawing chracter
+        add(drawCharacter(), agent.getX(), agent.getY());
     }
 
     public Node drawCharacter() {

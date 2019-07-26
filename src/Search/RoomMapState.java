@@ -11,12 +11,21 @@ public class RoomMapState implements IProblemState {
     private Position position;  //current position
     private HashSet<Position> seen;       //seen positions
     private RoomStep lastStep;  //last step
+    private double cost = 0;
 
     public RoomMapState(RoomMap roomMap, Position position, HashSet<Position> seen, RoomStep lastStep) {
         this.roomMap = roomMap;
         this.position = position;
         this.seen = seen;
         this.lastStep = lastStep;
+    }
+
+    public RoomMapState(RoomMap roomMap, Position position, HashSet<Position> seen, RoomStep lastStep, double cost) {
+        this.roomMap = roomMap;
+        this.position = position;
+        this.seen = seen;
+        this.lastStep = lastStep;
+        this.cost = cost + getStateLastMoveCost();
     }
 
     @Override
@@ -33,25 +42,31 @@ public class RoomMapState implements IProblemState {
 
     @Override
     public String toString() {
+        // Make a string of the map
         String[][] room = new String[roomMap.getRoomMap().length][roomMap.getRoomMap()[0].length];
-        String s = "";
+
+        //initialize the String map ('room')
         for (int i = 0; i < room.length; i++) {
             for (int j = 0; j < room[0].length; j++) {
-                room[i][j] = "   ";
-                if (roomMap.getRoomMap()[i][j] == 1) room[i][j] = "###";
+                room[i][j] = "   ";     //blank slot
+                if (roomMap.getRoomMap()[i][j] == 1) room[i][j] = "###";    //obstacle
             }
         }
+
+        //for each position that was seen on the way to this state
         for (Position p : seen) {
-            room[p.getY()][p.getX()] = "///";
+            room[p.getY()][p.getX()] = "///"; //mark as seen on 'room'
         }
-        s += "position: " + position.getX() + "," + position.getY() + "\n";
-        s += lastStep + "\n";
-//        System.out.println(lastStep);
+
+        //agent's current position
+        String string = "position: " + position.getX() + "," + position.getY() + "\n";
+
+        //add to 'string' the String array with the seen positions ('room')
         for (int i = 0; i < room.length; i++) {
-            s += Arrays.toString(room[i]) + "\n";
-//            System.out.println(Arrays.toString(room[i]));
+            string += Arrays.toString(room[i]) + "\n";
         }
-        return s + "\n";
+
+        return string;
     }
 
     private List<RoomStep> getLegalMoves() {
@@ -96,7 +111,7 @@ public class RoomMapState implements IProblemState {
 
     @Override
     public double getStateLastMoveCost() {
-        if (lastStep!=null && (lastStep._move == RoomStep.MOVE.DOWN || lastStep._move == RoomStep.MOVE.UP
+        if (lastStep != null && (lastStep._move == RoomStep.MOVE.DOWN || lastStep._move == RoomStep.MOVE.UP
                 || lastStep._move == RoomStep.MOVE.RIGHT || lastStep._move == RoomStep.MOVE.LEFT))
             return 1;
         else return Math.sqrt(2);
@@ -143,7 +158,8 @@ public class RoomMapState implements IProblemState {
         newSeen.addAll(roomMap.getVisualNeighbors(newPosition));
 //        System.out.println(this);
         // Create new state
-        return new RoomMapState(newProblem, newPosition, newSeen, roomStep);
+        return new RoomMapState(newProblem, newPosition, newSeen, roomStep, cost);
+//        return new RoomMapState(newProblem, newPosition, newSeen, roomStep);
     }
 
     private boolean outOfBoundaries(int y, int x) {
