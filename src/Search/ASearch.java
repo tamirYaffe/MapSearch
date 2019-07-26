@@ -50,7 +50,7 @@ abstract public class ASearch
 					addToOpen(Vn);
 			}
 			addToClosed(current);
-//			System.out.println(current._currentProblemState.toString());
+//			System.out.println(current._currentProblemState);
 			closed++;
 		}
 		return null;

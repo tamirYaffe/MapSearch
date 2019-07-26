@@ -8,6 +8,7 @@ import javafx.scene.layout.Region;
 public class MapGrid extends GridPane {
     private int[][] map;
 
+
     public void setMap(int[][] map, Position agent) {
         this.map = map;
         int numCols = map[0].length;

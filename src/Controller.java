@@ -1,3 +1,4 @@
+import Search.Position;
 import View.MapGrid;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -7,6 +8,9 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.FileChooser;
+
+import java.io.File;
 
 public class Controller {
     Model model;
@@ -17,6 +21,7 @@ public class Controller {
     public TextField textField_columnSize;
     public Button btn_generateMap;
     public Button btn_solveMap;
+    public Button btn_loadMap;
     public MapGrid mapGrid;
     public TextArea solution;
 
@@ -51,6 +56,35 @@ public class Controller {
         }
 
     }
+
+    private File loadMapFile(String location) {
+        FileChooser fc = new FileChooser();
+        fc.setTitle("Load Map");
+        fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("map files", "*.map"));
+        File file = checkIfExists(location);
+        fc.setInitialDirectory(file);
+        //showing the file chooser
+        return fc.showOpenDialog(null);
+    }
+
+    public void loadMap(ActionEvent event){
+        String path="";
+        File file=loadMapFile(path);
+        if (file != null) {
+//            model.loadMap(new StringMapGenerator().generate(file),new Position(22,13));
+            model.loadMap(new StringMapGenerator().generate(file));
+            mapGrid.setMap(model.map, model.agent);
+        }
+        event.consume();
+    }
+
+    private File checkIfExists(String location) {
+        File file = new File(System.getProperty("user.dir") + "/" + location);
+        if (!file.exists())
+            file.mkdir();
+        return file;
+    }
+
 
     public void solveMap() {
         model.solveMap();

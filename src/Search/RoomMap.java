@@ -97,10 +97,10 @@ public class RoomMap implements IProblem {
 //        a.visitFieldOfView(b, x, y, w + h);
         BresLos a = new BresLos(false);
 //        b.print(x, y);
-        for (int i = 0; i < w; i++) {
-            for (int j = 0; j < h; j++) {
+        for (int i = 0; i < h; i++) {
+            for (int j = 0; j < w; j++) {
 //                if (b.wasVisited(i, j) && room[i][j] != 1)
-                if (a.existsLineOfSight(b,x,y,j,i,true) && room[i][j] != 1)
+                if (room[i][j] != 1 && a.existsLineOfSight(b, x, y, j, i, true))
                     neighbors.add(new Position(i, j));
             }
         }

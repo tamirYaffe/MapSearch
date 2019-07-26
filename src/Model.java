@@ -4,11 +4,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Model {
-    int[][] map=null;
+    int[][] map = null;
     String consoleString = "";
-    ArrayList<Position> solutionList=new ArrayList<>();
-    int solutionIndex=0;
+    ArrayList<Position> solutionList = new ArrayList<>();
+    int solutionIndex = 0;
     Position agent;
+
+    public void loadMap(int[][] map) {
+        this.map = map;
+        int x, y;
+        do {
+            y = (int) (Math.random() * map.length);
+            x = (int) (Math.random() * map[0].length);
+        } while (map[y][x] != 0);
+        agent = new Position(y, x);
+    }
+
+    public void loadMap(int[][] map, Position agentPosition) {
+        this.map = map;
+        agent = agentPosition;
+    }
 
     public void generateMap(int rows, int columns) {
 //        MapGenerator mapGenerator=new MapGenerator();
@@ -22,19 +37,20 @@ public class Model {
                 {0, 0, 0, 0, 0, 0, 0}};
         consoleString = "";
         this.map = map;
-        agent=new Position(6,6);
+        agent = new Position(6, 6);
     }
 
     public void solveMap() {
-        if(map==null)
-            generateMap(0,0);
-        bfsRun();
+        if (map == null)
+            generateMap(0, 0);
+//        bfsRun();
+//        generateMap(0, 0);
         AstarRun();
     }
 
     private void bfsRun() {
 //        System.out.println("---------- run 1 ----------");
-        consoleString = "---------- run 1 ----------";
+        consoleString = "------ run 1 ------";
         List<ASearch> solvers = new ArrayList<ASearch>();
         BreadthFirstSearch bfs = new BreadthFirstSearch();
         solvers.add(bfs);
@@ -43,7 +59,7 @@ public class Model {
 
     private void AstarRun() {
 //        System.out.println("---------- run 2 ----------");
-        consoleString = "---------- run 2 ----------";
+        consoleString = "------ run 2 ------";
         List<ASearch> solvers = new ArrayList<ASearch>();
         AStarSearch aStar = new AStarSearch();
         solvers.add(aStar);
@@ -54,7 +70,7 @@ public class Model {
         {
             long totalTime = 0;
             String instance = instancesType;
-            RoomMap problem = new RoomMap(map,agent);
+            RoomMap problem = new RoomMap(map, agent);
             for (ASearch solver : solvers) {
 //                System.out.println("Solver: " + solver.getSolverName());
                 consoleString += "\nSolver: " + solver.getSolverName();
@@ -108,8 +124,8 @@ public class Model {
     }
 
     private void updateSolution(RoomMap problem, List<IProblemMove> solution) {
-        solutionList=new ArrayList<>();
-        solutionIndex=0;
+        solutionList = new ArrayList<>();
+        solutionIndex = 0;
 
         IProblemState currentState = problem.getProblemState();
         solutionList.add(new Position(((RoomMapState) currentState).getPosition()));
@@ -133,24 +149,24 @@ public class Model {
 
     public void showNextMove() {
         solutionIndex++;
-        if(solutionIndex==solutionList.size())
-            solutionIndex=0;
-        Position nextPosition=solutionList.get(solutionIndex);
-        agent=new Position(nextPosition);
+        if (solutionIndex == solutionList.size())
+            solutionIndex = 0;
+        Position nextPosition = solutionList.get(solutionIndex);
+        agent = new Position(nextPosition);
     }
 
     public void showBeforeMove() {
         solutionIndex--;
-        if(solutionIndex==-1)
-            solutionIndex=solutionList.size()-1;
-        Position nextPosition=solutionList.get(solutionIndex);
-        agent=new Position(nextPosition);
+        if (solutionIndex == -1)
+            solutionIndex = solutionList.size() - 1;
+        Position nextPosition = solutionList.get(solutionIndex);
+        agent = new Position(nextPosition);
     }
 
     public void showAllSolution() {
         for (int i = 0; i < solutionList.size(); i++) {
-            Position position=solutionList.get(i);
-            map[position.getY()][position.getX()]=2;
+            Position position = solutionList.get(i);
+            map[position.getY()][position.getX()] = 2;
         }
     }
 }
