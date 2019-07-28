@@ -3,17 +3,19 @@ package Search;
 
 import rlforj.examples.ExampleBoard;
 import rlforj.los.BresLos;
-import rlforj.los.IFovAlgorithm;
-import rlforj.los.PrecisePermissive;
 
+import java.util.HashMap;
 import java.util.HashSet;
 
 public class RoomMap implements IProblem {
-
     private int[][] room;         //map array
+
     private Position startPosition;
     private IHeuristic heuristic;  //Room problem heuristic
     private int numOfPositions;
+    private HashMap<Position, int[]> watchesCount;
+    private HashMap<Position, HashSet<Position>> visualDictionary;
+    private int totalWatches;
 
 
     public RoomMap() {
@@ -23,7 +25,63 @@ public class RoomMap implements IProblem {
     public RoomMap(int[][] room) {
         this.room = getRoomMapCopy(room);
         startPosition = findPositionOnMap(2);
-        heuristic = new RoomMapHeuristic();
+        heuristic = new RoomMapCountHeuristic();
+        makeVisualDictionaries();
+    }
+
+    public RoomMap(int[][] room, Position startPosition) {
+        this.room = getRoomMapCopy(room);
+        this.startPosition = new Position(startPosition);
+        heuristic = new RoomMapCountHeuristic();
+        makeVisualDictionaries();
+        int x = 0;
+    }
+
+    private void makeVisualDictionaries() {
+        visualDictionary = new HashMap<>();
+        watchesCount = new HashMap<>();
+        int h = room.length;
+        int w = room[0].length;
+        ExampleBoard b = new ExampleBoard(w, h);
+        //set the obstacles and the valid positions
+        for (int i = 0; i < h; i++) {
+            for (int j = 0; j < w; j++) {
+                if (room[i][j] == 1)
+                    b.setObstacle(j, i); //add obstacle to the board
+                else if (room[i][j] == 0) {
+//                    numOfPositions++;
+                    Position keyPosition = new Position(i, j);
+                    watchesCount.put(keyPosition, new int[1]); //add a Position with a counter
+                    visualDictionary.put(keyPosition, new HashSet<>()); // make an HashSet of the positions that are visible
+                }
+            }
+        }
+        numOfPositions = visualDictionary.size();
+        b.resetVisitedAndMarks();
+        BresLos a = new BresLos(false);
+
+        //for each position add to all other counters it's watch (+1)
+        for (Position watchingPosition : watchesCount.keySet()) {
+            for (int i = 0; i < h; i++) {
+                for (int j = 0; j < w; j++) {
+                    if (room[i][j] != 1) {
+                        if ((a.existsLineOfSight(b, watchingPosition.getX(), watchingPosition.getY(), j, i, true))) { //if (x,y) sees (j,i)
+                            Position watchedPosition = new Position(i, j);
+                            watchesCount.get(watchedPosition)[0]++; // let (j,i) count that it's watched
+                            visualDictionary.get(watchingPosition).add(watchedPosition);// let (x,y) add to it's list (j,i)
+                            totalWatches++;
+                        }
+                    }
+                }
+            }
+
+        }
+
+    }
+
+
+    public HashMap<Position, int[]> getWatchesCount() {
+        return watchesCount;
     }
 
     private Position findPositionOnMap(int posIndex) {
@@ -39,19 +97,10 @@ public class RoomMap implements IProblem {
         return null;
     }
 
-    public RoomMap(int[][] room, Position startPosition) {
-        this.room = getRoomMapCopy(room);
-        this.startPosition = new Position(startPosition);
-        heuristic = new RoomMapHeuristic();
-    }
-
     private int[][] getRoomMapCopy(int[][] room) {
         int[][] newRoomMap = new int[room.length][room[0].length];
         for (int i = 0; i < room.length; i++) {
-            for (int j = 0; j < room[i].length; j++) {
-                if (room[i][j] == 0) numOfPositions++;
-                newRoomMap[i][j] = room[i][j];
-            }
+            System.arraycopy(room[i], 0, newRoomMap[i], 0, room[i].length);
         }
         return newRoomMap;
     }
@@ -80,82 +129,7 @@ public class RoomMap implements IProblem {
      * @return - HashSet of Seen Positions
      */
     HashSet<Position> getVisualNeighbors(Position position) {
-        int x = position.getX(), y = position.getY();
-        HashSet<Position> neighbors = new HashSet<>();
-        neighbors.add(new Position(y, x));
-        int w = room[0].length;
-        int h = room.length;
-        ExampleBoard b = new ExampleBoard(w, h);
-        for (int i = 0; i < room.length; i++) {
-            for (int j = 0; j < room[0].length; j++) {
-                if (room[i][j] == 1)
-                    b.setObstacle(j, i);
-            }
-        }
-        b.resetVisitedAndMarks();
-//        IFovAlgorithm a = new PrecisePermissive();
-//        a.visitFieldOfView(b, x, y, w + h);
-        BresLos a = new BresLos(false);
-//        b.print(x, y);
-        for (int i = 0; i < h; i++) {
-            for (int j = 0; j < w; j++) {
-//                if (b.wasVisited(i, j) && room[i][j] != 1)
-                if (room[i][j] != 1 && a.existsLineOfSight(b, x, y, j, i, true))
-                    neighbors.add(new Position(i, j));
-            }
-        }
-
-//
-//        //RIGHT
-//        while (x < room[0].length - 1 && room[y][++x] == 0) {
-//            neighbors.add(new Position(y, x));
-//        }
-//        x = position.getX();
-//
-//        //LEFT
-//        while (x > 0 && room[y][--x] == 0) {
-//            neighbors.add(new Position(y, x));
-//        }
-//        x = position.getX();
-//
-//        //DOWN
-//        while (y < room.length - 1 && room[++y][x] == 0) {
-//            neighbors.add(new Position(y, x));
-//        }
-//        y = position.getY();
-//
-//        //UP
-//        while (y > 0 && room[--y][x] == 0) {
-//            neighbors.add(new Position(y, x));
-//        }
-//        y = position.getY();
-//
-//        //UP RIGHT
-//        while (x < room[0].length - 1 && y > 0 && room[--y][++x] == 0) {
-//            neighbors.add(new Position(y, x));
-//        }
-//        x = position.getX();
-//        y = position.getY();
-//
-//        //DOWN RIGHT
-//        while (x < room[0].length - 1 && y < room.length - 1 && room[++y][++x] == 0) {
-//            neighbors.add(new Position(y, x));
-//        }
-//        x = position.getX();
-//        y = position.getY();
-//
-//        //UP LEFT
-//        while (x > 0 && y > 0 && room[--y][--x] == 0) {
-//            neighbors.add(new Position(y, x));
-//        }
-//        x = position.getX();
-//        y = position.getY();
-//
-//        //DOWN LEFT
-//        while (x > 0 && y < room.length - 1 && room[++y][--x] == 0) {
-//            neighbors.add(new Position(y, x));
-//        }
-        return neighbors;
+        return visualDictionary.get(position);
     }
 
     @Override
@@ -170,5 +144,13 @@ public class RoomMap implements IProblem {
 
     int getNumberOfPositions() {
         return numOfPositions;
+    }
+
+    public HashMap<Position, HashSet<Position>> getVisualDictionary() {
+        return visualDictionary;
+    }
+
+    public int getTotalWatches() {
+        return totalWatches;
     }
 }
