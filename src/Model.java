@@ -45,9 +45,9 @@ public class Model {
     public void solveMap() {
         if (map == null)
             generateMap(0, 6);
-        bfsRun();
+//        bfsRun();
 //        generateMap(0, 0);
-//        AstarRun();
+        AstarRun();
     }
 
     private void bfsRun() {
