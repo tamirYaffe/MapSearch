@@ -30,23 +30,23 @@ public class Model {
 //        map=mapGenerator.generate(rows,columns);
         int map[][] = {
                 {0, 0, 0, 0, 0, 1, 0, 1},
-                {1, 1, 1, 1, 0, 1, 1, 0},
+                {1, 1, 1, 1, 0, 1, 0, 0},
                 {0, 0, 0, 0, 0, 1, 0, 1},
-                {0, 1, 0, 1, 0, 1, 0, 1},
+                {0, 1, 0, 1, 0, 1, 0, 0},
                 {0, 1, 0, 0, 0, 1, 1, 0},
                 {1, 1, 0, 0, 0, 1, 0, 0},
                 {0, 1, 0, 0, 1, 1, 0, 1},
                 {0, 0, 0, 0, 0, 0, 0, 0}};
         consoleString = "";
         this.map = map;
-        agent = new Position(0, 6);
+        agent = new Position(7, 6);
     }
 
     public void solveMap() {
         if (map == null)
             generateMap(0, 6);
-//        bfsRun();
-//        generateMap(0, 0);
+        bfsRun();
+        generateMap(0, 0);
         AstarRun();
     }
 
