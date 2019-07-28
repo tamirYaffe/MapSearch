@@ -31,6 +31,8 @@ abstract public class ASearch {
         ASearchNode current = null;
         addToOpen(Vs);
         expanded = 0;
+        generated = 0;
+        duplicates = 0;
 
         while (openSize() > 0) {
             current = getBest();
