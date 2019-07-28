@@ -2,6 +2,7 @@ package Search;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.TreeMap;
 
 public class RoomMapCountHeuristic implements IHeuristic {
     @Override
@@ -9,7 +10,7 @@ public class RoomMapCountHeuristic implements IHeuristic {
         if (problemState instanceof RoomMapState) {
             RoomMapState s = (RoomMapState) problemState;
             RoomMap r = (RoomMap) s.getProblem();
-            HashMap<Position, HashSet<Position>> watchedDictionary = r.getWatchedDictionary();
+            TreeMap<Position, HashSet<Position>> watchedDictionary = r.getWatchedDictionary();
             HashSet<Position> neighbors = r.getVisualNeighbors(s.getPosition());
             double positionWeight = 0;
             //for each position watched by the agent, add it's counter to the position weight
