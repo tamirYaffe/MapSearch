@@ -89,7 +89,9 @@ public class Model {
 //                    System.out.println("Moves: " + solution.size());
 //                    System.out.println("Time:  " + (finishTime - startTime) / 1000000.0 + " ms");
 //                    System.out.println(solution);
-                    consoleString += "\nClosed: " + solver.closed;
+                    consoleString += "\nGenerated: " + solver.generated;
+                    consoleString += "\nDuplicates: " + solver.duplicates;
+                    consoleString += "\nExpanded: " + solver.expanded;
                     consoleString += "\nCost:  " + cost;
                     consoleString += "\nMoves: " + solution.size();
                     consoleString += "\nTime:  " + (finishTime - startTime) / 1000000.0 + " ms\n\n";

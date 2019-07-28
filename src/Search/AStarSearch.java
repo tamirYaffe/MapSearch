@@ -13,14 +13,14 @@ public class AStarSearch   extends ASearch
 	HashMap<String,ASearchNode> openContainer;
 
 	@Override
-	public String getSolverName() 
+	public String getSolverName()
 	{
 		return "A*";
 	}
-	
+
 	@Override
 	public ASearchNode createSearchRoot(IProblemState problemState)
-	{	
+	{
 		ASearchNode newNode = new HeuristicSearchNode(problemState);
 		return newNode;
 	}

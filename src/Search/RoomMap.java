@@ -9,7 +9,6 @@ import java.util.HashSet;
 
 public class RoomMap implements IProblem {
     private int[][] room;         //map array
-
     private Position startPosition;
     private IHeuristic heuristic;  //Room problem heuristic
     private int numOfPositions;
