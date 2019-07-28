@@ -28,24 +28,26 @@ public class Model {
     public void generateMap(int rows, int columns) {
 //        MapGenerator mapGenerator=new MapGenerator();
 //        map=mapGenerator.generate(rows,columns);
-        int map[][] = {{0, 0, 0, 0, 0, 1, 1},
-                {1, 1, 1, 1, 0, 1, 1},
-                {0, 0, 0, 0, 0, 1, 1},
-                {0, 1, 0, 1, 0, 1, 1},
-                {1, 1, 0, 0, 0, 1, 1},
-                {0, 1, 0, 0, 1, 1, 1},
-                {0, 0, 0, 0, 0, 0, 0}};
+        int map[][] = {
+                {0, 0, 0, 0, 0, 1, 0, 1},
+                {1, 1, 1, 1, 0, 1, 1, 0},
+                {0, 0, 0, 0, 0, 1, 0, 1},
+                {0, 1, 0, 1, 0, 1, 0, 1},
+                {0, 1, 0, 0, 0, 1, 1, 0},
+                {1, 1, 0, 0, 0, 1, 0, 0},
+                {0, 1, 0, 0, 1, 1, 0, 1},
+                {0, 0, 0, 0, 0, 0, 0, 0}};
         consoleString = "";
         this.map = map;
-        agent = new Position(6, 6);
+        agent = new Position(0, 6);
     }
 
     public void solveMap() {
         if (map == null)
-            generateMap(0, 0);
-//        bfsRun();
+            generateMap(0, 6);
+        bfsRun();
 //        generateMap(0, 0);
-        AstarRun();
+//        AstarRun();
     }
 
     private void bfsRun() {
@@ -100,7 +102,8 @@ public class Model {
             }
 //            System.out.println("");
 //            System.out.println("Total time:  " + totalTime / 60000.0 + " min");
-            consoleString += "\n\nTotal time:  " + totalTime / 60000.0 + " min\n";
+            int totalTimeMinuts = (int) ((totalTime / 1000) % 60);
+            consoleString += "\n\nTotal time:  " + (int) (totalTime / 60000) + ":" + (totalTimeMinuts > 9 ? totalTimeMinuts : "0" + totalTimeMinuts) + " min\n";
 //            System.out.println("");
             System.out.println(consoleString);
         }

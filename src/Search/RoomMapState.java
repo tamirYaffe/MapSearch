@@ -105,7 +105,6 @@ public class RoomMapState implements IProblemState {
 
     @Override
     public IProblemMove getStateLastMove() {
-        toString();
         return lastStep;
     }
 
@@ -156,7 +155,6 @@ public class RoomMapState implements IProblemState {
             return null;
 
         newSeen.addAll(roomMap.getVisualNeighbors(newPosition));
-//        System.out.println(this);
         // Create new state
         return new RoomMapState(newProblem, newPosition, newSeen, roomStep, cost);
 //        return new RoomMapState(newProblem, newPosition, newSeen, roomStep);
