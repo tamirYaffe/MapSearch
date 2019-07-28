@@ -13,7 +13,7 @@ public class RoomMap implements IProblem {
     private Position startPosition;
     private IHeuristic heuristic;  //Room problem heuristic
     private int numOfPositions;
-    private HashMap<Position, int[]> watchesCount;
+    private HashMap<Position, HashSet<Position>> watchedDictionary;
     private HashMap<Position, HashSet<Position>> visualDictionary;
     private int totalWatches;
 
@@ -39,7 +39,7 @@ public class RoomMap implements IProblem {
 
     private void makeVisualDictionaries() {
         visualDictionary = new HashMap<>();
-        watchesCount = new HashMap<>();
+        watchedDictionary = new HashMap<>();
         int h = room.length;
         int w = room[0].length;
         ExampleBoard b = new ExampleBoard(w, h);
@@ -51,7 +51,7 @@ public class RoomMap implements IProblem {
                 else if (room[i][j] == 0) {
 //                    numOfPositions++;
                     Position keyPosition = new Position(i, j);
-                    watchesCount.put(keyPosition, new int[1]); //add a Position with a counter
+                    watchedDictionary.put(keyPosition, new HashSet<>()); //add a Position with a counter
                     visualDictionary.put(keyPosition, new HashSet<>()); // make an HashSet of the positions that are visible
                 }
             }
@@ -61,13 +61,13 @@ public class RoomMap implements IProblem {
         BresLos a = new BresLos(false);
 
         //for each position add to all other counters it's watch (+1)
-        for (Position watchingPosition : watchesCount.keySet()) {
+        for (Position watchingPosition : watchedDictionary.keySet()) {
             for (int i = 0; i < h; i++) {
                 for (int j = 0; j < w; j++) {
                     if (room[i][j] != 1) {
                         if ((a.existsLineOfSight(b, watchingPosition.getX(), watchingPosition.getY(), j, i, true))) { //if (x,y) sees (j,i)
                             Position watchedPosition = new Position(i, j);
-                            watchesCount.get(watchedPosition)[0]++; // let (j,i) count that it's watched
+                            watchedDictionary.get(watchedPosition).add(watchingPosition); // let (j,i) add to it's list (x,y)
                             visualDictionary.get(watchingPosition).add(watchedPosition);// let (x,y) add to it's list (j,i)
                             totalWatches++;
                         }
@@ -80,8 +80,8 @@ public class RoomMap implements IProblem {
     }
 
 
-    public HashMap<Position, int[]> getWatchesCount() {
-        return watchesCount;
+    public HashMap<Position, HashSet<Position>> getWatchedDictionary() {
+        return watchedDictionary;
     }
 
     private Position findPositionOnMap(int posIndex) {
