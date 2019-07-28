@@ -27,14 +27,14 @@ public class RoomMap implements IProblem {
     public RoomMap(int[][] room) {
         this.room = getRoomMapCopy(room);
         startPosition = findPositionOnMap(2);
-        heuristic = new RoomMapCountHeuristic();
+        heuristic = new RoomMapHeuristic();
         makeVisualDictionaries();
     }
 
     public RoomMap(int[][] room, Position startPosition) {
         this.room = getRoomMapCopy(room);
         this.startPosition = new Position(startPosition);
-        heuristic = new RoomMapCountHeuristic();
+        heuristic = new RoomMapHeuristic();
         makeVisualDictionaries();
         int x = 0;
     }
@@ -83,8 +83,8 @@ public class RoomMap implements IProblem {
             @Override
             public int compare(Position o1, Position o2) {
                 if (tempWatchedDictinary.getOrDefault(o1, new HashSet<>()).size() > tempWatchedDictinary.getOrDefault(o2, new HashSet<>()).size())
-                    return -1;
-                return 1;
+                    return 1;
+                return -1;
             }
         });
         watchedDictionary.putAll(tempWatchedDictinary);
