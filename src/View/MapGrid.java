@@ -2,11 +2,18 @@ package View;
 
 import Search.Position;
 import javafx.scene.Node;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
 
+import java.util.ArrayList;
+
 public class MapGrid extends GridPane {
     private int[][] map;
+    private Canvas canvas;
 
 
     public void setMap(int[][] map, Position agent) {
@@ -73,5 +80,12 @@ public class MapGrid extends GridPane {
         region.setMinSize(1, 1);
         region.setPrefSize(300, 300);
         return region;
+    }
+
+    public void drawSolution(ArrayList<Position> solutionList) {
+        canvas = new Canvas();
+        getParent().getChildrenUnmodifiable().add(canvas);
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        gc.drawImage(Image.impl_fromPlatformImage("/blank2.jpg"),0,0);
     }
 }
