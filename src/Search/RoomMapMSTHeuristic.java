@@ -1,7 +1,5 @@
 package Search;
 
-import org.jgrapht.alg.spanning.PrimMinimumSpanningTree;
-
 import java.util.*;
 
 public class RoomMapMSTHeuristic implements IHeuristic {
@@ -11,7 +9,7 @@ public class RoomMapMSTHeuristic implements IHeuristic {
             RoomMapState s = (RoomMapState) problemState;
             RoomMap r = (RoomMap) s.getProblem();
             TreeMap<Position, HashSet<Position>> watchedDictionary = r.getWatchedDictionary();
-            RoomMapGraphAdapter g = new RoomMapGraphAdapter(watchedDictionary, s, 0.0);
+            RoomMapGraphAdapter g = new RoomMapGraphAdapter(watchedDictionary, s, 0.0, 1000);
             return g.getPrimMSTWeight();
         } else return Double.MAX_VALUE / 2;
     }

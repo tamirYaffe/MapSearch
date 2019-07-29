@@ -5,14 +5,9 @@ import com.mxgraph.layout.mxIGraphLayout;
 import com.mxgraph.util.mxCellRenderer;
 import org.jgrapht.Graph;
 import org.jgrapht.alg.spanning.PrimMinimumSpanningTree;
-import org.jgrapht.alg.tour.PalmerHamiltonianCycle;
 import org.jgrapht.alg.tour.TwoOptHeuristicTSP;
 import org.jgrapht.ext.JGraphXAdapter;
-import org.jgrapht.graph.AsWeightedDirectedGraph;
-import org.jgrapht.graph.DefaultDirectedWeightedGraph;
 import org.jgrapht.graph.DefaultUndirectedWeightedGraph;
-import org.jgrapht.graph.DirectedWeightedMultigraph;
-import org.jgrapht.util.*;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -28,11 +23,11 @@ public class RoomMapGraphAdapter {
     private HashMap<Position, PositionVertex> prunnableVertices;
     private HashMap<Position, PositionVertex> unPrunnableVertices;
 
-    public RoomMapGraphAdapter(TreeMap<Position, HashSet<Position>> watchedDictionary, RoomMapState s, double threshold) {
+    public RoomMapGraphAdapter(TreeMap<Position, HashSet<Position>> watchedDictionary, RoomMapState s, double threshold, int maxLeavesCount) {
         graph = new DefaultUndirectedWeightedGraph<>(UndirectedWeightedEdge.class);
         prunnableVertices = new HashMap<>();
         unPrunnableVertices = new HashMap<>();
-        addVerticesToGraph(watchedDictionary, s, threshold);
+        addVerticesToGraph(watchedDictionary, s, threshold, maxLeavesCount);
         connectPrunnableVerticesInGraph();
         addAgentToGraph(s);
     }
@@ -127,11 +122,11 @@ public class RoomMapGraphAdapter {
         }
     }
 
-    private void addVerticesToGraph(TreeMap<Position, HashSet<Position>> watchedDictionary, RoomMapState s, double threshold) {
+    private void addVerticesToGraph(TreeMap<Position, HashSet<Position>> watchedDictionary, RoomMapState s, double threshold, int maxLeavesCount) {
         for (Map.Entry<Position, HashSet<Position>> entry : watchedDictionary.entrySet()) {
             Position key = entry.getKey();
             HashSet<Position> value = entry.getValue();
-            if ((1.0 / value.size()) < threshold) break;
+            if ((1.0 / value.size()) < threshold || maxLeavesCount-- <= 0) break;
             if (!s.getSeen().contains(key)) {
                 PositionVertex watchedVertex = new PositionVertex(key, PositionVertex.TYPE.UNPRUNNABLE);
                 unPrunnableVertices.put(key, watchedVertex);
@@ -161,7 +156,7 @@ public class RoomMapGraphAdapter {
     }
 
     public double getPrimMSTWeight() {
-        return new PrimMinimumSpanningTree<PositionVertex, UndirectedWeightedEdge>(graph).getSpanningTree().getWeight();
+        return new PrimMinimumSpanningTree<>(graph).getSpanningTree().getWeight();
     }
 
     public double getTSPWeight(Position startPosition) {
@@ -171,7 +166,7 @@ public class RoomMapGraphAdapter {
             UndirectedWeightedEdge edge = graph.addEdge(start, vertex);
             graph.setEdgeWeight(edge, 0);
         }
-        graph.removeEdge(start,start);
+        graph.removeEdge(start, start);
         TwoOptHeuristicTSP<PositionVertex, UndirectedWeightedEdge> twoOptHeuristicTSP = new TwoOptHeuristicTSP<>();
 
         return twoOptHeuristicTSP.getTour(graph).getWeight();

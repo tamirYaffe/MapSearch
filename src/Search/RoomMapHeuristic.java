@@ -1,6 +1,5 @@
 package Search;
 
-import org.jgrapht.alg.spanning.KruskalMinimumSpanningTree;
 import org.jgrapht.alg.spanning.PrimMinimumSpanningTree;
 import java.util.*;
 
@@ -14,7 +13,7 @@ public class RoomMapHeuristic implements IHeuristic {
             TreeMap<Position, HashSet<Position>> watchedDictionary = r.getWatchedDictionary();
             HashMap<Position, HashSet<Position>> watchingDictionary = r.getVisualDictionary();
 //            double start = System.nanoTime();
-            RoomMapGraphAdapter g = new RoomMapGraphAdapter(watchedDictionary, s, 0.0);
+            RoomMapGraphAdapter g = new RoomMapGraphAdapter(watchedDictionary, s, 0.0, 5);
             PrimMinimumSpanningTree<PositionVertex, UndirectedWeightedEdge> primMinimumSpanningTree = new PrimMinimumSpanningTree<>(g.getGraph());
 //            System.out.println("prim: " + primMinimumSpanningTree.getSpanningTree().getWeight());
             h = primMinimumSpanningTree.getSpanningTree().getWeight();
