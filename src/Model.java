@@ -46,7 +46,7 @@ public class Model {
         if (map == null)
             generateMap(0, 6);
         bfsRun();
-        generateMap(0, 0);
+//        generateMap(0, 0);
         AstarRun();
     }
 
