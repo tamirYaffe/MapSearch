@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.TreeMap;
 
+import static Search.DistanceService.minDistance;
+
 public class RoomMapCountHeuristic implements IHeuristic {
     @Override
     public double getHeuristic(IProblemState problemState) {
@@ -20,11 +22,12 @@ public class RoomMapCountHeuristic implements IHeuristic {
 
     private double computeH2(RoomMap r, RoomMapState s) {
         double h = 0;
+        double threshold = 0.2;
         TreeMap<Position, HashSet<Position>> watchedDictionary = r.getWatchedDictionary();
         for (Map.Entry<Position, HashSet<Position>> entry : watchedDictionary.entrySet()) {
             Position nextRarePosition = entry.getKey();
             HashSet<Position> positions = entry.getValue();
-            if (!s.getSeen().contains(nextRarePosition)) {
+            if (!s.getSeen().contains(nextRarePosition) && (1.0 / positions.size()) >= threshold) {
                 double minDist = minDistance(positions, s.getPosition());
                 h = Math.max(minDist, h);
             }
@@ -32,18 +35,4 @@ public class RoomMapCountHeuristic implements IHeuristic {
         return h;
     }
 
-    private double minDistance(HashSet<Position> positions, Position currPosition) {
-        Position distantPosition = null;
-        double minDistance = Double.MAX_VALUE;
-        for (Position position : positions) {
-            double distance = auclidianDistance(position, currPosition);
-            if (distance < minDistance)
-                minDistance = distance;
-        }
-        return minDistance;
-    }
-
-    private double auclidianDistance(Position p1, Position p2) {
-        return Math.sqrt(Math.abs(p1.getY() - p2.getY()) + Math.abs(p1.getX() - p2.getX()));
-    }
 }

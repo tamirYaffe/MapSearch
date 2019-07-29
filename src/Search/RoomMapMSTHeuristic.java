@@ -1,23 +1,23 @@
 package Search;
 
-import org.jgrapht.alg.spanning.KruskalMinimumSpanningTree;
 import org.jgrapht.alg.spanning.PrimMinimumSpanningTree;
+
 import java.util.*;
 
-public class RoomMapHeuristic implements IHeuristic {
+public class RoomMapMSTHeuristic implements IHeuristic {
     @Override
     public double getHeuristic(IProblemState problemState) {
         if (problemState instanceof RoomMapState) {
             RoomMapState s = (RoomMapState) problemState;
             RoomMap r = (RoomMap) s.getProblem();
-            double h = 0;
             TreeMap<Position, HashSet<Position>> watchedDictionary = r.getWatchedDictionary();
-            HashMap<Position, HashSet<Position>> watchingDictionary = r.getVisualDictionary();
 //            double start = System.nanoTime();
             RoomMapGraphAdapter g = new RoomMapGraphAdapter(watchedDictionary, s, 0.0);
+
+//            printGraph(g, "resources/graph.png");
             PrimMinimumSpanningTree<PositionVertex, UndirectedWeightedEdge> primMinimumSpanningTree = new PrimMinimumSpanningTree<>(g.getGraph());
 //            System.out.println("prim: " + primMinimumSpanningTree.getSpanningTree().getWeight());
-            h = primMinimumSpanningTree.getSpanningTree().getWeight();
+            double h = primMinimumSpanningTree.getSpanningTree().getWeight();
 //            KruskalMinimumSpanningTree<PositionVertex, UndirectedWeightedEdge> kruskalMinimumSpanningTree = new KruskalMinimumSpanningTree<>(g);
 //            System.out.println("kruskal: " + kruskalMinimumSpanningTree.getSpanningTree().getWeight());
 //
@@ -26,5 +26,4 @@ public class RoomMapHeuristic implements IHeuristic {
             return h;
         } else return Double.MAX_VALUE / 2;
     }
-
 }
