@@ -34,7 +34,7 @@ public class RoomMap implements IProblem {
     public RoomMap(int[][] room, Position startPosition) {
         this.room = getRoomMapCopy(room);
         this.startPosition = new Position(startPosition);
-        heuristic = new RoomMapMSTHeuristic();
+        heuristic = new RoomMapTSPHeuristic();
         makeVisualDictionaries();
         int x = 0;
     }
