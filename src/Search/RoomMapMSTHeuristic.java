@@ -11,19 +11,8 @@ public class RoomMapMSTHeuristic implements IHeuristic {
             RoomMapState s = (RoomMapState) problemState;
             RoomMap r = (RoomMap) s.getProblem();
             TreeMap<Position, HashSet<Position>> watchedDictionary = r.getWatchedDictionary();
-//            double start = System.nanoTime();
             RoomMapGraphAdapter g = new RoomMapGraphAdapter(watchedDictionary, s, 0.0);
-
-//            printGraph(g, "resources/graph.png");
-            PrimMinimumSpanningTree<PositionVertex, UndirectedWeightedEdge> primMinimumSpanningTree = new PrimMinimumSpanningTree<>(g.getGraph());
-//            System.out.println("prim: " + primMinimumSpanningTree.getSpanningTree().getWeight());
-            double h = primMinimumSpanningTree.getSpanningTree().getWeight();
-//            KruskalMinimumSpanningTree<PositionVertex, UndirectedWeightedEdge> kruskalMinimumSpanningTree = new KruskalMinimumSpanningTree<>(g);
-//            System.out.println("kruskal: " + kruskalMinimumSpanningTree.getSpanningTree().getWeight());
-//
-//            double end = System.nanoTime();
-//            System.out.println("\ntime: " + ((end - start) / 1000000) + " ms");
-            return h;
+            return g.getPrimMSTWeight();
         } else return Double.MAX_VALUE / 2;
     }
 }
