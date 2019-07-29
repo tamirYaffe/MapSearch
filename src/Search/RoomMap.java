@@ -93,7 +93,7 @@ public class RoomMap implements IProblem {
 
 
     public TreeMap<Position, HashSet<Position>> getWatchedDictionary() {
-        return watchedDictionary;
+        return new TreeMap<>(watchedDictionary);
     }
 
     private Position findPositionOnMap(int posIndex) {
@@ -159,7 +159,7 @@ public class RoomMap implements IProblem {
     }
 
     public HashMap<Position, HashSet<Position>> getVisualDictionary() {
-        return visualDictionary;
+        return new HashMap<>(visualDictionary);
     }
 
     public int getTotalWatches() {
