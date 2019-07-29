@@ -89,4 +89,9 @@ public class Position {
     public int hashCode() {
         return (((y + x) * (y + x + 1)) / 2) + y;
     }
+
+    @Override
+    public String toString() {
+        return "Position: (" + x + "," + y + ")";
+    }
 }
