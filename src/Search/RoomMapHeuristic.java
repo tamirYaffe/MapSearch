@@ -5,6 +5,9 @@ import com.mxgraph.layout.mxCircleLayout;
 import com.mxgraph.layout.mxIGraphLayout;
 import com.mxgraph.util.mxCellRenderer;
 import org.jgrapht.Graph;
+import org.jgrapht.alg.interfaces.MinimumSpanningTree;
+import org.jgrapht.alg.spanning.KruskalMinimumSpanningTree;
+import org.jgrapht.alg.spanning.PrimMinimumSpanningTree;
 import org.jgrapht.ext.JGraphXAdapter;
 import org.jgrapht.graph.DefaultUndirectedWeightedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -15,10 +18,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class RoomMapHeuristic implements IHeuristic {
     @Override
@@ -29,19 +29,27 @@ public class RoomMapHeuristic implements IHeuristic {
             double h = 0;
             TreeMap<Position, HashSet<Position>> watchedDictionary = r.getWatchedDictionary();
             HashMap<Position, HashSet<Position>> watchingDictionary = r.getVisualDictionary();
-            Graph<PositionVertex, DefaultWeightedEdge> g = createGraph(watchedDictionary, watchingDictionary, s);
-
+//            double start = System.nanoTime();
+            Graph<PositionVertex, UndirectedWeightedEdge> g = createGraph(watchedDictionary, s);
+            PrimMinimumSpanningTree<PositionVertex, UndirectedWeightedEdge> primMinimumSpanningTree = new PrimMinimumSpanningTree<>(g);
+//            System.out.println("prim: " + primMinimumSpanningTree.getSpanningTree().getWeight());
+            h = primMinimumSpanningTree.getSpanningTree().getWeight();
+//            KruskalMinimumSpanningTree<PositionVertex, UndirectedWeightedEdge> kruskalMinimumSpanningTree = new KruskalMinimumSpanningTree<>(g);
+//            System.out.println("kruskal: " + kruskalMinimumSpanningTree.getSpanningTree().getWeight());
+//
+//            double end = System.nanoTime();
+//            System.out.println("\ntime: " + ((end - start) / 1000000) + " ms");
             return h;
         } else return Double.MAX_VALUE / 2;
     }
 
-    private void printGraph(Graph<PositionVertex, DefaultWeightedEdge> g, HashMap<Position, PositionVertex> prunnableVertices, HashMap<Position, PositionVertex> unPrunnableVertices) {
+    private void printGraph(Graph<PositionVertex, UndirectedWeightedEdge> g, HashMap<Position, PositionVertex> prunnableVertices, HashMap<Position, PositionVertex> unPrunnableVertices) {
         try {
 
             File imgFile = new File("resources/graph.png");
             imgFile.createNewFile();
-            JGraphXAdapter<PositionVertex, DefaultWeightedEdge> graphAdapter =
-                    new JGraphXAdapter<PositionVertex, DefaultWeightedEdge>(g);
+            JGraphXAdapter<PositionVertex, UndirectedWeightedEdge> graphAdapter =
+                    new JGraphXAdapter<PositionVertex, UndirectedWeightedEdge>(g);
 //        mxHierarchicalLayout layout = new mxHierarchicalLayout(graphAdapter);
             mxIGraphLayout layout = new mxCircleLayout(graphAdapter);
 //        layout.setInterHierarchySpacing(layout.getInterHierarchySpacing() * 15);
@@ -60,12 +68,10 @@ public class RoomMapHeuristic implements IHeuristic {
         }
     }
 
-    private Graph<PositionVertex, DefaultWeightedEdge> createGraph(TreeMap<Position, HashSet<Position>> watchedDictionary, HashMap<Position, HashSet<Position>> watchingDictionary, RoomMapState s) {
-
-
+    private Graph<PositionVertex, UndirectedWeightedEdge> createGraph(TreeMap<Position, HashSet<Position>> watchedDictionary, RoomMapState s) {
         // Create the graph object
-        Graph<PositionVertex, DefaultWeightedEdge> g =
-                new DefaultUndirectedWeightedGraph<>(null, SupplierUtil.DEFAULT_WEIGHTED_EDGE_SUPPLIER);
+        Graph<PositionVertex, UndirectedWeightedEdge> g =
+                new DefaultUndirectedWeightedGraph<>(UndirectedWeightedEdge.class);
 
         HashMap<Position, PositionVertex> prunnableVertices = new HashMap<>();
         HashMap<Position, PositionVertex> unPrunnableVertices = new HashMap<>();
@@ -73,24 +79,57 @@ public class RoomMapHeuristic implements IHeuristic {
         addVerticesToGraph(g, watchedDictionary, prunnableVertices, unPrunnableVertices, s, threshold);
         connectPrunnableVerticesInGraph(g, prunnableVertices);
         addAgentToGraph(g, prunnableVertices, s);
-        printGraph(g, prunnableVertices, unPrunnableVertices);
+        //prune phase
+        pruneGraph(g, prunnableVertices);
+//        printGraph(g, prunnableVertices, unPrunnableVertices);
         return g;
     }
 
+    private void pruneGraph(Graph<PositionVertex, UndirectedWeightedEdge> g, HashMap<Position, PositionVertex> prunnableVertices) {
+        for (PositionVertex prunedVertex : prunnableVertices.values()) {
+            ArrayList<UndirectedWeightedEdge> edges = new ArrayList<>(g.edgesOf(prunedVertex));
+            for (UndirectedWeightedEdge edge1 : edges) {
+                PositionVertex vertex1 = getOtherEdgeSide(edge1, prunedVertex);
+                for (UndirectedWeightedEdge edge2 : edges) {
+                    PositionVertex vertex2 = getOtherEdgeSide(edge2, prunedVertex);
+                    if (vertex1.getPosition().equals(vertex2.getPosition())) continue;
+                    edgeRemovalUpdate(g, prunedVertex, vertex1, vertex2, edge1, edge2);
+                }
+            }
+            g.removeVertex(prunedVertex);
+        }
+    }
 
-    private void addAgentToGraph(Graph<PositionVertex, DefaultWeightedEdge> g, HashMap<Position, PositionVertex> vertices, RoomMapState s) {
+    private void edgeRemovalUpdate(Graph<PositionVertex, UndirectedWeightedEdge> g, PositionVertex prunedVertex, PositionVertex vertex1, PositionVertex vertex2, UndirectedWeightedEdge edge1, UndirectedWeightedEdge edge2) {
+        UndirectedWeightedEdge oldEdge = g.getEdge(vertex1, vertex2);
+        if (oldEdge == null) {
+            UndirectedWeightedEdge newEdge = g.addEdge(vertex1, vertex2);
+            g.setEdgeWeight(newEdge, edge1.getWeight() + edge2.getWeight());
+        } else {
+            g.setEdgeWeight(oldEdge, Math.min(edge1.getWeight() + edge2.getWeight(), oldEdge.getWeight()));
+        }
+        g.removeEdge(edge1);
+        g.removeEdge(edge2);
+    }
+
+    private PositionVertex getOtherEdgeSide(UndirectedWeightedEdge edge, PositionVertex value1) {
+        return edge.getSource().equals(value1) ? edge.getTarget() : edge.getSource();
+    }
+
+
+    private void addAgentToGraph(Graph<PositionVertex, UndirectedWeightedEdge> g, HashMap<Position, PositionVertex> vertices, RoomMapState s) {
         Position agentPosition = s.getPosition();
         PositionVertex agentVertex = new PositionVertex(agentPosition, PositionVertex.TYPE.UNPRUNNABLE);
         g.addVertex(agentVertex);
         for (Map.Entry<Position, PositionVertex> entry1 : vertices.entrySet()) {
             Position key1 = entry1.getKey();
             PositionVertex value1 = entry1.getValue();
-            DefaultWeightedEdge edge = g.addEdge(agentVertex, value1);
+            UndirectedWeightedEdge edge = g.addEdge(agentVertex, value1);
             g.setEdgeWeight(edge, euclideanDistance(key1, agentPosition));
         }
     }
 
-    private void connectPrunnableVerticesInGraph(Graph<PositionVertex, DefaultWeightedEdge> g, HashMap<Position, PositionVertex> vertices) {
+    private void connectPrunnableVerticesInGraph(Graph<PositionVertex, UndirectedWeightedEdge> g, HashMap<Position, PositionVertex> vertices) {
         for (Map.Entry<Position, PositionVertex> entry1 : vertices.entrySet()) {
             Position key1 = entry1.getKey();
             PositionVertex value1 = entry1.getValue();
@@ -98,13 +137,13 @@ public class RoomMapHeuristic implements IHeuristic {
                 Position key2 = entry2.getKey();
                 PositionVertex value2 = entry2.getValue();
                 if (key1.equals(key2) || g.containsEdge(value2, value1)) continue;
-                DefaultWeightedEdge edge = g.addEdge(value1, value2);
+                UndirectedWeightedEdge edge = g.addEdge(value1, value2);
                 g.setEdgeWeight(edge, euclideanDistance(key1, key2));
             }
         }
     }
 
-    private void addVerticesToGraph(Graph<PositionVertex, DefaultWeightedEdge> g, TreeMap<Position, HashSet<Position>> watchedDictionary, HashMap<Position, PositionVertex> vertices, HashMap<Position, PositionVertex> unPrunnableVertices, RoomMapState s, double threshold) {
+    private void addVerticesToGraph(Graph<PositionVertex, UndirectedWeightedEdge> g, TreeMap<Position, HashSet<Position>> watchedDictionary, HashMap<Position, PositionVertex> vertices, HashMap<Position, PositionVertex> unPrunnableVertices, RoomMapState s, double threshold) {
         for (Map.Entry<Position, HashSet<Position>> entry : watchedDictionary.entrySet()) {
             Position key = entry.getKey();
             HashSet<Position> value = entry.getValue();
@@ -118,7 +157,7 @@ public class RoomMapHeuristic implements IHeuristic {
                     PositionVertex vertex = new PositionVertex(position, PositionVertex.TYPE.PRUNEABLE);
                     vertices.put(position, vertex);
                     g.addVertex(vertex);
-                    DefaultWeightedEdge edge = g.addEdge(vertex, watchedVertex);
+                    UndirectedWeightedEdge edge = g.addEdge(vertex, watchedVertex);
                     g.setEdgeWeight(edge, 0);
                 }
             }
