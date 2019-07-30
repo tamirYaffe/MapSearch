@@ -28,6 +28,11 @@ public class RoomMapState implements IProblemState {
         this.cost = cost + getStateLastMoveCost();
     }
 
+    public RoomMapState(RoomMap roomMap, Position vertexPosition) {
+        this.roomMap = roomMap;
+        this.position = vertexPosition;
+    }
+
     @Override
     public List<IProblemState> getNeighborStates() {
         List<IProblemState> neighborStates = new ArrayList<>();
