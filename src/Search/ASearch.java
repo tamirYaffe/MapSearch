@@ -56,7 +56,7 @@ abstract public class ASearch {
                 }
             }
             addToClosed(current);
-			System.out.println(current._currentProblemState);
+//			System.out.println(current._currentProblemState);
             expanded++;
         }
         return null;

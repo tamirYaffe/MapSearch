@@ -45,10 +45,10 @@ public class Model {
     public void solveMap() {
         if (map == null)
             generateMap(0, 6);
-        bfsRun();
+//        bfsRun();
 //        generateMap(0, 0);
 //        agent = new Position(0,9);
-//        AstarRun();
+        AstarRun();
     }
 
 

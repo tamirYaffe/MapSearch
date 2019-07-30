@@ -208,4 +208,5 @@ public class RoomMapState implements IProblemState {
     public HashSet<Position> getSeen() {
         return seen;
     }
+
 }
