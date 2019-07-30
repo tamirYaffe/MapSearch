@@ -58,6 +58,7 @@ abstract public class ASearch {
             addToClosed(current);
 //			System.out.println(current._currentProblemState);
             expanded++;
+//            System.out.println("g: "+current.getG()+"\th: "+current.getH()+"\tf: "+(current.getF())+(current.getH()>31-current.getG()?"\t Not Admissible!!!":""));
         }
         return null;
     }

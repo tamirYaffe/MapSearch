@@ -39,7 +39,7 @@ public class Model {
                 {0, 0, 0, 0, 0, 0, 0, 0}};
         consoleString = "";
         this.map = map;
-        agent = new Position(7, 6);
+        agent = new Position(0, 0);
     }
 
     public void solveMap() {
@@ -75,6 +75,7 @@ public class Model {
             long totalTime = 0;
             String instance = instancesType;
             RoomMap problem = new RoomMap(map, agent);
+            DistanceService.setRoomMap(problem);
             for (ASearch solver : solvers) {
 //                System.out.println("Solver: " + solver.getSolverName());
                 consoleString += "\nSolver: " + solver.getSolverName();
