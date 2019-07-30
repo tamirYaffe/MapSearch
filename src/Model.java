@@ -73,6 +73,7 @@ public class Model {
             long totalTime = 0;
             String instance = instancesType;
             RoomMap problem = new RoomMap(map, agent);
+            DistanceService.setRoomMap(problem);
             for (ASearch solver : solvers) {
 //                System.out.println("Solver: " + solver.getSolverName());
                 consoleString += "\nSolver: " + solver.getSolverName();

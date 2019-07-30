@@ -115,8 +115,8 @@ public class Controller {
                 model.showBeforeMove();
             }
             if (keyEvent.getCode().toString() == "SPACE") {
-//                model.showAllSolution();
-                mapGrid.drawSolution(model.solutionList);
+                model.showAllSolution();
+//                mapGrid.drawSolution(model.solutionList);
             }
             mapGrid.setMap(model.map, model.agent);
         }
