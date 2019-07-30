@@ -41,7 +41,6 @@ public class DistanceService {
            addEdges(graph,vertexPosition,roomMap.getVisualDictionary());
         }
         dijkstraShortestPath = new DijkstraShortestPath(graph);
-        ShortestPathAlgorithm.SingleSourcePaths<Position, UndirectedWeightedEdge> paths=DistanceService.getPositionPaths(new Position(7,6));
     }
 
 
