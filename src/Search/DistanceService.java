@@ -42,8 +42,6 @@ public class DistanceService {
         }
         dijkstraShortestPath = new DijkstraShortestPath(graph);
         ShortestPathAlgorithm.SingleSourcePaths<Position, UndirectedWeightedEdge> paths=DistanceService.getPositionPaths(new Position(7,6));
-
-        System.out.println(paths.getWeight(new Position(0,0)));
     }
 
 
