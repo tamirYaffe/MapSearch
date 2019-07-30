@@ -47,8 +47,10 @@ public class Model {
             generateMap(0, 6);
         bfsRun();
 //        generateMap(0, 0);
-        AstarRun();
+//        agent = new Position(0,9);
+//        AstarRun();
     }
+
 
     private void bfsRun() {
 //        System.out.println("---------- run 1 ----------");

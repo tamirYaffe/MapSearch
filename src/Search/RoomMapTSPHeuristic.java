@@ -12,8 +12,7 @@ public class RoomMapTSPHeuristic implements IHeuristic {
             RoomMap r = (RoomMap) s.getProblem();
             double h = 0;
             TreeMap<Position, HashSet<Position>> watchedDictionary = r.getWatchedDictionary();
-            HashMap<Position, HashSet<Position>> watchingDictionary = r.getVisualDictionary();
-            RoomMapGraphAdapter g = new RoomMapGraphAdapter(watchedDictionary, s, 0.0, 5);
+            RoomMapGraphAdapter g = new RoomMapGraphAdapter(watchedDictionary, s, 0.0, 1000);
             g.pruneGraph();
             return g.getTSPWeight(s.getPosition());
         } else return Double.MAX_VALUE / 2;

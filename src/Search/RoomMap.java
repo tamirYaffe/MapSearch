@@ -34,7 +34,7 @@ public class RoomMap implements IProblem {
     public RoomMap(int[][] room, Position startPosition) {
         this.room = getRoomMapCopy(room);
         this.startPosition = new Position(startPosition);
-        heuristic = new RoomMapMSTHeuristic();
+        heuristic = new RoomMapSingletonHeuristic();
         makeVisualDictionaries();
         int x = 0;
     }
@@ -93,7 +93,7 @@ public class RoomMap implements IProblem {
 
 
     TreeMap<Position, HashSet<Position>> getWatchedDictionary() {
-        return new TreeMap<>(watchedDictionary);
+        return watchedDictionary;
     }
 
     private Position findPositionOnMap(int posIndex) {
@@ -159,7 +159,7 @@ public class RoomMap implements IProblem {
     }
 
     HashMap<Position, HashSet<Position>> getVisualDictionary() {
-        return new HashMap<>(visualDictionary);
+        return visualDictionary;
     }
 
     public int getTotalWatches() {
