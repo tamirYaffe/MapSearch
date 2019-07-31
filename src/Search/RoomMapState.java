@@ -89,13 +89,15 @@ public class RoomMapState implements IProblemState {
         string.append(Integer.toString(position.getX(), 36)).append(",").append(Integer.toString(position.getY(), 36)).append(",");
         int i = 0;
         for (Position p : roomMap.getWatchedDictionary().keySet()) {
-            if (i++ > 35) {
+            if (i++ >61) {
                 addBinaryToString(binary, string);
                 i = 0;
                 binary.setLength(0);
             }
             binary.append(seen.contains(p) ? "1" : "0");
         }
+        if (i>0)addBinaryToString(binary,string);
+        System.out.println(string);
         return string.toString().hashCode();
     }
 

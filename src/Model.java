@@ -39,7 +39,7 @@ public class Model {
                 {0, 0, 0, 0, 0, 0, 0, 0}};
         consoleString = "";
         this.map = map;
-        agent = new Position(0, 0);
+        agent = new Position(7,6);
     }
 
     public void solveMap() {
