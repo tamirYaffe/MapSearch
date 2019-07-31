@@ -35,12 +35,12 @@ public class MapGrid extends GridPane {
     }
 
     public Node drawCharacter() {
-        Region charcter = setRegion("-fx-background-image: url('/drone.png');");
+        Region charcter = setRegion("-fx-background-image: url('/images/drone.png');");
         return charcter;
     }
 
     public Node drawSolution() {
-        Region solutionCell = setRegion("-fx-background-image: url('/sol_coin.png');");
+        Region solutionCell = setRegion("-fx-background-image: url('/images/sol_coin.png');");
         return solutionCell;
     }
 
@@ -48,9 +48,9 @@ public class MapGrid extends GridPane {
     public Node drawCell(int cellPositionRow, int cellPositionColumn) {
         Region cell = setRegion();
         if (map[cellPositionRow][cellPositionColumn] == 1)
-            cell.setStyle("-fx-background-image: url('/wall2.jpg');-fx-background-repeat: no-repeat; -fx-background-size: cover,auto");
+            cell.setStyle("-fx-background-image: url('/images/wall2.jpg');-fx-background-repeat: no-repeat; -fx-background-size: cover,auto");
         else
-            cell.setStyle("-fx-background-image: url('/blank2.png');-fx-background-repeat: no-repeat; -fx-background-size: cover,auto");
+            cell.setStyle("-fx-background-image: url('/images/blank2.png');-fx-background-repeat: no-repeat; -fx-background-size: cover,auto");
         return cell;
     }
 
@@ -86,6 +86,6 @@ public class MapGrid extends GridPane {
         canvas = new Canvas();
         getParent().getChildrenUnmodifiable().add(canvas);
         GraphicsContext gc = canvas.getGraphicsContext2D();
-        gc.drawImage(Image.impl_fromPlatformImage("/blank2.jpg"),0,0);
+        gc.drawImage(Image.impl_fromPlatformImage("/images/blank2.jpg"),0,0);
     }
 }
