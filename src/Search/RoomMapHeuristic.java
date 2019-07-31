@@ -11,7 +11,6 @@ public class RoomMapHeuristic implements IHeuristic {
             RoomMap r = (RoomMap) s.getProblem();
             double h = 0;
             TreeMap<Position, HashSet<Position>> watchedDictionary = r.getWatchedDictionary();
-            HashMap<Position, HashSet<Position>> watchingDictionary = r.getVisualDictionary();
 //            double start = System.nanoTime();
             RoomMapGraphAdapter g = new RoomMapGraphAdapter(watchedDictionary, s, 0.0, 5);
             PrimMinimumSpanningTree<PositionVertex, UndirectedWeightedEdge> primMinimumSpanningTree = new PrimMinimumSpanningTree<>(g.getGraph());

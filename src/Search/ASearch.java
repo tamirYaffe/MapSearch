@@ -33,6 +33,7 @@ abstract public class ASearch {
         expanded = 0;
         generated = 0;
         duplicates = 0;
+        double start = System.currentTimeMillis();
 
         while (openSize() > 0) {
             current = getBest();
@@ -56,8 +57,9 @@ abstract public class ASearch {
                 }
             }
             addToClosed(current);
-//			System.out.println(current._currentProblemState+"\n");
+//			System.out.println(current._currentProblemState);
             expanded++;
+//            System.out.print("\rexpanded: " + expanded + "\tgenerated: " + generated + "\tduplicates: " + duplicates + "\t\tg: " + current.getG() + "\t\th: " + current.getH() + "\t\tf: " + (current.getF())+"\t\tTime: "+(System.currentTimeMillis()-start)+"ms");
 //            System.out.println("g: "+current.getG()+"\th: "+current.getH()+"\tf: "+(current.getF())+(current.getH()>31-current.getG()?"\t Not Admissible!!!":""));
         }
         return null;

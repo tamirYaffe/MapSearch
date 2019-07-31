@@ -9,8 +9,8 @@ public class UniformCostSearch   extends ASearch
 	// Define lists here ...
 
 	PriorityQueue<ASearchNode> openList;
-	HashMap<String,ASearchNode> closedList;
-	HashMap<String,ASearchNode> openContainer;
+	HashMap<IProblemState,ASearchNode> closedList;
+	HashMap<IProblemState,ASearchNode> openContainer;
 
 	@Override
 	public String getSolverName() 
@@ -44,31 +44,31 @@ public class UniformCostSearch   extends ASearch
 	public ASearchNode getOpen(ASearchNode node)
 	{
 		if (isOpen(node))
-			return openContainer.get(node._currentProblemState.toString());
+			return openContainer.get(node._currentProblemState);
 		return null;
 	}
 
 	@Override
 	public boolean isOpen(ASearchNode node)
 	{
-		return openContainer.containsKey(node._currentProblemState.toString());
+		return openContainer.containsKey(node._currentProblemState);
 	}
 	
 	@Override
 	public boolean isClosed(ASearchNode node)
 	{
-		return closedList.containsKey(node._currentProblemState.toString());
+		return closedList.containsKey(node._currentProblemState);
 	}
 
 	@Override
 	public void addToOpen(ASearchNode node)
 	{
 		if (!isOpen(node)){
-			openContainer.put(node._currentProblemState.toString(),node);
+			openContainer.put(node._currentProblemState,node);
 			openList.add(node);
 		}
-		else if(node.getG()<openContainer.get(node._currentProblemState.toString()).getG()){
-			openContainer.replace(node._currentProblemState.toString(),node);
+		else if(node.getG()<openContainer.get(node._currentProblemState).getG()){
+			openContainer.replace(node._currentProblemState,node);
 			openList.add(node);
 		}
 	}
@@ -76,7 +76,7 @@ public class UniformCostSearch   extends ASearch
 	@Override
 	public void addToClosed(ASearchNode node)
 	{
-		closedList.put(node._currentProblemState.toString(),node);
+		closedList.put(node._currentProblemState,node);
 	}
 
 	@Override
@@ -89,7 +89,7 @@ public class UniformCostSearch   extends ASearch
 	public ASearchNode getBest() 
 	{
 		ASearchNode res = openList.poll();
-		while (res!=null && openContainer.get(res._currentProblemState.toString()).getG()<res.getG()){
+		while (res!=null && openContainer.get(res._currentProblemState).getG()<res.getG()){
 			res = openList.poll();
 		}
 		return res;

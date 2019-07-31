@@ -118,6 +118,12 @@ public class Controller {
                 model.showAllSolution();
 //                mapGrid.drawSolution(model.solutionList);
             }
+            if (keyEvent.getCode().toString() == "ESCAPE") {
+                System.exit(0);
+            }
+            if (keyEvent.getCode().toString() == "TAB") {
+                btn_solveMap.fire();
+            }
             mapGrid.setMap(model.map, model.agent);
         }
         keyEvent.consume();

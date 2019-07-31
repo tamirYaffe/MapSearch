@@ -74,6 +74,37 @@ public class RoomMapState implements IProblemState {
         return string;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof RoomMapState)) return false;
+        RoomMapState that = (RoomMapState) o;
+        return that.hashCode() == this.hashCode();
+    }
+
+    @Override
+    public int hashCode() {
+        StringBuilder binary = new StringBuilder(40);
+        StringBuilder string = new StringBuilder(100);
+        string.append(Integer.toString(position.getX(), 36)).append(",").append(Integer.toString(position.getY(), 36)).append(",");
+        int i = 0;
+        for (Position p : roomMap.getWatchedDictionary().keySet()) {
+            if (i++ >61) {
+                addBinaryToString(binary, string);
+                i = 0;
+                binary.setLength(0);
+            }
+            binary.append(seen.contains(p) ? "1" : "0");
+        }
+        if (i>0)addBinaryToString(binary,string);
+        System.out.println(string);
+        return string.toString().hashCode();
+    }
+
+    private void addBinaryToString(StringBuilder binary, StringBuilder string) {
+        string.append(Long.toString(Long.parseLong(binary.toString(), 2), 36));
+    }
+
     private List<RoomStep> getLegalMoves() {
         int height = roomMap.getRoomMap().length;
         int width = roomMap.getRoomMap()[0].length;
@@ -179,4 +210,5 @@ public class RoomMapState implements IProblemState {
     public HashSet<Position> getSeen() {
         return seen;
     }
+
 }
