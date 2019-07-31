@@ -47,7 +47,7 @@ public class Model {
             generateMap(0, 6);
 //        bfsRun();
 //        generateMap(0, 0);
-//        agent = new Position(0,9);
+//        agent = new Position(1,1);
         AstarRun();
     }
 

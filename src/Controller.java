@@ -2,10 +2,7 @@ import Search.Position;
 import View.MapGrid;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
@@ -13,6 +10,8 @@ import javafx.stage.FileChooser;
 import java.io.File;
 
 public class Controller {
+    public Label xIndex;
+    public Label yIndex;
     Model model;
 
     @FXML
@@ -67,9 +66,9 @@ public class Controller {
         return fc.showOpenDialog(null);
     }
 
-    public void loadMap(ActionEvent event){
-        String path="";
-        File file=loadMapFile(path);
+    public void loadMap(ActionEvent event) {
+        String path = "";
+        File file = loadMapFile(path);
         if (file != null) {
 //            model.loadMap(new StringMapGenerator().generate(file),new Position(22,13));
             model.loadMap(new StringMapGenerator().generate(file));
@@ -103,6 +102,12 @@ public class Controller {
 
     public void getFocus(MouseEvent mouseEvent) {
         mapGrid.requestFocus();
+        double sizeX = mapGrid.getCellWidth();
+        double sizeY = mapGrid.getCellHeight();
+        double x = mouseEvent.getX() / sizeX;
+        double y = mouseEvent.getY() / sizeY;
+        xIndex.setText("X: " + (int) x);
+        yIndex.setText("Y: " + (int) y);
     }
 
     public void KeyPressed(KeyEvent keyEvent) {
@@ -128,4 +133,5 @@ public class Controller {
         }
         keyEvent.consume();
     }
+
 }
