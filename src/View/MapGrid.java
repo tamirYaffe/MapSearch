@@ -16,6 +16,15 @@ public class MapGrid extends GridPane {
     private Canvas canvas;
 
 
+    public double getCellHeight() {
+        return this.getHeight() / map.length;
+    }
+
+    public double getCellWidth() {
+        return this.getWidth() / map[0].length;
+    }
+
+
     public void setMap(int[][] map, Position agent) {
         this.map = map;
         int numCols = map[0].length;
@@ -86,6 +95,6 @@ public class MapGrid extends GridPane {
         canvas = new Canvas();
         getParent().getChildrenUnmodifiable().add(canvas);
         GraphicsContext gc = canvas.getGraphicsContext2D();
-        gc.drawImage(Image.impl_fromPlatformImage("/images/blank2.jpg"),0,0);
+        gc.drawImage(Image.impl_fromPlatformImage("/images/blank2.jpg"), 0, 0);
     }
 }

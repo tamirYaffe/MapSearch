@@ -80,6 +80,10 @@
     </left>
     <bottom>
         <HBox BorderPane.alignment="CENTER" />
+        <VBox>
+            <Label fx:id="xIndex" text="X: "/>
+            <Label fx:id="yIndex" text="Y: "/>
+        </VBox>
     </bottom>
     <center>
         <AnchorPane BorderPane.alignment="CENTER">

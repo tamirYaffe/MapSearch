@@ -97,7 +97,7 @@ public class RoomMapState implements IProblemState {
             binary.append(seen.contains(p) ? "1" : "0");
         }
         if (i>0)addBinaryToString(binary,string);
-        System.out.println(string);
+//        System.out.println(string);
         return string.toString().hashCode();
     }
 
