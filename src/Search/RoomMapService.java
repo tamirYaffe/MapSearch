@@ -15,7 +15,9 @@ public class RoomMapService {
     private int numOfPositions;
     private TreeMap<Position, HashSet<Position>> watchedDictionary;
     private HashMap<Position, HashSet<Position>> visualDictionary;
+    private HashMap<Position, HashSet<Double>> visualLineDictionary;
     private int totalWatches;
+    public static ExampleBoard b;
 
     public RoomMapService(RoomMap roomMap) {
         this.roomMap = roomMap;
@@ -42,10 +44,11 @@ public class RoomMapService {
 
     private void makeVisualDictionaries() {
         visualDictionary = new HashMap<>();
+        visualLineDictionary = new HashMap<>();
         HashMap<Position, HashSet<Position>> tempWatchedDictinary = new HashMap<>();
         int h = room.length;
         int w = room[0].length;
-        ExampleBoard b = new ExampleBoard(w, h);
+        b = new ExampleBoard(w, h);
         //set the obstacles and the valid positions
         for (int i = 0; i < h; i++) {
             for (int j = 0; j < w; j++) {
@@ -56,6 +59,7 @@ public class RoomMapService {
                     Position keyPosition = new Position(i, j);
                     tempWatchedDictinary.put(keyPosition, new HashSet<>()); //add a Position with a counter
                     visualDictionary.put(keyPosition, new HashSet<>()); // make an HashSet of the positions that are visible
+                    visualLineDictionary.put(keyPosition, new HashSet<>()); // make an HashSet of the positions that are visible
                 }
             }
         }
@@ -73,6 +77,11 @@ public class RoomMapService {
                             tempWatchedDictinary.get(watchedPosition).add(watchingPosition); // let (j,i) add to it's list (x,y)
                             visualDictionary.get(watchingPosition).add(watchedPosition);// let (x,y) add to it's list (j,i)
                             totalWatches++;
+
+                            //update vector dictionary
+                            double vector=(double) (watchingPosition.getX()-watchedPosition.getX())/(watchingPosition.getY()-watchedPosition.getY());
+                            if(!visualLineDictionary.get(watchedPosition).contains(vector))
+                                visualLineDictionary.get(watchedPosition).add(vector);
                         }
                     }
                 }
@@ -118,4 +127,7 @@ public class RoomMapService {
         return watchedDictionary;
     }
 
+    public HashMap<Position, HashSet<Double>> getVisualLineDictionary() {
+        return visualLineDictionary;
+    }
 }
