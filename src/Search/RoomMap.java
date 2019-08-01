@@ -84,4 +84,8 @@ public class RoomMap implements IProblem {
         return self.getWatchedDictionary();
     }
 
+    public HashMap<Position, HashSet<Double>> getVisualLineDictionary() {
+        return self.getVisualLineDictionary();
+    }
+
 }

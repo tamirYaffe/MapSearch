@@ -62,6 +62,7 @@ public class RoomMapState implements IProblemState {
         for (Position p : seen) {
             room[p.getY()][p.getX()] = "///"; //mark as seen on 'room'
         }
+        room[position.getY()][position.getX()]="$$$";
 
         //agent's current position
         String string = "position: " + position.getX() + "," + position.getY() + "\n";

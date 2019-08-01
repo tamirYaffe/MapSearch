@@ -9,6 +9,8 @@ import org.jgrapht.alg.spanning.PrimMinimumSpanningTree;
 import org.jgrapht.alg.tour.TwoOptHeuristicTSP;
 import org.jgrapht.ext.JGraphXAdapter;
 import org.jgrapht.graph.DefaultUndirectedWeightedGraph;
+import rlforj.examples.ExampleBoard;
+import rlforj.los.BresLos;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -25,11 +27,11 @@ public class RoomMapGraphAdapter {
     private HashMap<Position, PositionVertex> prunnableVertices;
     private HashMap<Position, PositionVertex> unPrunnableVertices;
 
-    public RoomMapGraphAdapter(TreeMap<Position, HashSet<Position>> watchedDictionary, RoomMapState s, double threshold, int maxLeavesCount) {
+    public RoomMapGraphAdapter(TreeMap<Position, HashSet<Position>> watchedDictionary, HashMap<Position, HashSet<Double>> visualLineDictionary, RoomMapState s, double threshold, int maxLeavesCount) {
         graph = new DefaultUndirectedWeightedGraph<>(UndirectedWeightedEdge.class);
         prunnableVertices = new HashMap<>();
         unPrunnableVertices = new HashMap<>();
-        addVerticesToGraph(watchedDictionary, s, threshold, maxLeavesCount);
+        addVerticesToGraph(watchedDictionary,visualLineDictionary, s, threshold, maxLeavesCount);
         connectPrunnableVerticesInGraph();
         addAgentToGraph(s);
     }
@@ -126,12 +128,19 @@ public class RoomMapGraphAdapter {
         }
     }
 
-    private void addVerticesToGraph(TreeMap<Position, HashSet<Position>> watchedDictionary, RoomMapState s, double threshold, int maxLeavesCount) {
+    private void addVerticesToGraph(TreeMap<Position, HashSet<Position>> watchedDictionary, HashMap<Position, HashSet<Double>> visualLineDictionary, RoomMapState s, double threshold, int maxLeavesCount) {
         for (Map.Entry<Position, HashSet<Position>> entry : watchedDictionary.entrySet()) {
             Position key = entry.getKey();
             HashSet<Position> value = entry.getValue();
-            if ((1.0 / value.size()) < threshold || maxLeavesCount-- <= 0) break;
+//            double weight=1.0/visualLineDictionary.get(key).size();
+//            double weight=1.0/value.size();
+            double weight=1.0/visualLineDictionary.get(key).size()+1.5/value.size();
+            if (weight< threshold || maxLeavesCount <= 0) break;
+//            System.out.println(weight);
+//            if (!s.getSeen().contains(key) && !closeToRarePoint(key)) {
             if (!s.getSeen().contains(key)) {
+                maxLeavesCount--;
+//                System.out.println(key);
                 PositionVertex watchedVertex = new PositionVertex(key, PositionVertex.TYPE.UNPRUNNABLE);
                 unPrunnableVertices.put(key, watchedVertex);
                 graph.addVertex(watchedVertex);
@@ -145,6 +154,17 @@ public class RoomMapGraphAdapter {
                 }
             }
         }
+    }
+
+    private boolean closeToRarePoint(Position key) {
+        BresLos a = new BresLos(true);
+        ExampleBoard b=RoomMapService.b;
+        for (Position position : unPrunnableVertices.keySet()) {
+//            if ((a.existsLineOfSight(b, position.getX(), position.getY(), key.getX(), key.getY(), true)) || DistanceService.euclideanDistance(position,key)<=3)
+            if ((a.existsLineOfSight(b, position.getX(), position.getY(), key.getX(), key.getY(), true)))
+                    return true;
+        }
+        return false;
     }
 
     public Graph<PositionVertex, UndirectedWeightedEdge> getGraph() {
@@ -175,5 +195,25 @@ public class RoomMapGraphAdapter {
 
         return twoOptHeuristicTSP.getTour(graph).getWeight();
 
+    }
+
+    public int getMinDistance(Position position) {
+        int minWeight=Integer.MAX_VALUE;
+        for (PositionVertex vertex : graph.vertexSet()) {
+
+        }
+        return 0;
+    }
+
+    public void makeComplete() {
+        for (PositionVertex positionVertex : graph.vertexSet()) {
+            for (PositionVertex vertex : graph.vertexSet()) {
+                if(positionVertex.equals(vertex))continue;
+                if(graph.getEdge(positionVertex,vertex)==null){
+                    UndirectedWeightedEdge edge = graph.addEdge(positionVertex, vertex);
+                    graph.setEdgeWeight(edge, Integer.MAX_VALUE);
+                }
+            }
+        }
     }
 }
