@@ -102,28 +102,28 @@ public class RoomMapGraphAdapter {
 
     private void addAgentToGraph(RoomMapState s) {
         Position agentPosition = s.getPosition();
-        ShortestPathAlgorithm.SingleSourcePaths<Position, UndirectedWeightedEdge> agentPaths=DistanceService.getPositionPaths(agentPosition);
+//        ShortestPathAlgorithm.SingleSourcePaths<Position, UndirectedWeightedEdge> agentPaths=DistanceService.getPositionPaths(agentPosition);
         PositionVertex agentVertex = new PositionVertex(agentPosition, PositionVertex.TYPE.UNPRUNNABLE);
         graph.addVertex(agentVertex);
         for (Map.Entry<Position, PositionVertex> entry1 : prunnableVertices.entrySet()) {
             Position key1 = entry1.getKey();
             PositionVertex value1 = entry1.getValue();
             UndirectedWeightedEdge edge = graph.addEdge(agentVertex, value1);
-            graph.setEdgeWeight(edge, agentPaths.getWeight(key1));
+            graph.setEdgeWeight(edge, DistanceService.getWeight(agentPosition,key1));
         }
     }
 
     private void connectPrunnableVerticesInGraph() {
         for (Map.Entry<Position, PositionVertex> entry1 : prunnableVertices.entrySet()) {
             Position key1 = entry1.getKey();
-            ShortestPathAlgorithm.SingleSourcePaths<Position, UndirectedWeightedEdge> key1Paths=DistanceService.getPositionPaths(key1);
+//            ShortestPathAlgorithm.SingleSourcePaths<Position, UndirectedWeightedEdge> key1Paths=DistanceService.getPositionPaths(key1);
             PositionVertex value1 = entry1.getValue();
             for (Map.Entry<Position, PositionVertex> entry2 : prunnableVertices.entrySet()) {
                 Position key2 = entry2.getKey();
                 PositionVertex value2 = entry2.getValue();
                 if (key1.equals(key2) || graph.containsEdge(value2, value1)) continue;
                 UndirectedWeightedEdge edge = graph.addEdge(value1, value2);
-                graph.setEdgeWeight(edge, key1Paths.getWeight(key2));
+                graph.setEdgeWeight(edge, DistanceService.getWeight(key1,key2));
             }
         }
     }
