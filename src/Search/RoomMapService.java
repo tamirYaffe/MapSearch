@@ -91,6 +91,7 @@ public class RoomMapService {
         watchedDictionary = new TreeMap<>(new Comparator<Position>() {
             @Override
             public int compare(Position o1, Position o2) {
+                if (o1.equals(o2))return 0;
                 if (tempWatchedDictinary.getOrDefault(o1, new HashSet<>()).size() > tempWatchedDictinary.getOrDefault(o2, new HashSet<>()).size())
                     return 1;
                 return -1;

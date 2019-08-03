@@ -72,6 +72,7 @@ public class Model {
 
     private void solveInstances(List<ASearch> solvers, String instancesType) {
         {
+//            agent = new Position(61,1);
             long totalTime = 0;
             String instance = instancesType;
             RoomMap problem = new RoomMap(map, agent);

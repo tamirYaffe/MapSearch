@@ -3,12 +3,18 @@ package Search;
 import com.mxgraph.layout.mxCircleLayout;
 import com.mxgraph.layout.mxIGraphLayout;
 import com.mxgraph.util.mxCellRenderer;
+import javafx.util.Pair;
 import org.jgrapht.Graph;
-import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
+import org.jgrapht.GraphPath;
+import org.jgrapht.alg.connectivity.ConnectivityInspector;
+import org.jgrapht.alg.interfaces.SpanningTreeAlgorithm;
 import org.jgrapht.alg.spanning.PrimMinimumSpanningTree;
 import org.jgrapht.alg.tour.TwoOptHeuristicTSP;
 import org.jgrapht.ext.JGraphXAdapter;
+import org.jgrapht.graph.AbstractBaseGraph;
 import org.jgrapht.graph.DefaultUndirectedWeightedGraph;
+import org.jgrapht.graph.DirectedWeightedMultigraph;
+import org.jgrapht.graph.Multigraph;
 import rlforj.examples.ExampleBoard;
 import rlforj.los.BresLos;
 
@@ -18,12 +24,12 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-
-import static Search.DistanceService.manhattanDistance;
-import static Search.DistanceService.minPathWeight;
+import java.util.List;
 
 public class RoomMapGraphAdapter {
     private Graph<PositionVertex, UndirectedWeightedEdge> graph;
+    private List<Set<PositionVertex>> connectedComponents;
+    private List<SCCSubGraph> connectedComponentsGraphs = new ArrayList<>();
     private HashMap<Position, PositionVertex> prunnableVertices;
     private HashMap<Position, PositionVertex> unPrunnableVertices;
 
@@ -31,19 +37,23 @@ public class RoomMapGraphAdapter {
         graph = new DefaultUndirectedWeightedGraph<>(UndirectedWeightedEdge.class);
         prunnableVertices = new HashMap<>();
         unPrunnableVertices = new HashMap<>();
-        addVerticesToGraph(watchedDictionary,visualLineDictionary, s, threshold, maxLeavesCount);
-        connectPrunnableVerticesInGraph();
-        addAgentToGraph(s);
+        addVerticesToGraph(watchedDictionary, visualLineDictionary, s, threshold, maxLeavesCount);
+//        connectPrunnableVerticesInGraph();
+//        addAgentToGraph(s);
     }
 
-//    public Graph<PositionVertex, UndirectedWeightedEdge> createGraph(TreeMap<Position, HashSet<Position>> watchedDictionary, RoomMapState s, double threshold) {
-//        // Create the graph object
-//        Graph<PositionVertex, UndirectedWeightedEdge> g = new DefaultUndirectedWeightedGraph<>(UndirectedWeightedEdge.class);
-//        addVerticesToGraph(watchedDictionary, prunnableVertices, unPrunnableVertices, s, threshold);
-//        connectPrunnableVerticesInGraph(prunnableVertices);
-//        addAgentToGraph(prunnableVertices, s);
-//        return g;
-//    }
+    public RoomMapGraphAdapter(TreeMap<Position, HashSet<Position>> watchedDictionary, HashMap<Position, HashSet<Double>> visualLineDictionary, RoomMapState s, double threshold, int maxLeavesCount, boolean newGraph) {
+        graph = new DefaultUndirectedWeightedGraph<>(UndirectedWeightedEdge.class);
+        prunnableVertices = new HashMap<>();
+        unPrunnableVertices = new HashMap<>();
+        if (newGraph) {
+            addVerticesToGraph(watchedDictionary, visualLineDictionary, s, threshold, maxLeavesCount);
+        } else {
+            addVerticesToGraph(watchedDictionary, visualLineDictionary, s, threshold, maxLeavesCount);
+            connectPrunnableVerticesInGraph();
+            addAgentToGraph(s);
+        }
+    }
 
     public void printGraph(String path) {
         try {
@@ -132,37 +142,45 @@ public class RoomMapGraphAdapter {
         for (Map.Entry<Position, HashSet<Position>> entry : watchedDictionary.entrySet()) {
             Position key = entry.getKey();
             HashSet<Position> value = entry.getValue();
-//            double weight=1.0/visualLineDictionary.get(key).size();
+            double weight=1.0/visualLineDictionary.get(key).size();
 //            double weight=1.0/value.size();
-            double weight=1.0/visualLineDictionary.get(key).size()+1.5/value.size();
-            if (weight< threshold || maxLeavesCount <= 0) break;
-//            System.out.println(weight);
-//            if (!s.getSeen().contains(key) && !closeToRarePoint(key)) {
-            if (!s.getSeen().contains(key)) {
+//            double weight = 7.0 / visualLineDictionary.get(key).size() + 0.3 / value.size();
+            if (weight < threshold || maxLeavesCount <= 0) break;
+            if (!s.getSeen().contains(key) && !closeToRarePoint(key)) {
+//                System.out.println(weight);
                 maxLeavesCount--;
-//                System.out.println(key);
                 PositionVertex watchedVertex = new PositionVertex(key, PositionVertex.TYPE.UNPRUNNABLE);
                 unPrunnableVertices.put(key, watchedVertex);
-                graph.addVertex(watchedVertex);
+//                graph.addVertex(watchedVertex);
+                SCCSubGraph subGraph = new SCCSubGraph(UndirectedWeightedEdge.class);
+                subGraph.addVertex(watchedVertex);
+                subGraph.setRarePoint(watchedVertex.getPosition());
                 for (Position position : value) {
                     if (position.equals(key)) continue;
                     PositionVertex vertex = new PositionVertex(position, PositionVertex.TYPE.PRUNEABLE);
                     prunnableVertices.put(position, vertex);
-                    graph.addVertex(vertex);
-                    UndirectedWeightedEdge edge = graph.addEdge(vertex, watchedVertex);
-                    graph.setEdgeWeight(edge, 0);
+
+//                    graph.addVertex(vertex);
+//                    UndirectedWeightedEdge edge = graph.addEdge(vertex, watchedVertex);
+//                    graph.setEdgeWeight(edge, 0);
+
+                    subGraph.addVertex(vertex);
+                    UndirectedWeightedEdge edge = subGraph.addEdge(vertex, watchedVertex);
+                    subGraph.setEdgeWeight(edge,0);
                 }
+                if(!subGraph.vertexSet().isEmpty())
+                    connectedComponentsGraphs.add(subGraph);
             }
         }
     }
 
     private boolean closeToRarePoint(Position key) {
         BresLos a = new BresLos(true);
-        ExampleBoard b=RoomMapService.b;
+        ExampleBoard b = RoomMapService.b;
         for (Position position : unPrunnableVertices.keySet()) {
 //            if ((a.existsLineOfSight(b, position.getX(), position.getY(), key.getX(), key.getY(), true)) || DistanceService.euclideanDistance(position,key)<=3)
             if ((a.existsLineOfSight(b, position.getX(), position.getY(), key.getX(), key.getY(), true)))
-                    return true;
+                return true;
         }
         return false;
     }
@@ -182,7 +200,6 @@ public class RoomMapGraphAdapter {
     public double getPrimMSTWeight() {
         return new PrimMinimumSpanningTree<>(graph).getSpanningTree().getWeight();
     }
-
     public double getTSPWeight(Position startPosition) {
         PositionVertex start = new PositionVertex(new Position(), PositionVertex.TYPE.PRUNEABLE);
         graph.addVertex(start);
@@ -196,24 +213,41 @@ public class RoomMapGraphAdapter {
         return twoOptHeuristicTSP.getTour(graph).getWeight();
 
     }
-
-    public int getMinDistance(Position position) {
-        int minWeight=Integer.MAX_VALUE;
-        for (PositionVertex vertex : graph.vertexSet()) {
-
+    public double getUnseenSCCWeight(RoomMapState s) {
+        double minH=Double.MAX_VALUE;
+        ArrayList<Integer> a = new ArrayList<> ();
+        for (int i = 0; i < connectedComponentsGraphs.size(); i ++){
+            a.add(i);
         }
-        return 0;
+        for (ArrayList<Integer> integers : Combination.choose(a, connectedComponentsGraphs.size())) {
+//            System.out.println("path :"+ integers);
+            Position current=s.getPosition();
+            double h=0;
+            for (Integer integer : integers) {
+                Pair<Position,Double>ans=getMinEdge(current,connectedComponentsGraphs.get(integer));
+                h+=ans.getValue();
+                current=ans.getKey();
+            }
+//            System.out.println("H: "+h);
+            if(h<minH)
+                minH=h;
+        }
+//        }
+        return minH;
     }
 
-    public void makeComplete() {
-        for (PositionVertex positionVertex : graph.vertexSet()) {
-            for (PositionVertex vertex : graph.vertexSet()) {
-                if(positionVertex.equals(vertex))continue;
-                if(graph.getEdge(positionVertex,vertex)==null){
-                    UndirectedWeightedEdge edge = graph.addEdge(positionVertex, vertex);
-                    graph.setEdgeWeight(edge, Integer.MAX_VALUE);
-                }
+    private Pair<Position,Double> getMinEdge(Position current, SCCSubGraph subGraph) {
+        double minEdgeWeight=Double.MAX_VALUE;
+        Position next=null;
+        for (PositionVertex vertex : subGraph.vertexSet()) {
+            if(vertex.getType()== PositionVertex.TYPE.UNPRUNNABLE)continue;
+            double edgeWeight=DistanceService.getWeight(current,vertex.getPosition());
+            if(edgeWeight<minEdgeWeight){
+                minEdgeWeight=edgeWeight;
+                next=vertex.getPosition();
             }
         }
+//        System.out.println("next: "+next+" weight: "+minEdgeWeight);
+        return new Pair<>(next,minEdgeWeight);
     }
 }

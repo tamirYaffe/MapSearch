@@ -25,7 +25,7 @@ public class RoomMap implements IProblem {
     public RoomMap(int[][] room, Position startPosition) {
         self = new RoomMapService(this,room);
         this.startPosition = new Position(startPosition);
-        heuristic = new RoomMapMSTHeuristic();
+        heuristic = new RoomMapUnseenSCCHeuristic();
         int x = 0;
     }
 
