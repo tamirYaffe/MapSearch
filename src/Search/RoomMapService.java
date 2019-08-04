@@ -1,5 +1,10 @@
 package Search;
 
+import org.jgrapht.Graph;
+import org.jgrapht.UndirectedGraph;
+import org.jgrapht.alg.*;
+import org.jgrapht.alg.connectivity.BiconnectivityInspector;
+import org.jgrapht.graph.DefaultUndirectedWeightedGraph;
 import rlforj.examples.ExampleBoard;
 import rlforj.los.BresLos;
 

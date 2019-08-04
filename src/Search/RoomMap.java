@@ -2,6 +2,7 @@ package Search;
 
 
 import javafx.geometry.Pos;
+import org.jgrapht.Graph;
 import rlforj.examples.ExampleBoard;
 import rlforj.los.BresLos;
 
