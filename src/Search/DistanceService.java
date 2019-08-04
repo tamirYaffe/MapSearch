@@ -3,10 +3,13 @@ package Search;
 import org.jgrapht.Graph;
 import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+import org.jgrapht.alg.shortestpath.TreeSingleSourcePathsImpl;
+import org.jgrapht.alg.util.Pair;
 import org.jgrapht.graph.DefaultUndirectedWeightedGraph;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class DistanceService {
@@ -81,7 +84,8 @@ public class DistanceService {
     public static double getWeight(Position current, Position other) {
         UndirectedWeightedEdge edge = pathsGraph.getEdge(current, other);
         if (edge == null) {
-            addEdgesToPathsGraph(getPositionPaths(current),current);
+            addEdgesToPathsGraph(getPositionPaths(current));
+//            addEdgesToPathsGraph(getPositionPaths(current), current);
             edge = pathsGraph.getEdge(current, other);
         }
         return pathsGraph.getEdgeWeight(edge);
@@ -90,9 +94,32 @@ public class DistanceService {
     private static void addEdgesToPathsGraph(ShortestPathAlgorithm.SingleSourcePaths<Position, UndirectedWeightedEdge> positionPaths, Position position) {
         UndirectedWeightedEdge edge;
         for (Position vertex : pathsGraph.vertexSet()) {
-            if(!pathsGraph.containsEdge(position,vertex)){
-                edge=pathsGraph.addEdge(position,vertex);
-                pathsGraph.setEdgeWeight(edge,positionPaths.getWeight(vertex));
+            if (!pathsGraph.containsEdge(position, vertex)) {
+                edge = pathsGraph.addEdge(position, vertex);
+                pathsGraph.setEdgeWeight(edge, positionPaths.getWeight(vertex));
+            }
+        }
+    }
+
+    private static void addEdgesToPathsGraph(ShortestPathAlgorithm.SingleSourcePaths<Position, UndirectedWeightedEdge> positionPaths) {
+        UndirectedWeightedEdge edge;
+        for (Map.Entry<Position, Pair<Double, UndirectedWeightedEdge>> entry1 : ((TreeSingleSourcePathsImpl<Position, UndirectedWeightedEdge>) positionPaths).getDistanceAndPredecessorMap().entrySet()) {
+            Position key1 = entry1.getKey();
+            Pair<Double, UndirectedWeightedEdge> value1 = entry1.getValue();
+            if (value1 != null)
+                addSingleEdgeToGraph(positionPaths, key1, value1.getFirst());
+        }
+    }
+
+    private static void addSingleEdgeToGraph(ShortestPathAlgorithm.SingleSourcePaths<Position, UndirectedWeightedEdge> positionPaths, Position position, Double delta) {
+        UndirectedWeightedEdge edge;
+        for (Position vertex : pathsGraph.vertexSet()) {
+            if (!pathsGraph.containsEdge(position, vertex)) {
+                edge = pathsGraph.addEdge(position, vertex);
+                double weight = positionPaths.getWeight(vertex);
+                if (weight > delta) {
+                    pathsGraph.setEdgeWeight(edge, weight - delta);
+                }
             }
         }
     }
