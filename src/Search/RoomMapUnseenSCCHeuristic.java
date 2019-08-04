@@ -13,7 +13,7 @@ public class RoomMapUnseenSCCHeuristic implements IHeuristic {
             double h = 0;
             TreeMap<Position, HashSet<Position>> watchedDictionary = r.getWatchedDictionary();
             HashMap<Position, HashSet<Double>> visualLineDictionary=r.getVisualLineDictionary();
-            RoomMapGraphAdapter g = new RoomMapGraphAdapter(watchedDictionary,visualLineDictionary, s, 0.025, 10);
+            RoomMapSCCGraphAdapter g = new RoomMapSCCGraphAdapter(watchedDictionary,visualLineDictionary, s, 0.0, 7);
             return g.getUnseenSCCWeight(s);
         } else return Double.MAX_VALUE / 2;
     }

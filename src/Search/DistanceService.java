@@ -91,8 +91,8 @@ public class DistanceService {
     public static double getWeight(Position current, Position other) {
         UndirectedWeightedEdge edge = pathsGraph.getEdge(current, other);
         if (edge == null) {
-            addEdgesToPathsGraph(getPositionPaths(current));
-//            addEdgesToPathsGraph(getPositionPaths(current), current);
+//            addEdgesToPathsGraph(getPositionPaths(current));
+            addEdgesToPathsGraph(getPositionPaths(current), current);
             edge = pathsGraph.getEdge(current, other);
         }
         return pathsGraph.getEdgeWeight(edge);

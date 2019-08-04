@@ -39,15 +39,16 @@ public class Model {
                 {0, 0, 0, 0, 0, 0, 0, 0}};
         consoleString = "";
         this.map = map;
-        agent = new Position(7,6);
+        agent = new Position(7, 6);
     }
 
     public void solveMap() {
         if (map == null)
             generateMap(0, 6);
-//        bfsRun();
+        bfsRun();
 //        generateMap(0, 0);
-//        agent = new Position(10,26);
+        if (agent == null)
+            agent = new Position(11, 19);
         AstarRun();
     }
 
