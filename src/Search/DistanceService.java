@@ -1,6 +1,8 @@
 package Search;
 
 import org.jgrapht.Graph;
+import org.jgrapht.alg.BlockCutpointGraph;
+import org.jgrapht.alg.connectivity.BiconnectivityInspector;
 import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.alg.shortestpath.TreeSingleSourcePathsImpl;
@@ -14,7 +16,10 @@ import java.util.Set;
 
 public class DistanceService {
     static DijkstraShortestPath dijkstraShortestPath;
+    static BiconnectivityInspector biconnectivityInspector;
     static Graph<Position, UndirectedWeightedEdge> pathsGraph = new DefaultUndirectedWeightedGraph<>(UndirectedWeightedEdge.class);
+    static Graph<Position, UndirectedWeightedEdge> graph;
+    static HashSet<Position> cutPoints;
 
 
     public static double minDistance(HashSet<Position> positions, Position currPosition) {
@@ -37,7 +42,7 @@ public class DistanceService {
     }
 
     public static void setRoomMap(RoomMap roomMap) {
-        Graph<Position, UndirectedWeightedEdge> graph = new DefaultUndirectedWeightedGraph<>(UndirectedWeightedEdge.class);
+        graph= new DefaultUndirectedWeightedGraph<>(UndirectedWeightedEdge.class);
         Set<Position> verticesPositions = roomMap.getVisualDictionary().keySet();
         for (Position vertexPosition : verticesPositions) {
             graph.addVertex(vertexPosition);
@@ -47,6 +52,8 @@ public class DistanceService {
             addEdges(graph, vertexPosition, roomMap.getVisualDictionary());
         }
         dijkstraShortestPath = new DijkstraShortestPath(graph);
+        biconnectivityInspector= new BiconnectivityInspector(graph);
+        cutPoints=new HashSet<>(DistanceService.biconnectivityInspector.getCutpoints());
     }
 
 
