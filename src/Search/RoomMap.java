@@ -26,8 +26,11 @@ public class RoomMap implements IProblem {
     public RoomMap(int[][] room, Position startPosition) {
         self = new RoomMapService(this,room);
         this.startPosition = new Position(startPosition);
+//        heuristic = new RoomMapCountHeuristic();
+        heuristic = new RoomMapSingletonHeuristic();
 //        heuristic = new RoomMapMSTHeuristic();
-        heuristic = new RoomMapUnseenSCCHeuristic();
+//        heuristic = new RoomMapTSPHeuristic();
+//        heuristic = new RoomMapUnseenSCCHeuristic();
     }
 
 
@@ -59,7 +62,7 @@ public class RoomMap implements IProblem {
         return self.getVisualNeighbors(position);
     }
 
-    int getNumberOfPositions() {
+    public int getNumberOfPositions() {
         return self.getNumberOfPositions();
     }
 
@@ -89,4 +92,7 @@ public class RoomMap implements IProblem {
         return self.getVisualLineDictionary();
     }
 
+    public String getVisualAlgorithm(){
+        return self.getVisualAlgorithm();
+    }
 }

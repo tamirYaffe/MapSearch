@@ -10,7 +10,28 @@ public class Model {
     int solutionIndex = 0;
     Position agent;
 
-    public void loadMap(int[][] map) {
+    /**
+     * csvResults is an array that represents the current run's record for the csv
+     * csvResults[0] = Map's Name`
+     * csvResults[1] = Map's Height
+     * csvResults[2] = Map's Width
+     * csvResults[3] = Number of terrain positions in the map
+     * csvResults[4] = the Algorithm used for this run
+     * csvResults[5] = Solver's Name
+     * csvResults[6] = Time took to finish the run
+     * csvResults[7] = Number of Generated Nodes
+     * csvResults[8] = Number of Duplicate Nodes
+     * csvResults[9] = Number of Expanded Nodes
+     * csvResults[10] = threshold (if available)
+     * csvResults[11] = Max leaves count (if available)
+     * csvResults[12] = Solution Length
+     * csvResults[13] = Start Position
+     * csvResults[14] = Line of Sight method
+     */
+    String[] csvResults = new String[15];
+
+    public void loadMap(int[][] map, String name) {
+        csvResults = new String[15];
         this.map = map;
         int x, y;
         do {
@@ -18,6 +39,9 @@ public class Model {
             x = (int) (Math.random() * map[0].length);
         } while (map[y][x] != 0);
         agent = new Position(y, x);
+        csvResults[0] = name;
+        csvResults[1] = "" + map.length;
+        csvResults[2] = "" + map[0].length;
     }
 
     public void loadMap(int[][] map, Position agentPosition) {
@@ -28,6 +52,7 @@ public class Model {
     public void generateMap(int rows, int columns) {
 //        MapGenerator mapGenerator=new MapGenerator();
 //        map=mapGenerator.generate(rows,columns);
+        csvResults = new String[15];
         int map[][] = {
                 {0, 0, 0, 0, 0, 1, 0, 1},
                 {1, 1, 1, 1, 0, 1, 0, 0},
@@ -40,6 +65,11 @@ public class Model {
         consoleString = "";
         this.map = map;
         agent = new Position(7, 6);
+        csvResults[0] = "RoomMap basic map";
+        csvResults[1] = "8";
+        csvResults[2] = "8";
+        csvResults[3] = "42";
+
     }
 
     public void solveMap() {
@@ -47,9 +77,9 @@ public class Model {
             generateMap(0, 6);
         bfsRun();
 //        generateMap(0, 0);
-        if (agent == null)
-            agent = new Position(11, 19);
-        AstarRun();
+//        if (agent == null)
+//        agent = new Position(1, 1);
+//        AstarRun();
     }
 
 
@@ -87,13 +117,13 @@ public class Model {
                 double cost = checkSolution(problem, solution);
                 if (cost >= 0)        // valid solution
                 {
-//                    printSolution(problem, solution);
+                    // printSolution(problem, solution);
                     updateSolution(problem, solution);
-//                    System.out.println("Closed: " + solver.closed);
-//                    System.out.println("Cost:  " + cost);
-//                    System.out.println("Moves: " + solution.size());
-//                    System.out.println("Time:  " + (finishTime - startTime) / 1000000.0 + " ms");
-//                    System.out.println(solution);
+                    // System.out.println("Closed: " + solver.closed);
+                    // System.out.println("Cost:  " + cost);
+                    // System.out.println("Moves: " + solution.size());
+                    // System.out.println("Time:  " + (finishTime - startTime) / 1000000.0 + " ms");
+                    // System.out.println(solution);
                     consoleString += "\nGenerated: " + solver.generated;
                     consoleString += "\nDuplicates: " + solver.duplicates;
                     consoleString += "\nExpanded: " + solver.expanded;
@@ -102,8 +132,34 @@ public class Model {
                     consoleString += "\nTime:  " + (finishTime - startTime) / 1000000.0 + " ms\n\n";
                     consoleString += solution;
                     totalTime += (finishTime - startTime) / 1000000.0;
+
+                    //            csvResults[3] = Number of terrain positions in the map
+                    csvResults[3] = "" + problem.getNumberOfPositions();
+                    //csvResults[4] = the Algorithm used for this run
+                    csvResults[4] = "" + problem.getNumberOfPositions();
+                    //csvResults[5] = Solver 's Name
+                    csvResults[5] = "" + solver.getSolverName();
+                    //csvResults[6] = Time took to finish the run
+                    csvResults[6] = "" + totalTime;
+                    //csvResults[7] = Number of Generated Nodes
+                    csvResults[7] = "" + solver.generated;
+                    //csvResults[8] = Number of Duplicate Nodes
+                    csvResults[8] = "" + solver.duplicates;
+                    //csvResults[9] = Number of Expanded Nodes
+                    csvResults[9] = "" + solver.expanded;
+                    //csvResults[10] = threshold( if available)
+                    csvResults[10] = "";
+                    //csvResults[11] = Max leaves count ( if available)
+                    csvResults[11] = "";
+                    //csvResults[12] = Solution Length
+                    csvResults[12] = "" + solution.size();
+                    //csvResults[13] = Start Position
+                    csvResults[13] = problem.getStartPosition().toString();
+                    // csvResults[14] = Line of Sight method
+                    csvResults[14] = problem.getVisualAlgorithm();
+                    RoomMapCSVWriter.writeToCSV("Results.csv", csvResults);
                 } else {                // invalid solution
-//                    System.out.println("Invalid solution.");
+                    // System.out.println("Invalid solution.");
                     consoleString += "\nInvalid solution.";
                 }
             }
@@ -113,6 +169,7 @@ public class Model {
             consoleString += "\n\nTotal time:  " + (int) (totalTime / 60000) + ":" + (totalTimeMinuts > 9 ? totalTimeMinuts : "0" + totalTimeMinuts) + " min\n";
 //            System.out.println("");
             System.out.println(consoleString);
+
         }
 
     }
@@ -144,7 +201,7 @@ public class Model {
             RoomStep m = (RoomStep) move;
             currentState = currentState.performMove(m);
             solutionList.add(new Position(((RoomMapState) currentState).getPosition()));
-//        map[((RoomMapState) currentState).getPosition().getY()][((RoomMapState) currentState).getPosition().getX()] = 2;
+//        map[((RoomMapState) currentState).getPosition().getY()][((R.oomMapState) currentState).getPosition().getX()] = 2;
         }
     }
 
