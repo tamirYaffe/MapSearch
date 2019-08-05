@@ -76,7 +76,7 @@ public class Model {
     public void solveMap() {
         if (map == null)
             generateMap(0, 6);
-        agent = new Position(0, 0);
+//        agent = new Position(0, 0);
 //        bfsRun();
 //        generateMap(0, 0);
 //        if (agent == null)
@@ -112,6 +112,9 @@ public class Model {
             for (ASearch solver : solvers) {
 //                System.out.println("Solver: " + solver.getSolverName());
                 consoleString += "\nSolver: " + solver.getSolverName();
+                consoleString += "\nH alg: " + (solver.getSolverName().equals("BFS") ? "None" : problem.getHeuristicName().substring(7));
+                consoleString += "\nLOS: " + problem.getVisualAlgorithm();
+                consoleString += "\nRoot H: " + (solver.getSolverName().equals("BFS") ? "None" : ASearch.rootH);
                 long startTime = System.nanoTime();
                 List<IProblemMove> solution = solver.solve(problem);
                 long finishTime = System.nanoTime();
@@ -156,7 +159,7 @@ public class Model {
                     //csvResults[12] = Solution Length
                     csvResults[12] = Integer.toString(solution.size());
                     //csvResults[13] = Start Position
-                    csvResults[13] = problem.getStartPosition().toString().replace(",",";");
+                    csvResults[13] = problem.getStartPosition().toString().replace(",", ";");
                     // csvResults[14] = Line of Sight method
                     csvResults[14] = problem.getVisualAlgorithm();
                     // csvResults[15] = Root H (heuristic value)
