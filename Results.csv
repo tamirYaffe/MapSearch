@@ -1,0 +1,38 @@
+Map Name,Map Height,Map Width,Number of Positions,Search Algorithm,Heuristic,Time (ms),Generated,Duplicates,Expanded,threshold,max Leaves,Solution Length,Start Position,Line of Sight Method
+RoomMap basic map,8,8,BFS,42, ,95.0,1655,353,1584, , ,31,(6;7),BresLos
+RoomMap basic map,8,8,A*,42,RoomMapSingletonHeuristic,78.0,1071,191,925, , ,31,(6;7),BresLos
+RoomMap basic map,8,8,A*,42,RoomMapMSTHeuristic,83.0,120,7,81,0,5,31,(6;7),BresLos
+RoomMap basic map,8,8,A*,42,RoomMapMSTHeuristic,86.0,120,7,81,0.17,5,31,(6;7),BresLos
+RoomMap basic map,8,8,A*,42,RoomMapMSTHeuristic,258.0,378,51,301,0,10,31,(6;7),BresLos
+RoomMap basic map,8,8,A*,42,RoomMapMSTHeuristic,152.0,220,20,155,0.17,10,31,(6;7),BresLos
+RoomMap basic map,8,8,A*,42,RoomMapMSTHeuristic,153.0,220,20,155,0.2,10,31,(6;7),BresLos
+RoomMap basic map,8,8,A*,42,RoomMapMSTHeuristic,102.0,124,9,85,0.25,10,31,(6;7),BresLos
+RoomMap basic map,8,8,A*,42,RoomMapMSTHeuristic,314.0,399,63,327,0,1000,31,(6;7),BresLos
+RoomMap basic map,8,8,A*,42,RoomMapMSTHeuristic,137.0,220,20,155,0.2,1000,31,(6;7),BresLos
+RoomMap basic map,8,8,A*,42,RoomMapMSTHeuristic,93.0,124,9,85,0.25,1000,31,(6;7),BresLos
+RoomMap basic map,8,8,A*,42,RoomMapMSTHeuristic,114.0,1675,353,1614,0.34,1000,31,(6;7),BresLos
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,161.0,116,6,77,0,5,31,(6;7),BresLos
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,144.0,116,6,77,0.2,5,31,(6;7),BresLos
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,138.0,116,6,77,0.25,5,31,(6;7),BresLos
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,151.0,1475,307,1345,0.3,5,31,(6;7),BresLos
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,191.0,133,14,94,0,7,31,(6;7),BresLos
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,194.0,146,10,101,0.2,7,31,(6;7),BresLos
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,197.0,125,9,85,0.25,7,31,(6;7),BresLos
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,159.0,1475,307,1345,0.3,7,31,(6;7),BresLos
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,789.0,360,50,291,0,10,31,(6;7),BresLos
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,423.0,217,21,153,0.2,10,31,(6;7),BresLos
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,223.0,125,9,85,0.25,10,31,(6;7),BresLos
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,168.0,1475,307,1345,0.3,10,31,(6;7),BresLos
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,1374.0,381,58,314,0,20,31,(6;7),BresLos
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,424.0,213,19,151,0.15,20,31,(6;7),BresLos
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,567.0,207,20,148,0.2,20,31,(6;7),BresLos
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,164.0,125,9,85,0.25,20,31,(6;7),BresLos
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,159.0,1475,307,1345,0.3,20,31,(6;7),BresLos
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,1516.0,381,59,314,0,30,31,(6;7),BresLos
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,1503.0,379,59,311,0,100,31,(6;7),BresLos
+RoomMap basic map,8,8,A*,42,RoomMapUnseenSCCHeuristic,67.0,55,0,31,0,5,31,(6;7),BresLos
+RoomMap basic map,8,8,A*,42,RoomMapUnseenSCCHeuristic,66.0,55,0,31,0.2,5,31,(6;7),BresLos
+RoomMap basic map,8,8,A*,42,RoomMapUnseenSCCHeuristic,351.0,55,0,31,0,7,31,(6;7),BresLos
+RoomMap basic map,8,8,A*,42,RoomMapUnseenSCCHeuristic,2554.0,55,0,31,0,8,31,(6;7),BresLos
+RoomMap basic map,8,8,BFS,42, ,223.0,6181,1594,5964, , ,33,(6;7),EightWayLos
+RoomMap basic map,8,8,A*,42,RoomMapSingletonHeuristic,206.0,4064,904,3501, , ,33,(6;7),EightWayLos
