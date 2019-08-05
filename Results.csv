@@ -1,38 +1,135 @@
-Map Name,Map Height,Map Width,Number of Positions,Search Algorithm,Heuristic,Time (ms),Generated,Duplicates,Expanded,threshold,max Leaves,Solution Length,Start Position,Line of Sight Method
-RoomMap basic map,8,8,BFS,42, ,95.0,1655,353,1584, , ,31,(6;7),BresLos
-RoomMap basic map,8,8,A*,42,RoomMapSingletonHeuristic,78.0,1071,191,925, , ,31,(6;7),BresLos
-RoomMap basic map,8,8,A*,42,RoomMapMSTHeuristic,83.0,120,7,81,0,5,31,(6;7),BresLos
-RoomMap basic map,8,8,A*,42,RoomMapMSTHeuristic,86.0,120,7,81,0.17,5,31,(6;7),BresLos
-RoomMap basic map,8,8,A*,42,RoomMapMSTHeuristic,258.0,378,51,301,0,10,31,(6;7),BresLos
-RoomMap basic map,8,8,A*,42,RoomMapMSTHeuristic,152.0,220,20,155,0.17,10,31,(6;7),BresLos
-RoomMap basic map,8,8,A*,42,RoomMapMSTHeuristic,153.0,220,20,155,0.2,10,31,(6;7),BresLos
-RoomMap basic map,8,8,A*,42,RoomMapMSTHeuristic,102.0,124,9,85,0.25,10,31,(6;7),BresLos
-RoomMap basic map,8,8,A*,42,RoomMapMSTHeuristic,314.0,399,63,327,0,1000,31,(6;7),BresLos
-RoomMap basic map,8,8,A*,42,RoomMapMSTHeuristic,137.0,220,20,155,0.2,1000,31,(6;7),BresLos
-RoomMap basic map,8,8,A*,42,RoomMapMSTHeuristic,93.0,124,9,85,0.25,1000,31,(6;7),BresLos
-RoomMap basic map,8,8,A*,42,RoomMapMSTHeuristic,114.0,1675,353,1614,0.34,1000,31,(6;7),BresLos
-RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,161.0,116,6,77,0,5,31,(6;7),BresLos
-RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,144.0,116,6,77,0.2,5,31,(6;7),BresLos
-RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,138.0,116,6,77,0.25,5,31,(6;7),BresLos
-RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,151.0,1475,307,1345,0.3,5,31,(6;7),BresLos
-RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,191.0,133,14,94,0,7,31,(6;7),BresLos
-RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,194.0,146,10,101,0.2,7,31,(6;7),BresLos
-RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,197.0,125,9,85,0.25,7,31,(6;7),BresLos
-RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,159.0,1475,307,1345,0.3,7,31,(6;7),BresLos
-RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,789.0,360,50,291,0,10,31,(6;7),BresLos
-RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,423.0,217,21,153,0.2,10,31,(6;7),BresLos
-RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,223.0,125,9,85,0.25,10,31,(6;7),BresLos
-RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,168.0,1475,307,1345,0.3,10,31,(6;7),BresLos
-RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,1374.0,381,58,314,0,20,31,(6;7),BresLos
-RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,424.0,213,19,151,0.15,20,31,(6;7),BresLos
-RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,567.0,207,20,148,0.2,20,31,(6;7),BresLos
-RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,164.0,125,9,85,0.25,20,31,(6;7),BresLos
-RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,159.0,1475,307,1345,0.3,20,31,(6;7),BresLos
-RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,1516.0,381,59,314,0,30,31,(6;7),BresLos
-RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,1503.0,379,59,311,0,100,31,(6;7),BresLos
-RoomMap basic map,8,8,A*,42,RoomMapUnseenSCCHeuristic,67.0,55,0,31,0,5,31,(6;7),BresLos
-RoomMap basic map,8,8,A*,42,RoomMapUnseenSCCHeuristic,66.0,55,0,31,0.2,5,31,(6;7),BresLos
-RoomMap basic map,8,8,A*,42,RoomMapUnseenSCCHeuristic,351.0,55,0,31,0,7,31,(6;7),BresLos
-RoomMap basic map,8,8,A*,42,RoomMapUnseenSCCHeuristic,2554.0,55,0,31,0,8,31,(6;7),BresLos
-RoomMap basic map,8,8,BFS,42, ,223.0,6181,1594,5964, , ,33,(6;7),EightWayLos
-RoomMap basic map,8,8,A*,42,RoomMapSingletonHeuristic,206.0,4064,904,3501, , ,33,(6;7),EightWayLos
+Map Name,Map Height,Map Width,Number of Positions,Search Algorithm,Heuristic,Time (ms),Generated,Duplicates,Expanded,threshold,max Leaves,Solution Length,Start Position,Line of Sight Method,Root H
+RoomMap basic map,8,8,BFS,42, ,95.0,1655,353,1584, , ,31,(6;7),BresLos,
+RoomMap basic map,8,8,A*,42,RoomMapSingletonHeuristic,78.0,1071,191,925, , ,31,(6;7),BresLos,
+RoomMap basic map,8,8,A*,42,RoomMapMSTHeuristic,83.0,120,7,81,0,5,31,(6;7),BresLos,
+RoomMap basic map,8,8,A*,42,RoomMapMSTHeuristic,86.0,120,7,81,0.17,5,31,(6;7),BresLos,
+RoomMap basic map,8,8,A*,42,RoomMapMSTHeuristic,258.0,378,51,301,0,10,31,(6;7),BresLos,
+RoomMap basic map,8,8,A*,42,RoomMapMSTHeuristic,152.0,220,20,155,0.17,10,31,(6;7),BresLos,
+RoomMap basic map,8,8,A*,42,RoomMapMSTHeuristic,153.0,220,20,155,0.2,10,31,(6;7),BresLos,
+RoomMap basic map,8,8,A*,42,RoomMapMSTHeuristic,102.0,124,9,85,0.25,10,31,(6;7),BresLos,
+RoomMap basic map,8,8,A*,42,RoomMapMSTHeuristic,314.0,399,63,327,0,1000,31,(6;7),BresLos,
+RoomMap basic map,8,8,A*,42,RoomMapMSTHeuristic,137.0,220,20,155,0.2,1000,31,(6;7),BresLos,
+RoomMap basic map,8,8,A*,42,RoomMapMSTHeuristic,93.0,124,9,85,0.25,1000,31,(6;7),BresLos,
+RoomMap basic map,8,8,A*,42,RoomMapMSTHeuristic,114.0,1675,353,1614,0.34,1000,31,(6;7),BresLos,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,161.0,116,6,77,0,5,31,(6;7),BresLos,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,144.0,116,6,77,0.2,5,31,(6;7),BresLos,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,138.0,116,6,77,0.25,5,31,(6;7),BresLos,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,151.0,1475,307,1345,0.3,5,31,(6;7),BresLos,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,191.0,133,14,94,0,7,31,(6;7),BresLos,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,194.0,146,10,101,0.2,7,31,(6;7),BresLos,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,197.0,125,9,85,0.25,7,31,(6;7),BresLos,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,159.0,1475,307,1345,0.3,7,31,(6;7),BresLos,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,789.0,360,50,291,0,10,31,(6;7),BresLos,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,423.0,217,21,153,0.2,10,31,(6;7),BresLos,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,223.0,125,9,85,0.25,10,31,(6;7),BresLos,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,168.0,1475,307,1345,0.3,10,31,(6;7),BresLos,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,1374.0,381,58,314,0,20,31,(6;7),BresLos,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,424.0,213,19,151,0.15,20,31,(6;7),BresLos,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,567.0,207,20,148,0.2,20,31,(6;7),BresLos,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,164.0,125,9,85,0.25,20,31,(6;7),BresLos,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,159.0,1475,307,1345,0.3,20,31,(6;7),BresLos,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,1516.0,381,59,314,0,30,31,(6;7),BresLos,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,1503.0,379,59,311,0,100,31,(6;7),BresLos,
+RoomMap basic map,8,8,A*,42,RoomMapUnseenSCCHeuristic,67.0,55,0,31,0,5,31,(6;7),BresLos,
+RoomMap basic map,8,8,A*,42,RoomMapUnseenSCCHeuristic,66.0,55,0,31,0.2,5,31,(6;7),BresLos,
+RoomMap basic map,8,8,A*,42,RoomMapUnseenSCCHeuristic,351.0,55,0,31,0,7,31,(6;7),BresLos,
+RoomMap basic map,8,8,A*,42,RoomMapUnseenSCCHeuristic,2554.0,55,0,31,0,8,31,(6;7),BresLos,
+RoomMap basic map,8,8,BFS,42, ,223.0,6181,1594,5964, , ,33,(6;7),EightWayLos,
+RoomMap basic map,8,8,A*,42,RoomMapSingletonHeuristic,206.0,4064,904,3501, , ,33,(6;7),EightWayLos,
+RoomMap basic map,8,8,A*,42,RoomMapMSTHeuristic,297.0,1223,235,948,0,5,33,(6;7),EightWayLos,
+RoomMap basic map,8,8,A*,42,RoomMapMSTHeuristic,308.0,1223,235,948,0.2,5,33,(6;7),EightWayLos,
+RoomMap basic map,8,8,A*,42,RoomMapMSTHeuristic,331.0,1440,281,1113,0.25,5,33,(6;7),EightWayLos,
+RoomMap basic map,8,8,A*,42,RoomMapMSTHeuristic,311.0,3869,901,3201,0.3,5,33,(6;7),EightWayLos,
+RoomMap basic map,8,8,A*,42,RoomMapMSTHeuristic,313.0,928,171,706,0,7,33,(6;7),EightWayLos,
+RoomMap basic map,8,8,A*,42,RoomMapMSTHeuristic,326.0,925,171,704,0.2,7,33,(6;7),EightWayLos,
+RoomMap basic map,8,8,A*,42,RoomMapMSTHeuristic,344.0,1440,281,1113,0.25,7,33,(6;7),EightWayLos,
+RoomMap basic map,8,8,A*,42,RoomMapMSTHeuristic,286.0,3869,901,3201,0.3,7,33,(6;7),EightWayLos,
+RoomMap basic map,8,8,A*,42,RoomMapMSTHeuristic,396.0,873,153,648,0.0,10,33,(6;7),EightWayLos,
+RoomMap basic map,8,8,A*,42,RoomMapMSTHeuristic,1097.0,1905,477,1550,0.0,1000,33,(6;7),EightWayLos,
+RoomMap basic map,8,8,A*,42,RoomMapMSTHeuristic,709.0,1472,284,1188,0.2,1000,33,(6;7),EightWayLos,
+RoomMap basic map,8,8,A*,42,RoomMapMSTHeuristic,295.0,3869,901,3201,0.3,1000,33,(6;7),EightWayLos,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,772.0,1213,231,936,0,5,33,(6;7),EightWayLos,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,801.0,1213,231,936,0.2,5,33,(6;7),EightWayLos,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,803.0,1439,276,1107,0.25,5,33,(6;7),EightWayLos,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,400.0,3869,901,3201,0.3,5,33,(6;7),EightWayLos,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,923.0,907,177,698,0,7,33,(6;7),EightWayLos,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,945.0,843,164,644,0.2,7,33,(6;7),EightWayLos,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,920.0,1444,277,1109,0.25,7,33,(6;7),EightWayLos,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,440.0,3869,901,3201,0.3,7,33,(6;7),EightWayLos,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,1427.0,720,127,536,0,10,33,(6;7),EightWayLos,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,940.0,662,107,480,0.2,10,33,(6;7),EightWayLos,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,922.0,1442,277,1110,0.25,10,33,(6;7),EightWayLos,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,418.0,3869,901,3201,0.3,10,33,(6;7),EightWayLos,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,4408.0,1678,365,1360,0,15,33,(6;7),EightWayLos,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,2946.0,1260,242,994,0.2,15,33,(6;7),EightWayLos,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,865.0,1441,278,1108,0.25,15,33,(6;7),EightWayLos,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,5762.0,1688,404,1382,0,20,33,(6;7),EightWayLos,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,3161.0,1253,234,979,0.2,20,33,(6;7),EightWayLos,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,1115.0,1441,276,1108,0.25,20,33,(6;7),EightWayLos,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,390.0,3869,901,3201,0.3,20,33,(6;7),EightWayLos,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,6696.0,1732,414,1407,0,30,33,(6;7),EightWayLos,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,3284.0,1264,240,992,0.2,30,33,(6;7),EightWayLos,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,1162.0,1439,277,1105,0.25,30,33,(6;7),EightWayLos,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,6447.0,1706,414,1391,0,1000,33,(6;7),EightWayLos,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,6367.0,1696,406,1376,0,42,33,(6;7),EightWayLos,
+RoomMap basic map,8,8,A*,42,RoomMapUnseenSCCHeuristic,121.0,271,23,167,0,5,33,(6;7),EightWayLos,
+RoomMap basic map,8,8,A*,42,RoomMapUnseenSCCHeuristic,136.0,271,23,167,0.2,5,33,(6;7),EightWayLos,
+RoomMap basic map,8,8,A*,42,RoomMapUnseenSCCHeuristic,269.0,222,13,131,0,6,33,(6;7),EightWayLos,
+RoomMap basic map,8,8,A*,42,RoomMapUnseenSCCHeuristic,1378.0,187,14,111,0,7,33,(6;7),EightWayLos,
+RoomMap basic map,8,8,A*,42,RoomMapUnseenSCCHeuristic,7909.0,142,12,83,0,8,33,(6;7),EightWayLos,
+RoomMap basic map,8,8,A*,42,RoomMapUnseenSCCHeuristic,23020.0,63,0,33,0,9,33,(6;7),EightWayLos,
+RoomMap basic map,8,8,BFS,42, ,72.0,763,143,725, , ,26,(6;7),PrecisePermissive,
+RoomMap basic map,8,8,A*,42,RoomMapSingletonHeuristic,74.0,519,89,445, , ,26,(6;7),PrecisePermissive,
+RoomMap basic map,8,8,A*,42,RoomMapMSTHeuristic,92.0,122,17,86,0,5,26,(6;7),PrecisePermissive,
+RoomMap basic map,8,8,A*,42,RoomMapMSTHeuristic,309.0,290,51,235,0,10,26,(6;7),PrecisePermissive,
+RoomMap basic map,8,8,A*,42,RoomMapMSTHeuristic,296.0,298,55,239,0,1000,26,(6;7),PrecisePermissive,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,166.0,108,13,72,0,5,26,(6;7),PrecisePermissive,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,97.0,84,4,52,0.2,5,26,(6;7),PrecisePermissive,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,645.0,309,51,244,0,7,28,(6;7),PrecisePermissive,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,784.0,258,45,208,0,10,26,(6;7),PrecisePermissive,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,134.0,84,4,52,0.2,10,26,(6;7),PrecisePermissive,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,1075.0,258,43,212,0,100,26,(6;7),PrecisePermissive,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,1179.0,278,51,228,0,1000,26,(6;7),PrecisePermissive,
+RoomMap basic map,8,8,A*,42,RoomMapUnseenSCCHeuristic,56.0,47,1,26,0,5,26,(6;7),PrecisePermissive,
+RoomMap basic map,8,8,A*,42,RoomMapUnseenSCCHeuristic,49.0,47,1,26,0.2,5,26,(6;7),PrecisePermissive,
+RoomMap basic map,8,8,A*,42,RoomMapUnseenSCCHeuristic,109.0,47,1,26,0,6,26,(6;7),PrecisePermissive,
+RoomMap basic map,8,8,A*,42,RoomMapUnseenSCCHeuristic,2955.0,47,1,26,0,8,26,(6;7),PrecisePermissive,
+RoomMap basic map,8,8,BFS,42, ,169.0,4351,970,4198, , ,31,(6;7),ShadowCasting,
+RoomMap basic map,8,8,A*,42,RoomMapSingletonHeuristic,147.0,2868,548,2469, , ,31,(6;7),ShadowCasting,
+RoomMap basic map,8,8,A*,42,RoomMapMSTHeuristic,171.0,525,79,376,0,5,31,(6;7),ShadowCasting,
+RoomMap basic map,8,8,A*,42,RoomMapMSTHeuristic,540.0,1122,222,842,0,10,31,(6;7),ShadowCasting,
+RoomMap basic map,8,8,A*,42,RoomMapMSTHeuristic, , , , ,0,100,Error,(6;7),ShadowCasting,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,419.0,491,69,353,0,5,31,(6;7),ShadowCasting,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,351.0,472,68,338,0.2,5,31,(6;7),ShadowCasting,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,382.0,473,67,339,0.25,5,31,(6;7),ShadowCasting,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,560.0,420,74,283,0,7,31,(6;7),ShadowCasting,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic,1397.0,1017,194,755,0,10,31,(6;7),ShadowCasting,
+RoomMap basic map,8,8,A*,42,RoomMapTSPHeuristic, , , , ,0,100,Error,(6;7),ShadowCasting,
+RoomMap basic map,8,8,A*,42,RoomMapUnseenSCCHeuristic,95.0,131,4,75,0,5,31,(6;7),ShadowCasting,
+RoomMap basic map,8,8,A*,42,RoomMapUnseenSCCHeuristic,143.0,91,1,54,0,6,31,(6;7),ShadowCasting,
+RoomMap basic map,8,8,A*,42,RoomMapUnseenSCCHeuristic,394.0,60,2,33,0,7,31,(6;7),ShadowCasting,
+RoomMap basic map,8,8,A*,42,RoomMapUnseenSCCHeuristic,2913.0,59,0,31,0,8,31,(6;7),ShadowCasting,
+RoomMap basic map,8,8,BFS,42, ,79.0,1359,213,1277, , ,30,(0;0),EightWayLos,
+RoomMap basic map,8,8,BFS,42, ,48.0,410,72,398, , ,25,(0;0),PrecisePermissive,
+mapJ_11X14.map,11,14,BFS,116, ,1752.0,32859,15247,28755, , ,38,(11;10),EightWayLos,
+mapJ_11X14.map,11,14,BFS,116, ,544.0,6422,2780,6138, , ,37,(1;8),PrecisePermissive,
+mapJ_11X14.map,11,14,BFS,116, ,125.0,1223,467,1157, , ,36,(3;8),BresLos,
+mapJ_11X14.map,11,14,A*,116,RoomMapSingletonHeuristic,248.0,1775,786,1513, , ,39,(10;2),BresLos,
+mapJ_11X14.map,11,14,A*,116,RoomMapSingletonHeuristic,1078.0,11508,5230,9644, , ,43,(1;3),EightWayLos,
+mapJ_11X14.map,11,14,A*,116,RoomMapSingletonHeuristic,164.0,791,303,725, , ,36,(3;8),EightWayLos,
+mapJ_11X14.map,11,14,BFS,116, ,1345.0,23273,9217,21479, , ,44,(0;0),EightWayLos,
+mapJ_11X14.map,11,14,BFS,116, ,572.0,7402,3084,6830, , ,40,(0;0),BresLos,
+mapJ_11X14.map,11,14,BFS,116, ,252.0,2608,1102,2429, , ,37,(0;0),PrecisePermissive,
+mapJ_11X14.map,11,14,BFS,116, , , , , , , ,TimeUpError,(0;0),ShadowCasting,
+mapJ_11X14.map,11,14,A*,116,RoomMapSingletonHeuristic,272.0,1502,520,1285, , ,37,(0;0),PrecisePermissive,
+mapJ_11X14.map,11,14,A*,116,RoomMapSingletonHeuristic,229.0,1502,520,1285, , ,37,(0;0),PrecisePermissive,
+mapJ_11X14.map,11,14,A*,116,RoomMapSingletonHeuristic,763.0,8501,2816,7016, , ,44,(0;0),EightWayLos,
+mapJ_11X14.map,11,14,A*,116,RoomMapSingletonHeuristic,392.0,3632,1240,3021, , ,40,(0;0),BresLos,
+mapJ_11X14.map,11,14,A*,116,RoomMapMSTHeuristic,1191.0,2142,859,1798,0,5,40,(0;0),BresLos,
+mapJ_11X14.map,11,14,A*,116,RoomMapMSTHeuristic,874.0,2465,710,1966,0,5,44,(0;0),EightWayLos,
+mapJ_11X14.map,11,14,A*,116,RoomMapMSTHeuristic,1023.0,888,317,722,0,5,37,(0;0),PrecisePermissive,
+mapJ_11X14.map,11,14,A*,116,RoomMapMSTHeuristic,3860.0,4516,1322,3593,0,10,44,(0;0),EightWayLos,
+mapJ_11X14.map,11,14,A*,116,RoomMapMSTHeuristic,21014.0,3796,1416,3176,0,100,40,(0;0),BresLos,
+mapJ_11X14.map,11,14,A*,116,RoomMapMSTHeuristic,2854.0,2543,856,2063,0,10,40,(0;0),BresLos,
+mapJ_11X14.map,11,14,A*,116,RoomMapMSTHeuristic,1464.0,889,317,723,0,10,37,(0;0),PrecisePermissive,
+mapJ_11X14.map,11,14,A*,116,RoomMapMSTHeuristic,6942.0,1198,430,995,0,100,37,(0;0),PrecisePermissive,

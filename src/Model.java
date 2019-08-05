@@ -16,8 +16,8 @@ public class Model {
      * csvResults[1] = Map's Height
      * csvResults[2] = Map's Width
      * csvResults[3] = Number of terrain positions in the map
-     * csvResults[4] = the Algorithm used for this run
-     * csvResults[5] = Solver's Name
+     * csvResults[4] = Solver's Name
+     * csvResults[5] = Heuristic (if available)
      * csvResults[6] = Time took to finish the run
      * csvResults[7] = Number of Generated Nodes
      * csvResults[8] = Number of Duplicate Nodes
@@ -27,11 +27,12 @@ public class Model {
      * csvResults[12] = Solution Length
      * csvResults[13] = Start Position
      * csvResults[14] = Line of Sight method
+     * csvResults[15] = Root H (heuristic value)
      */
-    String[] csvResults = new String[15];
+    String[] csvResults = new String[16];
 
     public void loadMap(int[][] map, String name) {
-        csvResults = new String[15];
+        csvResults = new String[16];
         this.map = map;
         int x, y;
         do {
@@ -52,7 +53,7 @@ public class Model {
     public void generateMap(int rows, int columns) {
 //        MapGenerator mapGenerator=new MapGenerator();
 //        map=mapGenerator.generate(rows,columns);
-        csvResults = new String[15];
+        csvResults = new String[16];
         int map[][] = {
                 {0, 0, 0, 0, 0, 1, 0, 1},
                 {1, 1, 1, 1, 0, 1, 0, 0},
@@ -75,11 +76,11 @@ public class Model {
     public void solveMap() {
         if (map == null)
             generateMap(0, 6);
-        bfsRun();
+        agent = new Position(0, 0);
+//        bfsRun();
 //        generateMap(0, 0);
 //        if (agent == null)
-//        agent = new Position(1, 1);
-//        AstarRun();
+        AstarRun();
     }
 
 
@@ -134,29 +135,32 @@ public class Model {
                     totalTime += (finishTime - startTime) / 1000000.0;
 
                     //            csvResults[3] = Number of terrain positions in the map
-                    csvResults[3] = "" + problem.getNumberOfPositions();
-                    //csvResults[4] = the Algorithm used for this run
-                    csvResults[4] = "" + problem.getNumberOfPositions();
-                    //csvResults[5] = Solver 's Name
-                    csvResults[5] = "" + solver.getSolverName();
+                    csvResults[4] = Integer.toString(problem.getNumberOfPositions());
+                    //csvResults[4] = Solver's Name
+                    csvResults[3] = solver.getSolverName();
+                    //csvResults[5] = Heuristic (if available)
+//                    csvResults[5] = " ";
+                    csvResults[5] = problem.getHeuristicName();
                     //csvResults[6] = Time took to finish the run
-                    csvResults[6] = "" + totalTime;
+                    csvResults[6] = Double.toString(totalTime);
                     //csvResults[7] = Number of Generated Nodes
-                    csvResults[7] = "" + solver.generated;
+                    csvResults[7] = Integer.toString(solver.generated);
                     //csvResults[8] = Number of Duplicate Nodes
-                    csvResults[8] = "" + solver.duplicates;
+                    csvResults[8] = Integer.toString(solver.duplicates);
                     //csvResults[9] = Number of Expanded Nodes
-                    csvResults[9] = "" + solver.expanded;
+                    csvResults[9] = Integer.toString(solver.expanded);
                     //csvResults[10] = threshold( if available)
-                    csvResults[10] = "";
+                    csvResults[10] = "0";
                     //csvResults[11] = Max leaves count ( if available)
-                    csvResults[11] = "";
+                    csvResults[11] = "100";
                     //csvResults[12] = Solution Length
-                    csvResults[12] = "" + solution.size();
+                    csvResults[12] = Integer.toString(solution.size());
                     //csvResults[13] = Start Position
-                    csvResults[13] = problem.getStartPosition().toString();
+                    csvResults[13] = problem.getStartPosition().toString().replace(",",";");
                     // csvResults[14] = Line of Sight method
                     csvResults[14] = problem.getVisualAlgorithm();
+                    // csvResults[15] = Root H (heuristic value)
+                    csvResults[15] = Double.toString(ASearch.rootH);
                     RoomMapCSVWriter.writeToCSV("Results.csv", csvResults);
                 } else {                // invalid solution
                     // System.out.println("Invalid solution.");

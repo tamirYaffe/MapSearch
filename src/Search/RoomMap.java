@@ -27,8 +27,8 @@ public class RoomMap implements IProblem {
         self = new RoomMapService(this,room);
         this.startPosition = new Position(startPosition);
 //        heuristic = new RoomMapCountHeuristic();
-        heuristic = new RoomMapSingletonHeuristic();
-//        heuristic = new RoomMapMSTHeuristic();
+//        heuristic = new RoomMapSingletonHeuristic();
+        heuristic = new RoomMapMSTHeuristic();
 //        heuristic = new RoomMapTSPHeuristic();
 //        heuristic = new RoomMapUnseenSCCHeuristic();
     }
@@ -94,5 +94,9 @@ public class RoomMap implements IProblem {
 
     public String getVisualAlgorithm(){
         return self.getVisualAlgorithm();
+    }
+
+    public String getHeuristicName() {
+        return heuristic.getClass().getSimpleName();
     }
 }

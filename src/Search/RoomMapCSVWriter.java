@@ -13,11 +13,12 @@ public class RoomMapCSVWriter {
         File file = new File(fileName);
         FileWriter output = null;
         try {
-            output = new FileWriter(file);
+            output = new FileWriter(file,true);
             CSVWriter write = new CSVWriter(output,CSVWriter.DEFAULT_SEPARATOR,CSVWriter.NO_QUOTE_CHARACTER,CSVWriter.DEFAULT_LINE_END);
             write.writeNext(record);
-            write.flush();
+//            write.flush();
             write.close();
+            System.out.println("\radded results to: "+fileName);
         } catch (IOException e) {
             e.printStackTrace();
         }
