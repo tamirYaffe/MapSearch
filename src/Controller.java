@@ -25,6 +25,7 @@ public class Controller {
     public TextArea solution;
 
 
+
     public void setModel(Model model) {
         this.model = model;
         solution.setWrapText(true);
@@ -71,7 +72,7 @@ public class Controller {
         File file = loadMapFile(path);
         if (file != null) {
 //            model.loadMap(new StringMapGenerator().generate(file),new Position(22,13));
-            model.loadMap(new StringMapGenerator().generate(file));
+            model.loadMap(new StringMapGenerator().generate(file),file.getName());
             mapGrid.setMap(model.map, model.agent);
         }
         event.consume();

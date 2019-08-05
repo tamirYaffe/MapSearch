@@ -9,6 +9,7 @@ abstract public class ASearch {
     public static int expanded;
     public static int generated;
     public static int duplicates;
+    public static double rootH = 0.0;
 
     public List<IProblemMove> solve
             (
@@ -27,7 +28,8 @@ abstract public class ASearch {
             ) {
         initLists();
         ASearchNode Vs = createSearchRoot(problemState);
-        System.out.println("Root.H: " + Vs.getH());
+        rootH = Vs.getH();
+        System.out.println("Root.H: " + rootH);
         ASearchNode current = null;
         addToOpen(Vs);
         expanded = 0;
@@ -57,10 +59,10 @@ abstract public class ASearch {
                 }
             }
             addToClosed(current);
-//			System.out.println(current._currentProblemState);
+            System.out.println(current._currentProblemState);
             expanded++;
 //            if (expanded % 1000 == 0 || (System.currentTimeMillis() - start) % 1000 < 50)
-                System.out.print("\rexpanded: " + expanded + "\tgenerated: " + generated + "\tduplicates: " + duplicates + "\t\tg: " + current.getG() + "\t\th: " + current.getH() + "\t\tf: " + (current.getF()) + "\t\tTime: " + (System.currentTimeMillis() - start) + "ms");
+//                System.out.print("\rexpanded: " + expanded + "\tgenerated: " + generated + "\tduplicates: " + duplicates + "\t\tg: " + current.getG() + "\t\th: " + current.getH() + "\t\tf: " + (current.getF()) + "\t\tTime: " + (System.currentTimeMillis() - start) + "ms");
 //            System.out.println("g: "+current.getG()+"\th: "+current.getH()+"\tf: "+(current.getF())+(current.getH()>31-current.getG()?"\t Not Admissible!!!":""));
         }
         return null;

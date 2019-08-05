@@ -22,7 +22,7 @@ public class RoomMapCountHeuristic implements IHeuristic {
 
     private double computeH2(RoomMap r, RoomMapState s) {
         double h = 0;
-        double threshold = 0.2;
+        double threshold = 0.3;
         TreeMap<Position, HashSet<Position>> watchedDictionary = r.getWatchedDictionary();
         for (Map.Entry<Position, HashSet<Position>> entry : watchedDictionary.entrySet()) {
             Position nextRarePosition = entry.getKey();

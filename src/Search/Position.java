@@ -92,6 +92,6 @@ public class Position {
 
     @Override
     public String toString() {
-        return "Position: (" + x + "," + y + ")";
+        return "(" + x + "," + y + ")";
     }
 }

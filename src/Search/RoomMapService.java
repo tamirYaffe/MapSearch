@@ -22,6 +22,8 @@ public class RoomMapService {
     private HashMap<Position, HashSet<Position>> visualDictionary;
     private HashMap<Position, HashSet<Double>> visualLineDictionary;
     private int totalWatches;
+    VisualLineOfSightAdapter a = new VisualLineOfSightAdapter(new EightWayLos());
+//    VisualLineOfSightAdapter a = new VisualLineOfSightAdapter(new BresLos(false));
     public static ExampleBoard b;
 
     public RoomMapService(RoomMap roomMap) {
@@ -70,7 +72,8 @@ public class RoomMapService {
         }
         numOfPositions = visualDictionary.size();
         b.resetVisitedAndMarks();
-        BresLos a = new BresLos(false);
+
+//        BresLos a = new BresLos(false);
 
         //for each position add to all other counters it's watch (+1)
         for (Position watchingPosition : tempWatchedDictinary.keySet()) {
@@ -135,5 +138,9 @@ public class RoomMapService {
 
     public HashMap<Position, HashSet<Double>> getVisualLineDictionary() {
         return visualLineDictionary;
+    }
+
+    public String getVisualAlgorithm() {
+        return a.getLosName();
     }
 }
