@@ -155,7 +155,7 @@ public class Model {
                     //csvResults[10] = threshold( if available)
                     csvResults[10] = "0";
                     //csvResults[11] = Max leaves count ( if available)
-                    csvResults[11] = "100";
+                    csvResults[11] = "5";
                     //csvResults[12] = Solution Length
                     csvResults[12] = Integer.toString(solution.size());
                     //csvResults[13] = Start Position
@@ -222,19 +222,23 @@ public class Model {
     }
 
     public void showNextMove() {
-        solutionIndex++;
-        if (solutionIndex == solutionList.size())
-            solutionIndex = 0;
-        Position nextPosition = solutionList.get(solutionIndex);
-        agent = new Position(nextPosition);
+        if (!solutionList.isEmpty()) {
+            solutionIndex++;
+            if (solutionIndex == solutionList.size())
+                solutionIndex = 0;
+            Position nextPosition = solutionList.get(solutionIndex);
+            agent = new Position(nextPosition);
+        }
     }
 
     public void showBeforeMove() {
-        solutionIndex--;
-        if (solutionIndex == -1)
-            solutionIndex = solutionList.size() - 1;
-        Position nextPosition = solutionList.get(solutionIndex);
-        agent = new Position(nextPosition);
+        if (!solutionList.isEmpty()) {
+            solutionIndex--;
+            if (solutionIndex == -1)
+                solutionIndex = solutionList.size() - 1;
+            Position nextPosition = solutionList.get(solutionIndex);
+            agent = new Position(nextPosition);
+        }
     }
 
     public void showAllSolution() {

@@ -25,7 +25,6 @@ public class Controller {
     public TextArea solution;
 
 
-
     public void setModel(Model model) {
         this.model = model;
         solution.setWrapText(true);
@@ -72,7 +71,7 @@ public class Controller {
         File file = loadMapFile(path);
         if (file != null) {
 //            model.loadMap(new StringMapGenerator().generate(file),new Position(22,13));
-            model.loadMap(new StringMapGenerator().generate(file),file.getName());
+            model.loadMap(new StringMapGenerator().generate(file), file.getName());
             mapGrid.setMap(model.map, model.agent);
         }
         event.consume();
@@ -109,6 +108,14 @@ public class Controller {
         double y = mouseEvent.getY() / sizeY;
         xIndex.setText("X: " + (int) x);
         yIndex.setText("Y: " + (int) y);
+        if (solution.getText() != "") {
+            if (mouseEvent.isShiftDown()) {
+                model.showBeforeMove();
+            } else {
+                model.showNextMove();
+            }
+            mapGrid.setMap(model.map, model.agent);
+        }
     }
 
     public void KeyPressed(KeyEvent keyEvent) {
