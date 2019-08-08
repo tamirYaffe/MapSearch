@@ -76,7 +76,8 @@ public class Model {
     public void solveMap() {
         if (map == null)
             generateMap(0, 6);
-//        agent = new Position(0, 0);
+        agent = new Position(7,19);
+//        agent = new Position(13,19);
 //        bfsRun();
 //        generateMap(0, 0);
 //        if (agent == null)
