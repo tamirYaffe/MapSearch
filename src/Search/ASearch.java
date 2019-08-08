@@ -35,7 +35,9 @@ abstract public class ASearch {
         expanded = 0;
         generated = 0;
         duplicates = 0;
+        boolean admissible = true;
         double start = System.currentTimeMillis();
+
 
         while (openSize() > 0) {
             current = getBest();
@@ -59,11 +61,12 @@ abstract public class ASearch {
                 }
             }
             addToClosed(current);
-            System.out.println(current._currentProblemState);
+//            System.out.println(current._currentProblemState);
             expanded++;
 //            if (expanded % 1000 == 0 || (System.currentTimeMillis() - start) % 1000 < 50)
-//                System.out.print("\rexpanded: " + expanded + "\tgenerated: " + generated + "\tduplicates: " + duplicates + "\t\tg: " + current.getG() + "\t\th: " + current.getH() + "\t\tf: " + (current.getF()) + "\t\tTime: " + (System.currentTimeMillis() - start) + "ms");
-//            System.out.println("g: "+current.getG()+"\th: "+current.getH()+"\tf: "+(current.getF())+(current.getH()>31-current.getG()?"\t Not Admissible!!!":""));
+            if (current.getH() > 39 - current.getG()) admissible = false;
+            System.out.print("\rexpanded: " + expanded + "\tgenerated: " + generated + "\tduplicates: " + duplicates + "\t\tg: " + current.getG() + "\t\th: " + current.getH() + "\t\tf: " + (current.getF()) + "\t\tTime: " + (System.currentTimeMillis() - start) + "ms" + (admissible ? "\t Admissible" : "\t Not Admissible!!!"));
+//            System.out.print("\rg: " + current.getG() + "\th: " + current.getH() + "\tf: " + (current.getF()) + (admissible? "\t Admissible" : "\t Not Admissible!!!"));
         }
         return null;
     }

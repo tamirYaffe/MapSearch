@@ -36,6 +36,7 @@ public class RoomMapGraphAdapter {
     private Graph<PositionVertex, UndirectedWeightedEdge> graph;
     private HashMap<Position, PositionVertex> prunnableVertices;
     private HashMap<Position, PositionVertex> unPrunnableVertices;
+    public static final int HUGE_DOUBLE_VALUE = 0x7fffff00;
 
     public RoomMapGraphAdapter(TreeMap<Position, HashSet<Position>> watchedDictionary, HashMap<Position, HashSet<Double>> visualLineDictionary, RoomMapState s, double threshold, int maxLeavesCount) {
         graph = new DefaultUndirectedWeightedGraph<>(UndirectedWeightedEdge.class);
@@ -156,13 +157,20 @@ public class RoomMapGraphAdapter {
         PositionVertex start = new PositionVertex(new Position(), PositionVertex.TYPE.PRUNEABLE);
         graph.addVertex(start);
         for (PositionVertex vertex : graph.vertexSet()) {
+            if (vertex.getPosition().equals(startPosition)){
+                UndirectedWeightedEdge edge = graph.addEdge(start, vertex);
+                graph.setEdgeWeight(edge, 0);
+                continue;
+            }
             UndirectedWeightedEdge edge = graph.addEdge(start, vertex);
-            graph.setEdgeWeight(edge, 0);
+//            graph.setEdgeWeight(edge, 0);
+            graph.setEdgeWeight(edge, HUGE_DOUBLE_VALUE);
         }
         graph.removeEdge(start, start);
         TwoOptHeuristicTSP<PositionVertex, UndirectedWeightedEdge> twoOptHeuristicTSP = new TwoOptHeuristicTSP<>();
 
-        return twoOptHeuristicTSP.getTour(graph).getWeight();
+//        return twoOptHeuristicTSP.getTour(graph).getWeight();
+        return twoOptHeuristicTSP.getTour(graph).getWeight()-HUGE_DOUBLE_VALUE;
 
     }
 

@@ -28,8 +28,8 @@ public class RoomMap implements IProblem {
         this.startPosition = new Position(startPosition);
 //        heuristic = new RoomMapCountHeuristic();
 //        heuristic = new RoomMapSingletonHeuristic();
-        heuristic = new RoomMapMSTHeuristic();
-//        heuristic = new RoomMapTSPHeuristic();
+//        heuristic = new RoomMapMSTHeuristic();
+        heuristic = new RoomMapTSPHeuristic();
 //        heuristic = new RoomMapUnseenSCCHeuristic();
     }
 
