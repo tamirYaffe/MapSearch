@@ -1,34 +1,26 @@
-package Search;
+package Search.Jump;
 
 
-import javafx.geometry.Pos;
-import org.jgrapht.Graph;
-import rlforj.examples.ExampleBoard;
-import rlforj.los.BresLos;
+import Search.*;
 
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.TreeMap;
 
 
-public class RoomMap implements IProblem {
-    protected Position startPosition;
-    protected IHeuristic heuristic;  //Room problem heuristic
-    private RoomMapService self;
+public class RoomMapJump extends RoomMap implements IProblem {
 
 
-    public RoomMap() {
-        heuristic = new RoomMapHeuristic();
+    public RoomMapJump() {
+        super();
     }
 
 
-    public RoomMap(int[][] room, Position startPosition) {
-        self = new RoomMapService(this,room);
-        this.startPosition = new Position(startPosition);
+    public RoomMapJump(int[][] room, Position startPosition) {
+        super(room,startPosition);
 //        heuristic = new RoomMapCountHeuristic();
 //        heuristic = new RoomMapSingletonHeuristic();
-        heuristic = new RoomMapMSTHeuristic();
+        super.heuristic = new RoomMapJumpMSTHeuristic();
 //        heuristic = new RoomMapTSPHeuristic();
 //        heuristic = new RoomMapUnseenSCCHeuristic();
     }
@@ -36,7 +28,7 @@ public class RoomMap implements IProblem {
 
 
     public int[][] getRoomMap() {
-        return self.getRoomMap();
+        return super.getRoomMap();
     }
 
     public Position getStartPosition() {
@@ -49,7 +41,7 @@ public class RoomMap implements IProblem {
 
     @Override
     public IProblemState getProblemState() {
-        return new RoomMapState(this, startPosition, getVisualNeighbors(startPosition), null);
+        return new RoomMapJumpState(this, startPosition, getVisualNeighbors(startPosition), null);
     }
 
     /**
@@ -59,19 +51,19 @@ public class RoomMap implements IProblem {
      * @return - HashSet of Seen Positions
      */
     public HashSet<Position> getVisualNeighbors(Position position) {
-        return self.getVisualNeighbors(position);
+        return super.getVisualNeighbors(position);
     }
 
     public int getNumberOfPositions() {
-        return self.getNumberOfPositions();
+        return super.getNumberOfPositions();
     }
 
     public HashMap<Position, HashSet<Position>> getVisualDictionary() {
-        return self.getVisualDictionary();
+        return super.getVisualDictionary();
     }
 
     public int getTotalWatches() {
-        return self.getTotalWatches();
+        return super.getTotalWatches();
     }
 
     @Override
@@ -85,15 +77,15 @@ public class RoomMap implements IProblem {
     }
 
     public TreeMap<Position, HashSet<Position>> getWatchedDictionary() {
-        return self.getWatchedDictionary();
+        return super.getWatchedDictionary();
     }
 
     public HashMap<Position, HashSet<Double>> getVisualLineDictionary() {
-        return self.getVisualLineDictionary();
+        return super.getVisualLineDictionary();
     }
 
     public String getVisualAlgorithm(){
-        return self.getVisualAlgorithm();
+        return super.getVisualAlgorithm();
     }
 
     public String getHeuristicName() {

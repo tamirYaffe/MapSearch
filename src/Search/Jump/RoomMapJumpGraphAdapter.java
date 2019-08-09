@@ -1,27 +1,21 @@
-package Search;
+package Search.Jump;
 
+import Search.DistanceService;
+import Search.Position;
+import Search.PositionVertex;
+import Search.UndirectedWeightedEdge;
 import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
 import com.mxgraph.layout.mxCircleLayout;
-import com.mxgraph.layout.mxFastOrganicLayout;
 import com.mxgraph.layout.mxIGraphLayout;
 import com.mxgraph.util.mxCellRenderer;
-import javafx.util.Pair;
 import org.jgrapht.Graph;
-import org.jgrapht.GraphPath;
-import org.jgrapht.alg.connectivity.ConnectivityInspector;
 import org.jgrapht.Graphs;
-import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
-import org.jgrapht.alg.interfaces.SpanningTreeAlgorithm;
-import org.jgrapht.alg.spanning.PrimMinimumSpanningTree;
 import org.jgrapht.alg.tour.TwoOptHeuristicTSP;
 import org.jgrapht.ext.JGraphXAdapter;
-import org.jgrapht.graph.AbstractBaseGraph;
 import org.jgrapht.graph.DefaultUndirectedWeightedGraph;
-import org.jgrapht.graph.DirectedWeightedMultigraph;
-import org.jgrapht.graph.Multigraph;
-import org.jgrapht.util.*;
-import rlforj.examples.ExampleBoard;
-import rlforj.los.BresLos;
+import org.jgrapht.util.FibonacciHeap;
+import org.jgrapht.util.FibonacciHeapNode;
+import org.jgrapht.util.VertexToIntegerMapping;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -29,18 +23,16 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Array;
-import java.util.*;
 import java.util.List;
-import static Search.DistanceService.manhattanDistance;
-import static Search.DistanceService.minPathWeight;
+import java.util.*;
 
-public class RoomMapGraphAdapter {
+public class RoomMapJumpGraphAdapter {
     private Graph<PositionVertex, UndirectedWeightedEdge> graph;
     private HashMap<Position, PositionVertex> prunnableVertices;
     private HashMap<Position, PositionVertex> unPrunnableVertices;
     public static final int HUGE_DOUBLE_VALUE = 0x7fffff00;
 
-    public RoomMapGraphAdapter(TreeMap<Position, HashSet<Position>> watchedDictionary, HashMap<Position, HashSet<Double>> visualLineDictionary, RoomMapState s, double threshold, int maxLeavesCount) {
+    public RoomMapJumpGraphAdapter(TreeMap<Position, HashSet<Position>> watchedDictionary, HashMap<Position, HashSet<Double>> visualLineDictionary, RoomMapJumpState s, double threshold, int maxLeavesCount) {
         graph = new DefaultUndirectedWeightedGraph<>(UndirectedWeightedEdge.class);
         prunnableVertices = new HashMap<>();
         unPrunnableVertices = new HashMap<>();
@@ -83,7 +75,7 @@ public class RoomMapGraphAdapter {
     }
 
 
-    private void addAgentToGraph(RoomMapState s) {
+    private void addAgentToGraph(RoomMapJumpState s) {
         Position agentPosition = s.getPosition();
 //        ShortestPathAlgorithm.SingleSourcePaths<Position, UndirectedWeightedEdge> agentPaths=DistanceService.getPositionPaths(agentPosition);
         PositionVertex agentVertex = new PositionVertex(agentPosition, PositionVertex.TYPE.UNPRUNNABLE);
@@ -111,9 +103,10 @@ public class RoomMapGraphAdapter {
         }
     }
 
-    private void addVerticesToGraph(TreeMap<Position, HashSet<Position>> watchedDictionary, HashMap<Position, HashSet<Double>> visualLineDictionary, RoomMapState s, double threshold, int maxLeavesCount) {
+    private void addVerticesToGraph(TreeMap<Position, HashSet<Position>> watchedDictionary, HashMap<Position, HashSet<Double>> visualLineDictionary, RoomMapJumpState s, double threshold, int maxLeavesCount) {
         for (Map.Entry<Position, HashSet<Position>> entry : watchedDictionary.entrySet()) {
             Position key = entry.getKey();
+            if (s.getSeen().contains(key))continue;
             HashSet<Position> value = entry.getValue();
             double weight = 1.0 / visualLineDictionary.get(key).size();
             if (weight < threshold || maxLeavesCount <= 0|| prunnableVertices.size() == watchedDictionary.size()) break;
@@ -126,7 +119,7 @@ public class RoomMapGraphAdapter {
             }
             if (skip) continue;
 //            if (!s.getSeen().contains(key)) {
-            if (!s.getSeen().contains(key) && !prunnableVertices.containsKey(key)) {
+            if (!prunnableVertices.containsKey(key)) {
                 maxLeavesCount--;
                 PositionVertex watchedVertex = new PositionVertex(key, PositionVertex.TYPE.UNPRUNNABLE);
                 unPrunnableVertices.put(key, watchedVertex);
@@ -156,8 +149,8 @@ public class RoomMapGraphAdapter {
         return unPrunnableVertices;
     }
 
-    public double getPrimMSTWeight() {
-        return getSpanningTree();
+    public double getPrimMSTWeight(RoomMapJumpState s) {
+        return getSpanningTree(s);
 //        return new PrimMinimumSpanningTree<>(graph).getSpanningTree().getWeight();
     }
 
@@ -183,7 +176,7 @@ public class RoomMapGraphAdapter {
     }
 
 
-    public double getSpanningTree() {
+    public double getSpanningTree(RoomMapJumpState s) {
         Set<UndirectedWeightedEdge> minimumSpanningTreeEdgeSet = new HashSet<>(graph.vertexSet().size());
         double spanningTreeWeight = 0d;
 
@@ -241,6 +234,36 @@ public class RoomMapGraphAdapter {
                 }
             }
         }
+//        Graph<PositionVertex, UndirectedWeightedEdge> g = new DefaultUndirectedWeightedGraph<>(UndirectedWeightedEdge.class);
+////        Graph<PositionVertex, UndirectedWeightedEdge> graph2 = graph;
+////        graph = new DefaultUndirectedWeightedGraph<>(UndirectedWeightedEdge.class);
+//        for (UndirectedWeightedEdge edge : minimumSpanningTreeEdgeSet) {
+//            g.addVertex(edge.getSource());
+//            g.addVertex(edge.getTarget());
+//            g.addEdge(edge.getSource(),edge.getTarget());
+//            g.setEdgeWeight(edge.getSource(),edge.getTarget(),graph.getEdge(edge.getSource(),edge.getTarget()).getWeight());
+//        }
+//        graph = g;
+//        try {
+////            File imgFile = new File("resources/graph.png");
+//            File imgFile = new File("resources/MST.png");
+//            imgFile.createNewFile();
+//
+//            JGraphXAdapter<PositionVertex, UndirectedWeightedEdge> graphAdapter =
+//                    new JGraphXAdapter<PositionVertex, UndirectedWeightedEdge>(graph);
+////            mxIGraphLayout layout = new mxCircleLayout(graphAdapter);
+//            mxHierarchicalLayout layout = new mxHierarchicalLayout(graphAdapter);
+//            layout.setInterHierarchySpacing(layout.getInterHierarchySpacing() * 2);
+//            layout.setInterRankCellSpacing(layout.getInterRankCellSpacing() * 2);
+//            layout.execute(graphAdapter.getDefaultParent());
+//            BufferedImage image =
+//                    mxCellRenderer.createBufferedImage(graphAdapter, null, 5, Color.WHITE, true, null);
+//            imgFile = new File("resources/MST.png");
+//            ImageIO.write(image, "PNG", imgFile);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        System.exit(0);
         return spanningTreeWeight;
     }
 
@@ -258,12 +281,11 @@ public class RoomMapGraphAdapter {
             imgFile.createNewFile();
             JGraphXAdapter<PositionVertex, UndirectedWeightedEdge> graphAdapter =
                     new JGraphXAdapter<PositionVertex, UndirectedWeightedEdge>(graph);
-            mxIGraphLayout layout = new mxFastOrganicLayout(graphAdapter);
-//            mxIGraphLayout layout = new mxCircleLayout(graphAdapter);
+            mxIGraphLayout layout = new mxCircleLayout(graphAdapter);
 //            mxHierarchicalLayout layout = new mxHierarchicalLayout(graphAdapter);
-//            layout.setInterHierarchySpacing(layout.getInterHierarchySpacing() * 10);
-//            layout.setInterRankCellSpacing(layout.getInterRankCellSpacing() * 10);
-//            layout.execute(graphAdapter.getDefaultParent());
+//            layout.setInterHierarchySpacing(layout.getInterHierarchySpacing() * 15);
+//            layout.setInterRankCellSpacing(layout.getInterRankCellSpacing() * 15);
+            layout.execute(graphAdapter.getDefaultParent());
             BufferedImage image =
                     mxCellRenderer.createBufferedImage(graphAdapter, null, 2, Color.WHITE, true, null);
             imgFile = new File(path);
