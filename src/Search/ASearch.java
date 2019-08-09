@@ -28,6 +28,7 @@ abstract public class ASearch {
             ) {
         initLists();
         ASearchNode Vs = createSearchRoot(problemState);
+        System.out.println(problemState);
         rootH = Vs.getH();
         System.out.println("Root.H: " + rootH);
         ASearchNode current = null;

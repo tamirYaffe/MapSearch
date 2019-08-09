@@ -114,6 +114,7 @@ public class RoomMapGraphAdapter {
     private void addVerticesToGraph(TreeMap<Position, HashSet<Position>> watchedDictionary, HashMap<Position, HashSet<Double>> visualLineDictionary, RoomMapState s, double threshold, int maxLeavesCount) {
         for (Map.Entry<Position, HashSet<Position>> entry : watchedDictionary.entrySet()) {
             Position key = entry.getKey();
+            if (s.getSeen().contains(key))continue;
             HashSet<Position> value = entry.getValue();
             double weight = 1.0 / visualLineDictionary.get(key).size();
             if (weight < threshold || maxLeavesCount <= 0|| prunnableVertices.size() == watchedDictionary.size()) break;
@@ -126,7 +127,7 @@ public class RoomMapGraphAdapter {
             }
             if (skip) continue;
 //            if (!s.getSeen().contains(key)) {
-            if (!s.getSeen().contains(key) && !prunnableVertices.containsKey(key)) {
+            if (!prunnableVertices.containsKey(key)) {
                 maxLeavesCount--;
                 PositionVertex watchedVertex = new PositionVertex(key, PositionVertex.TYPE.UNPRUNNABLE);
                 unPrunnableVertices.put(key, watchedVertex);

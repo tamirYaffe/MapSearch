@@ -14,15 +14,12 @@ public class RoomMapJumpMSTHeuristic implements IHeuristic {
     public double getHeuristic(IProblemState problemState) {
         if (problemState instanceof RoomMapJumpState) {
             RoomMapJumpState s = (RoomMapJumpState) problemState;
-            if (s.isGoalState()) return 0;
+//            if (s.getH()!=-1) return s.getH();
             RoomMap r = (RoomMap) s.getProblem();
             TreeMap<Position, HashSet<Position>> watchedDictionary = r.getWatchedDictionary();
             HashMap<Position, HashSet<Double>> visualLineDictionary = r.getVisualLineDictionary();
             RoomMapJumpGraphAdapter g = new RoomMapJumpGraphAdapter(watchedDictionary, visualLineDictionary, s, 0.0, 1000);
-            double h=g.getPrimMSTWeight(s);
-            if (s.nextPoints == null)
-                s.updateMST(g.getGraph(), h);
-            return h;
+            return g.getPrimMSTWeight();
         } else return Double.MAX_VALUE / 2;
     }
 }

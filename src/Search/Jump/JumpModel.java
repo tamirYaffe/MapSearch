@@ -1,6 +1,7 @@
 package Search.Jump;
 
 import Search.*;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -80,13 +81,18 @@ public class JumpModel {
     public void solveMap() {
         if (map == null)
             generateMap(0, 6);
-        agent = new Position(13,19);
+        try {
+            agent = new Position(13, 19);
+
 //        agent = new Position(13,19);
 //        bfsRun();
 //        generateMap(0, 0);
-//        if (agent == null)
         AstarJumpRun();
 //        AstarRun();
+        } catch (Exception e) {
+            agent = new Position(7, 6);
+            AstarJumpRun();
+        }
     }
 
 

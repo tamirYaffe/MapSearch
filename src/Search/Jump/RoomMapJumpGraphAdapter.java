@@ -149,8 +149,8 @@ public class RoomMapJumpGraphAdapter {
         return unPrunnableVertices;
     }
 
-    public double getPrimMSTWeight(RoomMapJumpState s) {
-        return getSpanningTree(s);
+    public double getPrimMSTWeight() {
+        return getSpanningTree();
 //        return new PrimMinimumSpanningTree<>(graph).getSpanningTree().getWeight();
     }
 
@@ -176,7 +176,7 @@ public class RoomMapJumpGraphAdapter {
     }
 
 
-    public double getSpanningTree(RoomMapJumpState s) {
+    public double getSpanningTree() {
         Set<UndirectedWeightedEdge> minimumSpanningTreeEdgeSet = new HashSet<>(graph.vertexSet().size());
         double spanningTreeWeight = 0d;
 

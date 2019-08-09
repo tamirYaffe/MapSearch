@@ -13,7 +13,7 @@ public class RoomMapJumpState implements IProblemState {
     private HashSet<Position> seen;       //seen positions
     private RoomMapJumpStep lastStep;  //last step
     private double cost = 0;
-    protected double h = 0;
+    protected double h = -1;
     protected TreeMap<Position, double[]> nextPoints;       //neighbor positions in the MST
 
 
@@ -22,7 +22,8 @@ public class RoomMapJumpState implements IProblemState {
         this.position = position;
         this.seen = seen;
         this.lastStep = lastStep;
-        new RoomMapJumpMSTHeuristic().getHeuristic(this);
+        RoomMapJumpGraphAdapter g = new RoomMapJumpGraphAdapter(roomMap.getWatchedDictionary(), roomMap.getVisualLineDictionary(), this, 0.0, 1000);
+        updateMST(g.getGraph(), g.getPrimMSTWeight());
     }
 
     public RoomMapJumpState(RoomMap roomMap, Position position, HashSet<Position> seen, RoomMapJumpStep lastStep, double cost) {
@@ -31,7 +32,8 @@ public class RoomMapJumpState implements IProblemState {
         this.seen = seen;
         this.lastStep = lastStep;
         this.cost = cost + getStateLastMoveCost();
-        new RoomMapJumpMSTHeuristic().getHeuristic(this);
+        RoomMapJumpGraphAdapter g = new RoomMapJumpGraphAdapter(roomMap.getWatchedDictionary(), roomMap.getVisualLineDictionary(), this, 0.0, 1000);
+        updateMST(g.getGraph(), g.getPrimMSTWeight());
     }
 
     public RoomMapJumpState(RoomMap roomMap, Position vertexPosition) {
@@ -173,7 +175,7 @@ public class RoomMapJumpState implements IProblemState {
         return seen;
     }
 
-    public void updateMST(Graph<PositionVertex, UndirectedWeightedEdge> g, double h) {
+    private void updateMST(Graph<PositionVertex, UndirectedWeightedEdge> g, double h) {
         this.h = h;
         HashMap<Position, double[]> tmpNext = new HashMap<>();
         for (UndirectedWeightedEdge edge : g.outgoingEdgesOf(new PositionVertex(position, PositionVertex.TYPE.UNPRUNNABLE))) {
@@ -195,5 +197,9 @@ public class RoomMapJumpState implements IProblemState {
             }
         });
         nextPoints.putAll(tmpNext);
+    }
+
+    public double getH() {
+        return h;
     }
 }
