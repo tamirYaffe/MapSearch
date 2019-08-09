@@ -1,7 +1,7 @@
 package Search;
 
 import org.jgrapht.Graph;
-import org.jgrapht.alg.BlockCutpointGraph;
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.connectivity.BiconnectivityInspector;
 import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -82,6 +82,10 @@ public class DistanceService {
 
     public static double minPathWeight(Position source, Position sink) {
         return dijkstraShortestPath.getPathWeight(source, sink);
+    }
+
+    public static GraphPath minPath(Position source, Position sink) {
+        return dijkstraShortestPath.getPath(source,sink);
     }
 
     public static ShortestPathAlgorithm.SingleSourcePaths<Position, UndirectedWeightedEdge> getPositionPaths(Position position) {

@@ -1,4 +1,5 @@
 
+import Search.Jump.JumpModel;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -9,7 +10,8 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Model model = new Model();
+        JumpModel model = new JumpModel();
+//        Model model = new Model();
 
         primaryStage.setTitle("Map Search");
         FXMLLoader fxmlLoader = new FXMLLoader();
@@ -19,7 +21,8 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         //--------------
         Controller controller = fxmlLoader.getController();
-        controller.setModel(model);
+//        controller.setModel(model);
+        controller.setJumpModel(model);
         primaryStage.show();
 
     }

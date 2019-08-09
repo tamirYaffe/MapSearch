@@ -1,15 +1,19 @@
+package Search.Jump;
+
 import Search.*;
-import Search.Jump.RoomMapJump;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
-public class Model {
-    int[][] map = null;
-    String consoleString = "";
-    ArrayList<Position> solutionList = new ArrayList<>();
-    int solutionIndex = 0;
-    Position agent;
+
+public class JumpModel {
+    public int[][] map = null;
+    public String consoleString = "";
+    public ArrayList<Position> solutionList = new ArrayList<>();
+    public int solutionIndex = 0;
+    public Position agent;
 
     /**
      * csvResults is an array that represents the current run's record for the csv
@@ -77,12 +81,18 @@ public class Model {
     public void solveMap() {
         if (map == null)
             generateMap(0, 6);
-//        agent = new Position(13,19);
+        try {
+            agent = new Position(13, 19);
+
 //        agent = new Position(13,19);
 //        bfsRun();
 //        generateMap(0, 0);
-//        if (agent == null)
-        AstarRun();
+        AstarJumpRun();
+//        AstarRun();
+        } catch (Exception e) {
+            agent = new Position(7, 6);
+            AstarJumpRun();
+        }
     }
 
 
@@ -104,7 +114,14 @@ public class Model {
         solveInstances(solvers, "roomMap");
     }
 
-
+    private void AstarJumpRun() {
+//        System.out.println("---------- run 2 ----------");
+        consoleString = "------ run 3 ------";
+        List<ASearch> solvers = new ArrayList<ASearch>();
+        AStarSearch aStar = new AStarSearch();
+        solvers.add(aStar);
+        solveInstances(solvers, "roomMapJump");
+    }
 
 
     private void solveInstances(List<ASearch> solvers, String instancesType) {
@@ -193,7 +210,7 @@ public class Model {
         double cost = 0;
         IProblemState currentState = instance.getProblemState();
         for (IProblemMove move : solution) {
-            currentState = currentState.performMove((RoomStep) move);
+            currentState = currentState.performMove((RoomMapJumpStep) move);
             if (currentState.getStateLastMove() != null)
                 cost += currentState.getStateLastMoveCost();
         }
@@ -207,12 +224,15 @@ public class Model {
         solutionIndex = 0;
 
         IProblemState currentState = problem.getProblemState();
-        solutionList.add(new Position(((RoomMapState) currentState).getPosition()));
+        RoomMapJumpState s = (RoomMapJumpState) currentState;
+//        if (s.equals(problem.getStartPosition()))
+//        solutionList.addAll(Arrays.asList(((RoomMapJumpStep) s.getStateLastMove()).path));
 //        map[((RoomMapState) currentState).getPosition().getY()][((RoomMapState) currentState).getPosition().getX()] = 2;
         for (IProblemMove move : solution) {
-            RoomStep m = (RoomStep) move;
+            RoomMapJumpStep m = (RoomMapJumpStep) move;
             currentState = currentState.performMove(m);
-            solutionList.add(new Position(((RoomMapState) currentState).getPosition()));
+            solutionList.addAll(Arrays.asList(((RoomMapJumpStep) ((RoomMapJumpState) currentState).getStateLastMove()).path));
+//            solutionList.add(new Position(((RoomMapJumpState) currentState).getPosition()));
 //        map[((RoomMapState) currentState).getPosition().getY()][((R.oomMapState) currentState).getPosition().getX()] = 2;
         }
     }
@@ -220,7 +240,7 @@ public class Model {
     public void printSolution(IProblem instance, List<IProblemMove> solution) {
         IProblemState currentState = instance.getProblemState();
         for (IProblemMove move : solution) {
-            RoomStep m = (RoomStep) move;
+            RoomMapJumpStep m = (RoomMapJumpStep) move;
             currentState = currentState.performMove(m);
             System.out.println(currentState);
         }
