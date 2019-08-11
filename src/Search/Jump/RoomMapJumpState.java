@@ -3,7 +3,6 @@ package Search.Jump;
 
 import Search.*;
 import org.jgrapht.Graph;
-import org.jgrapht.GraphPath;
 
 import java.util.*;
 
@@ -22,8 +21,9 @@ public class RoomMapJumpState implements IProblemState {
         this.position = position;
         this.seen = seen;
         this.lastStep = lastStep;
-        RoomMapJumpGraphAdapter g = new RoomMapJumpGraphAdapter(roomMap.getWatchedDictionary(), roomMap.getVisualLineDictionary(), this, 0.0, 1000);
-        updateMST(g.getGraph(), g.getPrimMSTWeight());
+        RoomMapJumpGraphAdapter g = new RoomMapJumpGraphAdapter(roomMap.getWatchedDictionary(), roomMap.getVisualLineDictionary(), this);
+//        RoomMapJumpGraphAdapter g = new RoomMapJumpGraphAdapter(roomMap.getWatchedDictionary(), roomMap.getVisualLineDictionary(), this, 0.0, 1000);
+        updateNeighbors(g.getGraph());
     }
 
     public RoomMapJumpState(RoomMap roomMap, Position position, HashSet<Position> seen, RoomMapJumpStep lastStep, double cost) {
@@ -32,8 +32,9 @@ public class RoomMapJumpState implements IProblemState {
         this.seen = seen;
         this.lastStep = lastStep;
         this.cost = cost + getStateLastMoveCost();
-        RoomMapJumpGraphAdapter g = new RoomMapJumpGraphAdapter(roomMap.getWatchedDictionary(), roomMap.getVisualLineDictionary(), this, 0.0, 1000);
-        updateMST(g.getGraph(), g.getPrimMSTWeight());
+        RoomMapJumpGraphAdapter g = new RoomMapJumpGraphAdapter(roomMap.getWatchedDictionary(), roomMap.getVisualLineDictionary(), this);
+//        RoomMapJumpGraphAdapter g = new RoomMapJumpGraphAdapter(roomMap.getWatchedDictionary(), roomMap.getVisualLineDictionary(), this, 0.0, 1000);
+        updateNeighbors(g.getGraph());
     }
 
     public RoomMapJumpState(RoomMap roomMap, Position vertexPosition) {
@@ -70,6 +71,13 @@ public class RoomMapJumpState implements IProblemState {
         for (Position p : seen) {
             room[p.getY()][p.getX()] = "///"; //mark as seen on 'room'
         }
+
+        if (nextPoints != null) {
+            for (Position p : nextPoints.keySet()) {
+                room[p.getY()][p.getX()] = "@@@"; //mark as seen on 'room'
+            }
+        }
+
         room[position.getY()][position.getX()] = "$$$";
 
         //agent's current position
@@ -116,8 +124,15 @@ public class RoomMapJumpState implements IProblemState {
 
     private List<RoomMapJumpStep> getLegalMoves() {
         List<RoomMapJumpStep> moveList = new ArrayList<>();
-        for (Position MSTneighbors : nextPoints.keySet()) {
-            moveList.add(new RoomMapJumpStep(position, MSTneighbors));
+        HashSet<RoomMapJumpStep> removeMovesList = new HashSet<>();
+
+        for (Position neighbor : nextPoints.keySet()) {
+            RoomMapJumpStep step = new RoomMapJumpStep(position, neighbor);
+//            for (Position position1 : step.path) {
+//                if (position.equals(neighbor))continue;
+//
+//            }
+            moveList.add(step);
         }
         return moveList;
     }
@@ -152,12 +167,11 @@ public class RoomMapJumpState implements IProblemState {
         int x = newPosition.getX();
         int y = newPosition.getY();
         RoomMapJumpStep roomMapJumpStep = (RoomMapJumpStep) move;
-        GraphPath path = DistanceService.minPath(roomMapJumpStep.source, roomMapJumpStep.target);
-        for (int i = 0; i < roomMapJumpStep.path.length; i++) {
-            newSeen.addAll(roomMap.getVisualNeighbors(roomMapJumpStep.path[i]));
+        for (int i = 0; i < roomMapJumpStep.path.size(); i++) {
+            newSeen.addAll(roomMap.getVisualNeighbors(roomMapJumpStep.path.get(i)));
         }
         // Create new state
-        return new RoomMapJumpState(newProblem, (Position) path.getEndVertex(), newSeen, roomMapJumpStep, cost);
+        return new RoomMapJumpState(newProblem, roomMapJumpStep.target, newSeen, roomMapJumpStep, cost);
     }
 
     private boolean outOfBoundaries(int y, int x) {
@@ -175,18 +189,22 @@ public class RoomMapJumpState implements IProblemState {
         return seen;
     }
 
-    private void updateMST(Graph<PositionVertex, UndirectedWeightedEdge> g, double h) {
-        this.h = h;
+    private void updateNeighbors(Graph<PositionVertex, UndirectedWeightedEdge> g) {
         HashMap<Position, double[]> tmpNext = new HashMap<>();
+//        for (UndirectedWeightedEdge edge : g.outgoingEdgesOf(new PositionVertex(position, PositionVertex.TYPE.PRUNEABLE))) {
         for (UndirectedWeightedEdge edge : g.outgoingEdgesOf(new PositionVertex(position, PositionVertex.TYPE.UNPRUNNABLE))) {
             Position s = edge.getSource().getPosition();
             Position t = edge.getTarget().getPosition();
-            if (!s.equals(position)) {
-                tmpNext.put(s, new double[]{edge.getWeight()});
-            } else if (!t.equals(position)) {
-                tmpNext.put(t, new double[]{edge.getWeight()});
-            }
+            tmpNext.putIfAbsent(s, new double[]{edge.getWeight()});
+            tmpNext.putIfAbsent(t, new double[]{edge.getWeight()});
+//            if (!s.equals(position)) {
+//                tmpNext.put(s, new double[]{edge.getWeight()});
+//            } else if (!t.equals(position)) {
+//                tmpNext.put(t, new double[]{edge.getWeight()});
+//            }
         }
+        tmpNext.remove(position);
+        TreeMap<Position, HashSet<Position>> watchedDictionary = roomMap.getWatchedDictionary();
         nextPoints = new TreeMap<>(new Comparator<Position>() {
             @Override
             public int compare(Position o1, Position o2) {

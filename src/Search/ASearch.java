@@ -47,20 +47,21 @@ abstract public class ASearch {
                 return current;
             }
             List<ASearchNode> neighbors = current.getNeighbors();
-//            System.out.println("\ncurrent:\nlast move: " + current.getLastMove() + "\n" + current._currentProblemState + "g: " + current.getG() + "\t\th: " + current.getH() + "\t\tf: " + (current.getF()) + "\n");
+            System.out.println("\ncurrent:\nlast move: " + current.getLastMove() + "\n" + current._currentProblemState + "g: " + current.getG() + "\t\th: " + current.getH() + "\t\tf: " + (current.getF()) + "\n");
+            int i = 0;
             for (ASearchNode Vn : neighbors) {
                 if (isClosed(Vn)) {
                     continue;
                 }
 
                 if (!isOpen(Vn)) {
-//                    System.out.println("last move: " + Vn._currentProblemState.getStateLastMove() + "\n" + Vn._currentProblemState + "g: " + Vn.getG() + "\t\th: " + Vn.getH() + "\t\tf: " + (Vn.getF()) + "\n");
+                    System.out.println("gen"+(++i)+"\nlast move: " + Vn._currentProblemState.getStateLastMove() + "\n" + Vn._currentProblemState + "g: " + Vn.getG() + "\t\th: " + Vn.getH() + "\t\tf: " + (Vn.getF()) + "\n");
                     addToOpen(Vn);
                     generated++;
                 } else {
                     duplicates++;
                     if (getOpen(Vn).getG() > Vn.getG()) {
-//                        System.out.println("last move: " + Vn._currentProblemState.getStateLastMove() + "\n" + Vn._currentProblemState + "g: " + Vn.getG() + "\t\th: " + Vn.getH() + "\t\tf: " + (Vn.getF()) + "\n");
+                        System.out.println("gen"+(++i)+"\nlast move: " + Vn._currentProblemState.getStateLastMove() + "\n" + Vn._currentProblemState + "g: " + Vn.getG() + "\t\th: " + Vn.getH() + "\t\tf: " + (Vn.getF()) + "\n");
                         addToOpen(Vn);
                         generated++;
                     }
@@ -70,7 +71,7 @@ abstract public class ASearch {
 //            System.out.println(current._currentProblemState);
             expanded++;
 //            if (expanded % 1000 == 0 || (System.currentTimeMillis() - start) % 1000 < 50)
-            if (current.getH() > 45 - current.getG()) admissible = false;
+            if (current.getH() > 90 - current.getG()) admissible = false;
             System.out.print("\rexpanded: " + expanded + "\tgenerated: " + generated + "\tduplicates: " + duplicates + "\t\tg: " + current.getG() + "\t\th: " + current.getH() + "\t\tf: " + (current.getF()) + "\t\tTime: " + (System.currentTimeMillis() - start) + "ms" + (admissible ? "\t Admissible" : "\t Not Admissible!!!"));
 //            System.out.print("\rg: " + current.getG() + "\th: " + current.getH() + "\tf: " + (current.getF()) + (admissible? "\t Admissible" : "\t Not Admissible!!!"));
         }

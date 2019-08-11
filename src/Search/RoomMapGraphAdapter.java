@@ -1,27 +1,14 @@
 package Search;
 
-import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
-import com.mxgraph.layout.mxCircleLayout;
 import com.mxgraph.layout.mxFastOrganicLayout;
 import com.mxgraph.layout.mxIGraphLayout;
 import com.mxgraph.util.mxCellRenderer;
-import javafx.util.Pair;
 import org.jgrapht.Graph;
-import org.jgrapht.GraphPath;
-import org.jgrapht.alg.connectivity.ConnectivityInspector;
 import org.jgrapht.Graphs;
-import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
-import org.jgrapht.alg.interfaces.SpanningTreeAlgorithm;
-import org.jgrapht.alg.spanning.PrimMinimumSpanningTree;
 import org.jgrapht.alg.tour.TwoOptHeuristicTSP;
 import org.jgrapht.ext.JGraphXAdapter;
-import org.jgrapht.graph.AbstractBaseGraph;
 import org.jgrapht.graph.DefaultUndirectedWeightedGraph;
-import org.jgrapht.graph.DirectedWeightedMultigraph;
-import org.jgrapht.graph.Multigraph;
 import org.jgrapht.util.*;
-import rlforj.examples.ExampleBoard;
-import rlforj.los.BresLos;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -31,8 +18,6 @@ import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.*;
 import java.util.List;
-import static Search.DistanceService.manhattanDistance;
-import static Search.DistanceService.minPathWeight;
 
 public class RoomMapGraphAdapter {
     private Graph<PositionVertex, UndirectedWeightedEdge> graph;

@@ -83,8 +83,7 @@ public class JumpModel {
             generateMap(0, 6);
         try {
             agent = new Position(13, 19);
-
-//        agent = new Position(13,19);
+//        agent = new Position(0,1);
 //        bfsRun();
 //        generateMap(0, 0);
         AstarJumpRun();
@@ -136,9 +135,9 @@ public class JumpModel {
                 consoleString += "\nSolver: " + solver.getSolverName();
                 consoleString += "\nH alg: " + (solver.getSolverName().equals("BFS") ? "None" : problem.getHeuristicName().substring(7));
                 consoleString += "\nLOS: " + problem.getVisualAlgorithm();
-                consoleString += "\nRoot H: " + (solver.getSolverName().equals("BFS") ? "None" : ASearch.rootH);
                 long startTime = System.nanoTime();
                 List<IProblemMove> solution = solver.solve(problem);
+                consoleString += "\nRoot H: " + (solver.getSolverName().equals("BFS") ? "None" : ASearch.rootH);
                 long finishTime = System.nanoTime();
                 double cost = checkSolution(problem, solution);
                 if (cost >= 0)        // valid solution
@@ -231,7 +230,7 @@ public class JumpModel {
         for (IProblemMove move : solution) {
             RoomMapJumpStep m = (RoomMapJumpStep) move;
             currentState = currentState.performMove(m);
-            solutionList.addAll(Arrays.asList(((RoomMapJumpStep) ((RoomMapJumpState) currentState).getStateLastMove()).path));
+            solutionList.addAll(((RoomMapJumpStep) ((RoomMapJumpState) currentState).getStateLastMove()).path);
 //            solutionList.add(new Position(((RoomMapJumpState) currentState).getPosition()));
 //        map[((RoomMapState) currentState).getPosition().getY()][((R.oomMapState) currentState).getPosition().getX()] = 2;
         }

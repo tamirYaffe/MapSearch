@@ -39,8 +39,108 @@ public class RoomMapJumpGraphAdapter {
         addVerticesToGraph(watchedDictionary, visualLineDictionary, s, threshold, maxLeavesCount);
         connectPrunnableVerticesInGraph();
         addAgentToGraph(s);
+//        for (Map.Entry<Position, PositionVertex> entry : unPrunnableVertices.entrySet()) {
+//            Position key = entry.getKey();
+//            PositionVertex value = entry.getValue();
+//            if (!key.equals(((RoomMapJump)s.getProblem()).getStartPosition())){
+//                graph.removeVertex(value);
+//            }
+//        }
+//        printGraph("basic constructor.png");
+//        printGraph("basic pruned constructor.png");
     }
 
+    public RoomMapJumpGraphAdapter(TreeMap<Position, HashSet<Position>> watchedDictionary, HashMap<Position, HashSet<Double>> visualLineDictionary, RoomMapJumpState roomMapJumpState) {
+        graph = new DefaultUndirectedWeightedGraph<>(UndirectedWeightedEdge.class);
+        prunnableVertices = new HashMap<>();
+        unPrunnableVertices = new HashMap<>();
+        for (Map.Entry<Position, HashSet<Position>> entry : watchedDictionary.entrySet()) {
+            Position key = entry.getKey();
+            if (roomMapJumpState.getSeen().contains(key)) continue;
+            HashSet<Position> value = entry.getValue();
+//            if (prunnableVertices.size() == watchedDictionary.size()- roomMapJumpState.getSeen().size()) break;
+            boolean skip = false;
+            for (Position position : value) {
+                if (prunnableVertices.containsKey(position)) {
+                    skip = true;
+                    break;
+                }
+            }
+            if (skip) continue;
+            if (!prunnableVertices.containsKey(key)) {
+                PositionVertex watchedVertex = new PositionVertex(key, PositionVertex.TYPE.UNPRUNNABLE);
+                unPrunnableVertices.put(key, watchedVertex);
+                for (Position position : value) {
+                    if (unPrunnableVertices.containsKey(position)) continue;
+                    PositionVertex vertex = new PositionVertex(position, PositionVertex.TYPE.PRUNEABLE);
+                    prunnableVertices.put(position, vertex);
+                    graph.addVertex(vertex);
+                }
+            }
+        }
+//        if (prunnableVertices.size() + unPrunnableVertices.size() < watchedDictionary.size() - roomMapJumpState.getSeen().size()) {
+//            for (Map.Entry<Position, HashSet<Position>> leftovers : watchedDictionary.entrySet()) {
+//                Position leftoversKey = leftovers.getKey();
+//                HashSet<Position> leftoversValue = leftovers.getValue();
+//
+//            }
+//        }
+        Position agentPosition = roomMapJumpState.getPosition();
+        PositionVertex agentVertex = new PositionVertex(agentPosition, PositionVertex.TYPE.UNPRUNNABLE);
+        graph.addVertex(agentVertex);
+        unPrunnableVertices.put(agentPosition, agentVertex);
+
+        for (Map.Entry<Position, PositionVertex> entry : prunnableVertices.entrySet()) {
+            Position key = entry.getKey();
+            if (surroundedWithJumpPoints(key, visualLineDictionary)) {
+                continue;
+            }
+            PositionVertex value = entry.getValue();
+            UndirectedWeightedEdge edge = graph.addEdge(agentVertex, value);
+            graph.setEdgeWeight(edge, DistanceService.getWeight(agentPosition, key));
+        }
+//        for (Map.Entry<Position, PositionVertex> entry1 : prunnableVertices.entrySet()) {
+//            Position key1 = entry1.getKey();
+//            PositionVertex value1 = entry1.getValue();
+//            for (Map.Entry<Position, PositionVertex> entry2 : prunnableVertices.entrySet()) {
+//                Position key2 = entry2.getKey();
+//                PositionVertex value2 = entry2.getValue();
+//                if (key1.equals(key2) || graph.containsEdge(value2, value1)) continue;
+//                UndirectedWeightedEdge edge = graph.addEdge(value1, value2);
+//                graph.setEdgeWeight(edge, DistanceService.getWeight(key1, key2));
+//            }
+//        }
+//        printGraph("constructor2.png");
+    }
+
+    private boolean surroundedWithJumpPoints(Position key, HashMap<Position, HashSet<Double>> watchedDictionary) {
+        boolean ans = true;
+        Position checkPosition = new Position(key.getY(), key.getX() - 1);
+//        if (!prunnableVertices.containsKey(checkPosition)) {
+        if (!prunnableVertices.containsKey(checkPosition) && watchedDictionary.containsKey(checkPosition)) {
+            ans = false;
+        }
+        checkPosition = new Position(key.getY(), key.getX() + 1);
+//        if (ans && !prunnableVertices.containsKey(checkPosition)) {
+        if (ans && !prunnableVertices.containsKey(checkPosition) && watchedDictionary.containsKey(checkPosition)) {
+            ans = false;
+        }
+        checkPosition = new Position(key.getY() - 1, key.getX());
+//        if (ans && !prunnableVertices.containsKey(checkPosition)) {
+        if (ans && !prunnableVertices.containsKey(checkPosition) && watchedDictionary.containsKey(checkPosition)) {
+            ans = false;
+        }
+        checkPosition = new Position(key.getY() + 1, key.getX());
+//        if (ans && !prunnableVertices.containsKey(checkPosition)) {
+        if (ans && !prunnableVertices.containsKey(checkPosition) && watchedDictionary.containsKey(checkPosition)) {
+            ans = false;
+        }
+        if (ans) {
+
+            graph.removeVertex(prunnableVertices.get(key));
+        }
+        return ans;
+    }
 
 
     public void pruneGraph() {
@@ -91,7 +191,6 @@ public class RoomMapJumpGraphAdapter {
     private void connectPrunnableVerticesInGraph() {
         for (Map.Entry<Position, PositionVertex> entry1 : prunnableVertices.entrySet()) {
             Position key1 = entry1.getKey();
-//            ShortestPathAlgorithm.SingleSourcePaths<Position, UndirectedWeightedEdge> key1Paths=DistanceService.getPositionPaths(key1);
             PositionVertex value1 = entry1.getValue();
             for (Map.Entry<Position, PositionVertex> entry2 : prunnableVertices.entrySet()) {
                 Position key2 = entry2.getKey();
@@ -106,13 +205,14 @@ public class RoomMapJumpGraphAdapter {
     private void addVerticesToGraph(TreeMap<Position, HashSet<Position>> watchedDictionary, HashMap<Position, HashSet<Double>> visualLineDictionary, RoomMapJumpState s, double threshold, int maxLeavesCount) {
         for (Map.Entry<Position, HashSet<Position>> entry : watchedDictionary.entrySet()) {
             Position key = entry.getKey();
-            if (s.getSeen().contains(key))continue;
+            if (s.getSeen().contains(key)) continue;
             HashSet<Position> value = entry.getValue();
             double weight = 1.0 / visualLineDictionary.get(key).size();
-            if (weight < threshold || maxLeavesCount <= 0|| prunnableVertices.size() == watchedDictionary.size()) break;
+            if (weight < threshold || maxLeavesCount <= 0 || prunnableVertices.size() == watchedDictionary.size())
+                break;
             boolean skip = false;
             for (Position position : value) {
-                if (prunnableVertices.containsKey(position)){
+                if (prunnableVertices.containsKey(position)) {
                     skip = true;
                     break;
                 }
@@ -158,7 +258,7 @@ public class RoomMapJumpGraphAdapter {
         PositionVertex start = new PositionVertex(new Position(), PositionVertex.TYPE.PRUNEABLE);
         graph.addVertex(start);
         for (PositionVertex vertex : graph.vertexSet()) {
-            if (vertex.getPosition().equals(startPosition)){
+            if (vertex.getPosition().equals(startPosition)) {
                 UndirectedWeightedEdge edge = graph.addEdge(start, vertex);
                 graph.setEdgeWeight(edge, 0);
                 continue;
@@ -171,7 +271,7 @@ public class RoomMapJumpGraphAdapter {
         TwoOptHeuristicTSP<PositionVertex, UndirectedWeightedEdge> twoOptHeuristicTSP = new TwoOptHeuristicTSP<>();
 
 //        return twoOptHeuristicTSP.getTour(graph).getWeight();
-        return twoOptHeuristicTSP.getTour(graph).getWeight()-HUGE_DOUBLE_VALUE;
+        return twoOptHeuristicTSP.getTour(graph).getWeight() - HUGE_DOUBLE_VALUE;
 
     }
 
