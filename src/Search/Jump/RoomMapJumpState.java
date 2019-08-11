@@ -3,6 +3,7 @@ package Search.Jump;
 
 import Search.*;
 import org.jgrapht.Graph;
+import org.jgrapht.Graphs;
 
 import java.util.*;
 
@@ -13,7 +14,7 @@ public class RoomMapJumpState implements IProblemState {
     private RoomMapJumpStep lastStep;  //last step
     private double cost = 0;
     protected double h = -1;
-    protected TreeMap<Position, double[]> nextPoints;       //neighbor positions in the MST
+    protected TreeMap<Position, RoomMapJumpStep> nextPoints;       //neighbor positions in the MST
 
 
     public RoomMapJumpState(RoomMap roomMap, Position position, HashSet<Position> seen, RoomMapJumpStep lastStep) {
@@ -123,18 +124,24 @@ public class RoomMapJumpState implements IProblemState {
     }
 
     private List<RoomMapJumpStep> getLegalMoves() {
-        List<RoomMapJumpStep> moveList = new ArrayList<>();
-        HashSet<RoomMapJumpStep> removeMovesList = new HashSet<>();
+        return new ArrayList<>(nextPoints.values());
+//        List<RoomMapJumpStep> moveList = new ArrayList<>();
+//        HashSet<RoomMapJumpStep> removeMovesList = new HashSet<>();
+//        HashSet<Position> removePositionSet = new HashSet<>();
 
-        for (Position neighbor : nextPoints.keySet()) {
-            RoomMapJumpStep step = new RoomMapJumpStep(position, neighbor);
-//            for (Position position1 : step.path) {
-//                if (position.equals(neighbor))continue;
-//
+//        for (Position neighbor : nextPoints.keySet()) {
+//            RoomMapJumpStep step = new RoomMapJumpStep(position, neighbor);
+//            removePositionSet.addAll(step.path.subList(1, step.path.size() - 1));
+//            moveList.add(step);
+//        }
+//        for (RoomMapJumpStep move : moveList) {
+//            if (removePositionSet.contains(move.target)) {
+//                removeMovesList.add(move);
+//                nextPoints.remove(move.target);
 //            }
-            moveList.add(step);
-        }
-        return moveList;
+//        }
+//        moveList.removeAll(removeMovesList);
+//        return moveList;
     }
 
     @Override
@@ -182,7 +189,7 @@ public class RoomMapJumpState implements IProblemState {
     }
 
     public Position getPosition() {
-        return new Position(position);
+        return position;
     }
 
     public HashSet<Position> getSeen() {
@@ -190,13 +197,18 @@ public class RoomMapJumpState implements IProblemState {
     }
 
     private void updateNeighbors(Graph<PositionVertex, UndirectedWeightedEdge> g) {
-        HashMap<Position, double[]> tmpNext = new HashMap<>();
+        HashMap<Position, RoomMapJumpStep> tmpNext = new HashMap<>();
+        HashSet<Position> positionsToRemove = new HashSet<>();
 //        for (UndirectedWeightedEdge edge : g.outgoingEdgesOf(new PositionVertex(position, PositionVertex.TYPE.PRUNEABLE))) {
-        for (UndirectedWeightedEdge edge : g.outgoingEdgesOf(new PositionVertex(position, PositionVertex.TYPE.UNPRUNNABLE))) {
-            Position s = edge.getSource().getPosition();
-            Position t = edge.getTarget().getPosition();
-            tmpNext.putIfAbsent(s, new double[]{edge.getWeight()});
-            tmpNext.putIfAbsent(t, new double[]{edge.getWeight()});
+        PositionVertex positionVertex = new PositionVertex(position, PositionVertex.TYPE.UNPRUNNABLE);
+        for (UndirectedWeightedEdge edge : g.outgoingEdgesOf(positionVertex)) {
+//            Position s = edge.getSource().getPosition();
+            Position t = Graphs.getOppositeVertex(g, edge, positionVertex).getPosition();
+            RoomMapJumpStep step = new RoomMapJumpStep(position, t);
+            tmpNext.putIfAbsent(t, step);
+            positionsToRemove.addAll(step.path.subList(1, step.path.size() - 1));
+
+//            tmpNext.putIfAbsent(t, new RoomMapJumpStep(position,t));
 //            if (!s.equals(position)) {
 //                tmpNext.put(s, new double[]{edge.getWeight()});
 //            } else if (!t.equals(position)) {
@@ -204,12 +216,15 @@ public class RoomMapJumpState implements IProblemState {
 //            }
         }
         tmpNext.remove(position);
+        for (Position positionToRemove : positionsToRemove) {
+            tmpNext.remove(positionToRemove);
+        }
         TreeMap<Position, HashSet<Position>> watchedDictionary = roomMap.getWatchedDictionary();
         nextPoints = new TreeMap<>(new Comparator<Position>() {
             @Override
             public int compare(Position o1, Position o2) {
                 if (o1.equals(o2)) return 0;
-                if (tmpNext.getOrDefault(o1, new double[1])[0] > tmpNext.getOrDefault(o2, new double[1])[0])
+                if (tmpNext.getOrDefault(o1, new RoomMapJumpStep(position, position)).getWeight() > tmpNext.getOrDefault(o2, new RoomMapJumpStep(position, position)).getWeight())
                     return 1;
                 else return -1;
             }
@@ -220,4 +235,6 @@ public class RoomMapJumpState implements IProblemState {
     public double getH() {
         return h;
     }
+
+
 }

@@ -24,6 +24,10 @@ public class RoomMapJumpStep implements IProblemMove {
 //        }
     }
 
+    public double getWeight(){
+        return path.size()-1;
+    }
+
     @Override
     public String toString() {
         return Arrays.toString(path.toArray());
