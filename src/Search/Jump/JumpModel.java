@@ -82,9 +82,8 @@ public class JumpModel {
         if (map == null)
             generateMap(0, 6);
         try {
-            agent = new Position(13, 19);
-
-//        agent = new Position(13,19);
+                        agent = new Position(13, 19);
+//        agent = new Position(0,1);
 //        bfsRun();
 //        generateMap(0, 0);
         AstarJumpRun();
@@ -94,7 +93,8 @@ public class JumpModel {
             AstarJumpRun();
         }
     }
-
+//            [[(19,13), (19,12), (19,11), (19,10), (19,9), (19,8), (19,7), (19,6)], [(19,6), (19,5), (18,5), (17,5), (16,5), (15,5), (14,5), (13,5), (12,5), (12,4), (12,3), (12,2), (11,2)], [(11,2), (11,3), (11,4), (10,4)], [(10,4), (9,4), (8,4), (8,3)], [(8,3), (7,3)], [(7,3), (6,3), (6,4), (6,5), (6,6), (5,6), (4,6), (3,6), (2,6)], [(2,6), (1,6), (0,6), (0,7), (0,8), (1,8), (1,9), (1,10), (1,11), (1,12), (1,13), (1,14)], [(1,14), (1,15)]]
+//            [[(19,13), (19,12), (19,11), (19,10), (19,9), (19,8), (19,7), (19,6)], [(19,6), (19,5), (18,5), (17,5), (16,5), (15,5), (14,5), (13,5), (12,5), (12,4), (12,3), (12,2), (11,2)], [(11,2), (11,3), (11,4), (10,4)], [(10,4), (9,4), (8,4), (8,3)], [(8,3), (8,4), (7,4), (7,5), (6,5), (6,6), (6,7), (6,8), (5,8), (4,8), (3,8), (2,8), (1,8), (0,8)], [(0,8), (1,8), (1,9), (1,10), (1,11), (1,12), (1,13), (1,14)]]
 
     private void bfsRun() {
 //        System.out.println("---------- run 1 ----------");
@@ -136,9 +136,9 @@ public class JumpModel {
                 consoleString += "\nSolver: " + solver.getSolverName();
                 consoleString += "\nH alg: " + (solver.getSolverName().equals("BFS") ? "None" : problem.getHeuristicName().substring(7));
                 consoleString += "\nLOS: " + problem.getVisualAlgorithm();
-                consoleString += "\nRoot H: " + (solver.getSolverName().equals("BFS") ? "None" : ASearch.rootH);
                 long startTime = System.nanoTime();
                 List<IProblemMove> solution = solver.solve(problem);
+                consoleString += "\nRoot H: " + (solver.getSolverName().equals("BFS") ? "None" : ASearch.rootH);
                 long finishTime = System.nanoTime();
                 double cost = checkSolution(problem, solution);
                 if (cost >= 0)        // valid solution
@@ -231,7 +231,7 @@ public class JumpModel {
         for (IProblemMove move : solution) {
             RoomMapJumpStep m = (RoomMapJumpStep) move;
             currentState = currentState.performMove(m);
-            solutionList.addAll(Arrays.asList(((RoomMapJumpStep) ((RoomMapJumpState) currentState).getStateLastMove()).path));
+            solutionList.addAll(((RoomMapJumpStep) ((RoomMapJumpState) currentState).getStateLastMove()).path);
 //            solutionList.add(new Position(((RoomMapJumpState) currentState).getPosition()));
 //        map[((RoomMapState) currentState).getPosition().getY()][((R.oomMapState) currentState).getPosition().getX()] = 2;
         }
