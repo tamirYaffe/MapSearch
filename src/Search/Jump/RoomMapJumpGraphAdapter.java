@@ -37,7 +37,7 @@ public class RoomMapJumpGraphAdapter {
         prunnableVertices = new HashMap<>();
         unPrunnableVertices = new HashMap<>();
         addVerticesToGraph(watchedDictionary, visualLineDictionary, s, threshold, maxLeavesCount);
-        connectPrunnableVerticesInGraph();
+        connectPrunnableVerticesInGraph(s);
         addAgentToGraph(s);
 //        for (Map.Entry<Position, PositionVertex> entry : unPrunnableVertices.entrySet()) {
 //            Position key = entry.getKey();
@@ -50,7 +50,7 @@ public class RoomMapJumpGraphAdapter {
 //        printGraph("basic pruned constructor.png");
     }
 
-    public RoomMapJumpGraphAdapter(TreeMap<Position, HashSet<Position>> watchedDictionary, HashMap<Position, HashSet<Double>> visualLineDictionary, RoomMapJumpState roomMapJumpState) {
+    public RoomMapJumpGraphAdapter(TreeMap<Position, HashSet<Position>> watchedDictionary, HashMap<Position, HashSet<Position>> visualDictionary, RoomMapJumpState roomMapJumpState) {
         graph = new DefaultUndirectedWeightedGraph<>(UndirectedWeightedEdge.class);
         prunnableVertices = new HashMap<>();
         unPrunnableVertices = new HashMap<>();
@@ -92,7 +92,7 @@ public class RoomMapJumpGraphAdapter {
 
         for (Map.Entry<Position, PositionVertex> entry : prunnableVertices.entrySet()) {
             Position key = entry.getKey();
-            if (surroundedWithJumpPoints(key, visualLineDictionary)) {
+            if (surroundedWithJumpPoints(key, visualDictionary)) {
                 continue;
             }
             PositionVertex value = entry.getValue();
@@ -113,7 +113,7 @@ public class RoomMapJumpGraphAdapter {
 //        printGraph("constructor2.png");
     }
 
-    private boolean surroundedWithJumpPoints(Position key, HashMap<Position, HashSet<Double>> watchedDictionary) {
+    private boolean surroundedWithJumpPoints(Position key, HashMap<Position, HashSet<Position>> watchedDictionary) {
         boolean ans = true;
         Position checkPosition = new Position(key.getY(), key.getX() - 1);
 //        if (!prunnableVertices.containsKey(checkPosition)) {
@@ -188,17 +188,26 @@ public class RoomMapJumpGraphAdapter {
         }
     }
 
-    private void connectPrunnableVerticesInGraph() {
+    private void connectPrunnableVerticesInGraph(RoomMapJumpState s) {
+        HashMap<Position, HashSet<Position>> visualDictionary = ((RoomMapJump) (s.getProblem())).getVisualDictionary();
+        HashSet<Position> toRemove = new HashSet<>();
         for (Map.Entry<Position, PositionVertex> entry1 : prunnableVertices.entrySet()) {
             Position key1 = entry1.getKey();
+            if (surroundedWithJumpPoints(key1, visualDictionary)) {
+                toRemove.add(key1);
+                continue;
+            }
             PositionVertex value1 = entry1.getValue();
             for (Map.Entry<Position, PositionVertex> entry2 : prunnableVertices.entrySet()) {
                 Position key2 = entry2.getKey();
                 PositionVertex value2 = entry2.getValue();
-                if (key1.equals(key2) || graph.containsEdge(value2, value1)) continue;
+                if (toRemove.contains(key2) || key1.equals(key2) || graph.containsEdge(value2, value1)) continue;
                 UndirectedWeightedEdge edge = graph.addEdge(value1, value2);
                 graph.setEdgeWeight(edge, DistanceService.getWeight(key1, key2));
             }
+        }
+        for (Position position : toRemove) {
+            prunnableVertices.remove(position);
         }
     }
 
@@ -210,14 +219,15 @@ public class RoomMapJumpGraphAdapter {
             double weight = 1.0 / visualLineDictionary.get(key).size();
             if (weight < threshold || maxLeavesCount <= 0 || prunnableVertices.size() == watchedDictionary.size())
                 break;
-            boolean skip = false;
-            for (Position position : value) {
-                if (prunnableVertices.containsKey(position)) {
-                    skip = true;
-                    break;
-                }
-            }
-            if (skip) continue;
+//            boolean skip = false;
+//            for (Position position : value) {
+//                if (prunnableVertices.containsKey(position)) {
+//                    skip = true;
+//                    break;
+//                }
+//            }
+//            if (skip) continue;
+            if (!Collections.disjoint(value, prunnableVertices.keySet())) continue;
 //            if (!s.getSeen().contains(key)) {
             if (!prunnableVertices.containsKey(key)) {
                 maxLeavesCount--;
