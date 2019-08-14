@@ -82,8 +82,8 @@ public class JumpModel {
         if (map == null)
             generateMap(0, 6);
         try {
-                        agent = new Position(13, 19);
-//        agent = new Position(0,1);
+//                        agent = new Position(13, 19);
+        agent = new Position(0,1);
 //        bfsRun();
 //        generateMap(0, 0);
         AstarJumpRun();
@@ -179,7 +179,7 @@ public class JumpModel {
                     //csvResults[11] = Max leaves count ( if available)
                     csvResults[11] = "5";
                     //csvResults[12] = Solution Length
-                    csvResults[12] = Integer.toString(solution.size());
+                    csvResults[12] = Integer.toString((int) cost);
                     //csvResults[13] = Start Position
                     csvResults[13] = problem.getStartPosition().toString().replace(",", ";");
                     // csvResults[14] = Line of Sight method
