@@ -77,26 +77,26 @@ public class RoomMapService {
 
         //for each position add to all other counters it's watch (+1)
         for (Position watchingPosition : tempWatchedDictinary.keySet()) {
-//            for (Position position : tempWatchedDictinary.keySet()) {
-//                int i = position.getY();
-//                int j = position.getX();
-            for (int i = 0; i < h; i++) {
-                for (int j = 0; j < w; j++) {
-                    if (room[i][j] != 1) {
-                        if ((a.existsLineOfSight(b, watchingPosition.getX(), watchingPosition.getY(), j, i, true))) { //if (x,y) sees (j,i)
-                            Position watchedPosition = new Position(i, j);
-                            tempWatchedDictinary.get(watchedPosition).add(watchingPosition); // let (j,i) add to it's list (x,y)
-                            visualDictionary.get(watchingPosition).add(watchedPosition);// let (x,y) add to it's list (j,i)
-                            totalWatches++;
+            for (Position position : tempWatchedDictinary.keySet()) {
+                int i = position.getY();
+                int j = position.getX();
+//            for (int i = 0; i < h; i++) {
+//                for (int j = 0; j < w; j++) {
+                if (room[i][j] != 1) {
+                    if ((a.existsLineOfSight(b, watchingPosition.getX(), watchingPosition.getY(), j, i, true))) { //if (x,y) sees (j,i)
+                        Position watchedPosition = new Position(i, j);
+                        tempWatchedDictinary.get(watchedPosition).add(watchingPosition); // let (j,i) add to it's list (x,y)
+                        visualDictionary.get(watchingPosition).add(watchedPosition);// let (x,y) add to it's list (j,i)
+                        totalWatches++;
 
-                            //update vector dictionary
-                            double vector = (double) (watchingPosition.getX() - watchedPosition.getX()) / (watchingPosition.getY() - watchedPosition.getY());
-                            if (!visualLineDictionary.get(watchedPosition).contains(vector))
-                                visualLineDictionary.get(watchedPosition).add(vector);
-                        }
+                        //update vector dictionary
+                        double vector = (double) (watchingPosition.getX() - watchedPosition.getX()) / (watchingPosition.getY() - watchedPosition.getY());
+                        if (!visualLineDictionary.get(watchedPosition).contains(vector))
+                            visualLineDictionary.get(watchedPosition).add(vector);
                     }
-//                }
                 }
+//                }
+//                }
             }
 
         }
