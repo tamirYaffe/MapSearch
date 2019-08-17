@@ -55,13 +55,13 @@ abstract public class ASearch {
                 }
 
                 if (!isOpen(Vn)) {
-                    System.out.println("gen"+(++i)+"\nlast move: " + Vn._currentProblemState.getStateLastMove() + "\n" + Vn._currentProblemState + "g: " + Vn.getG() + "\t\th: " + Vn.getH() + "\t\tf: " + (Vn.getF()) + "\n");
+//                    System.out.println("gen"+(++i)+"\nlast move: " + Vn._currentProblemState.getStateLastMove() + "\n" + Vn._currentProblemState + "g: " + Vn.getG() + "\t\th: " + Vn.getH() + "\t\tf: " + (Vn.getF()) + "\n");
                     addToOpen(Vn);
                     generated++;
                 } else {
                     duplicates++;
                     if (getOpen(Vn).getG() > Vn.getG()) {
-                        System.out.println("gen"+(++i)+"\nlast move: " + Vn._currentProblemState.getStateLastMove() + "\n" + Vn._currentProblemState + "g: " + Vn.getG() + "\t\th: " + Vn.getH() + "\t\tf: " + (Vn.getF()) + "\n");
+//                        System.out.println("gen"+(++i)+"\nlast move: " + Vn._currentProblemState.getStateLastMove() + "\n" + Vn._currentProblemState + "g: " + Vn.getG() + "\t\th: " + Vn.getH() + "\t\tf: " + (Vn.getF()) + "\n");
                         addToOpen(Vn);
                         generated++;
                     }
@@ -78,6 +78,7 @@ abstract public class ASearch {
 
         return null;
     }
+
 
     private List<IProblemMove> goalNodeToSolutionPath
             (

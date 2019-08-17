@@ -20,8 +20,9 @@ public class RoomMapJump extends RoomMap implements IProblem {
         super(room,startPosition);
 //        heuristic = new RoomMapCountHeuristic();
 //        heuristic = new RoomMapSingletonHeuristic();
-        super.heuristic = new RoomMapMSTHeuristic();
-//        super.heuristic = new RoomMapTSPHeuristic();
+//        super.heuristic = new ZeroHeuristic();
+//        super.heuristic = new RoomMapMSTHeuristic();
+        super.heuristic = new RoomMapTSPHeuristic();
 //        heuristic = new RoomMapUnseenSCCHeuristic();
     }
 
