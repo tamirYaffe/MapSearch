@@ -103,11 +103,11 @@ public class DistanceService {
     public static double getWeight(Position current, Position other) {
         UndirectedWeightedEdge edge = pathsGraph.getEdge(current, other);
         if (edge == null) {
-            addEdgesToPathsGraphWithUpdates(getPositionPaths(current), current);
+//            addEdgesToPathsGraphWithUpdates(getPositionPaths(current), current);
 //            addEdgesToPathsGraph(getPositionPaths(current), current);
-            edge = pathsGraph.getEdge(current, other);
-//            edge = pathsGraph.addEdge(current,other);
-//            pathsGraph.setEdgeWeight(edge,getPathWeight(current,other));
+//            edge = pathsGraph.getEdge(current, other);
+            edge = pathsGraph.addEdge(current,other);
+            pathsGraph.setEdgeWeight(edge,getPathWeight(current,other));
         }
         return pathsGraph.getEdgeWeight(edge);
     }
@@ -203,5 +203,12 @@ public class DistanceService {
             e.printStackTrace();
         }
         System.exit(0);
+    }
+
+    public static GraphPath<Position,UndirectedWeightedEdge> getPath(Position source, Position target) {
+        GraphPath<Position, UndirectedWeightedEdge> path = dijkstraShortestPath.getPath(source, target);
+        if (!pathsGraph.containsEdge(source, target))
+            pathsGraph.setEdgeWeight(pathsGraph.addEdge(source,target),path.getWeight());
+        return path;
     }
 }

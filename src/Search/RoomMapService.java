@@ -83,16 +83,16 @@ public class RoomMapService {
             for (int i = 0; i < h; i++) {
                 for (int j = 0; j < w; j++) {
                     if (room[i][j] != 1) {
-                if ((a.existsLineOfSight(b, watchingPosition.getX(), watchingPosition.getY(), j, i, true))) { //if (x,y) sees (j,i)
-                    Position watchedPosition = new Position(i, j);
-                    tempWatchedDictinary.get(watchedPosition).add(watchingPosition); // let (j,i) add to it's list (x,y)
-                    visualDictionary.get(watchingPosition).add(watchedPosition);// let (x,y) add to it's list (j,i)
-                    totalWatches++;
+                        if ((a.existsLineOfSight(b, watchingPosition.getX(), watchingPosition.getY(), j, i, true))) { //if (x,y) sees (j,i)
+                            Position watchedPosition = new Position(i, j);
+                            tempWatchedDictinary.get(watchedPosition).add(watchingPosition); // let (j,i) add to it's list (x,y)
+                            visualDictionary.get(watchingPosition).add(watchedPosition);// let (x,y) add to it's list (j,i)
+                            totalWatches++;
 
-                    //update vector dictionary
-                    double vector = (double) (watchingPosition.getX() - watchedPosition.getX()) / (watchingPosition.getY() - watchedPosition.getY());
-                    if (!visualLineDictionary.get(watchedPosition).contains(vector))
-                        visualLineDictionary.get(watchedPosition).add(vector);
+                            //update vector dictionary
+                            double vector = (double) (watchingPosition.getX() - watchedPosition.getX()) / (watchingPosition.getY() - watchedPosition.getY());
+                            if (!visualLineDictionary.get(watchedPosition).contains(vector))
+                                visualLineDictionary.get(watchedPosition).add(vector);
                         }
                     }
 //                }
@@ -103,9 +103,10 @@ public class RoomMapService {
         watchedDictionary = new TreeMap<>(new Comparator<Position>() {
             @Override
             public int compare(Position o1, Position o2) {
+                int o1Size = tempWatchedDictinary.getOrDefault(o1, new HashSet<>()).size();
+                int o2Size = tempWatchedDictinary.getOrDefault(o2, new HashSet<>()).size();
                 if (o1.equals(o2)) return 0;
-                if (tempWatchedDictinary.getOrDefault(o1, new HashSet<>()).size() > tempWatchedDictinary.getOrDefault(o2, new HashSet<>()).size())
-                    return 1;
+                if (o1Size > o2Size) return 1;
                 return -1;
             }
         });
