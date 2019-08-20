@@ -195,7 +195,7 @@ public class Model {
                     csvResults[14] = problem.getVisualAlgorithm();
                     // csvResults[15] = Root H (heuristic value)
                     csvResults[15] = Double.toString(ASearch.rootH);
-                    RoomMapCSVWriter.writeToCSV("Presentation Results.csv", csvResults);
+                    RoomMapCSVWriter.writeToCSV("Results.csv", csvResults);
                 } else {                // invalid solution
                     // System.out.println("Invalid solution.");
                     consoleString += "\nInvalid solution.";

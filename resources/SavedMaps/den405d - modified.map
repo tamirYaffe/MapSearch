@@ -1,0 +1,44 @@
+type octile
+height 40
+width 74
+map
+@@@@@@@@@@@@@@@@TTTTTT.TTTTTTTTTTTT....TTTTTTTTTT.......T@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@TTTTTT...TTTTTTTTT.......TTTTTT.........T@@@@@@@@@@@@@@@@@
+TTTTTTTTTTTTTTTTTTTTTT........TTTT......TTTTTTTT........T@@@@@@@@@@@@@@@@@
+TTTTTTTTTT...TTTTTTTTT........TTTT......TTTTTTTT........T@@@@@@@@@@@@@@@@@
+TTT...........TTTTTT..........TTTT......TTTTTTTT........T@@@@@@@@@@@@@@@@@
+TTT............TTT............TTTTT.....TTTTTTTT........T@@@@@@@@@@@@@@@@@
+TTT...........................TTTTT.....TTTTTTTT........TTTTTTTTTTTTTTTTTT
+TTTTTTTTTTTT.................TTTTTT.....TTT..TTT........TTTTTTTTTTTTTTTTTT
+TTTTTTTTTTTT..TTTT.............TTT......................TT.......TTTTTTTTT
+TTTTTTTTTTTTTTTTTTTT...........TT.......................TT..........TTTTTT
+TTT..TTTTTTTTTTTTTTT.................................................TTTTT
+@@@....@@@@@@@@@TT.....................................................TTT
+@@.......@@@@@@....TTTTTTT.....TTT......................TT..............TT
+@@.......@@@......TTTTTTTT.....TTT......................TT..............TT
+@@.............@TTTTTTTTTT.....TTT....................TTTTT.............TT
+@@.......@@@@@@@@TTTTTTTTT.....TTTT...................TTTTTTT.....TTTTTTTT
+@@@@...@@@@@@@@@@@@@@@@TTTTT..TTTTT..................TTTTTTTT.....TTTTTTTT
+@@@....@@@@@@@@@@@@@@@@TTTTT..TTTTT..................TTTTTTTT.....TTTTTTTT
+@@@@@....@@@@@@@@@@@@@@TTTTT..TTTTT..................TTTTTTTTT....TTTTTTTT
+@@....................@TTTTTTT@TTTT..................TTTT@TTTT....TTTTTTTT
+@@@@@@@@@@@@@@@@@.......TT@@@@@TTTTTTTTT.............TTTTTTTTT....TTTTTTTT
+@TTTTTTTTTTTTTTTT..TTT.TTTTTTTTTTTTTTTTTTTTTTTTTTTT..TTTTTTTTTTTT..TTTTTT@
+@TTTTTTTTTTTTTTTT..TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT..TTTTTTTTTTTTTTTTTTTT@
+@@@@TTTTTTTTTTTTT..TTTTTTTTTTTTT@@@@@@TTTTTTTTTTTTT..TTTTTTTTTTTTT@@@@@@@@
+@@@@TTT..............TTTT....TT@@@@@@@TTT..............TTTT....TT@@@@@@@@@
+@@@@@TT..............TTTT....TT@@@@@@@@TT..............TTTT....TT@@@@@@@@@
+@@@@@TT....................TTTT@@@@@@@@TT....................TTTT@@@@@@@@@
+@@@@@TTTT..................TTTT@@.@.@@@TTTT..................TTTT@@@@@@@@@
+@@@@@TTTT......@@@.........TTTT@@.@.@@@TTTT..................TTTT@@@@@@@@@
+@@@@@TTTT........@@........TTTT@@...@@@TTTT..................TTTT@@@@@@@@@
+@@@@@TTTT.........@@@......TTTT@@@..@@@TTTT..................TTTT@@@@@@@@@
+@@@@@TTTT..........@@......TTTT@@@@.@@@TTTT..................TTTT@@@@@@@@@
+@@@@@TTTT..................TTTT@@...@@@TTTT..................TTTT@@@@@@@@@
+@@@@@TTTT...................TTT@@..@@@@TTTT...................TTT@@@@@@@@@
+@@@@@TTTT...................TTT@@.@@@@@TTTT...................TTT@@@@@@@@@
+@@@@@TT@TTTTT...............TTT@@...@@@TT@TTTTT...............TTT@@@@@@@@@
+@@@@@TT@TTTTT.............TTTTT@@...@@@TT@TTTTT.............TTTTT@@@@@@@@@
+@@@@@TT@TTTTT.....................@.@@@TT@TTTTT...........TTTTTTT@@@@@@@@@
+@@@@@TTTTTTTTTTTT..TTTTTTTTTTTT@@...@@@TTTTTTTTTTTT..TTTTTTTTTTTT@@@@@@@@@
+@@@@@TT@@@@@@@@@T..T@@@@@@@@@@@@@@@@@@@TT@@@@@@@@@T..T@@@@@@@@@@@@@@@@@@@@
