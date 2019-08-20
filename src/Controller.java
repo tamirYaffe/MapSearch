@@ -55,6 +55,8 @@ public class Controller {
             int columns = Integer.valueOf(columnSize);
             jumpModel.generateMap(rows, columns);
             mapGrid.setMap(jumpModel.map, jumpModel.agent);
+//            model.generateMap(rows, columns);
+//            mapGrid.setMap(model.map, model.agent);
         } else {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("input alert");
@@ -80,7 +82,9 @@ public class Controller {
         File file = loadMapFile(path);
         if (file != null) {
 //            model.loadMap(new StringMapGenerator().generate(file),new Position(22,13));
+//            model.loadMap(new StringMapGenerator().generate(file), file.getName());
             jumpModel.loadMap(new StringMapGenerator().generate(file), file.getName());
+//            mapGrid.setMap(model.map, model.agent);
             mapGrid.setMap(jumpModel.map, jumpModel.agent);
         }
         event.consume();
@@ -96,9 +100,13 @@ public class Controller {
 
     public void solveMap() {
         jumpModel.solveMap();
+//        model.solveMap();
         mapGrid.setMap(jumpModel.map, jumpModel.agent);
+//        mapGrid.setMap(model.map, model.agent);
         solution.setText(jumpModel.consoleString);
+//        solution.setText(model.consoleString);
     }
+
 
     private boolean isInteger(String input) {
         try {
@@ -119,10 +127,13 @@ public class Controller {
         yIndex.setText("Y: " + (int) y);
         if (solution.getText() != "") {
             if (mouseEvent.isShiftDown()) {
+//                model.showBeforeMove();
                 jumpModel.showBeforeMove();
             } else {
+//                model.showNextMove();
                 jumpModel.showNextMove();
             }
+//            mapGrid.setMap(model.map, model.agent);
             mapGrid.setMap(jumpModel.map, jumpModel.agent);
         }
     }
@@ -131,12 +142,15 @@ public class Controller {
         System.out.println(keyEvent.getCode());
         if (solution.getText() != "") {
             if (keyEvent.getCode().toString() == "UP") {
+//                model.showNextMove();
                 jumpModel.showNextMove();
             }
             if (keyEvent.getCode().toString() == "DOWN") {
+//                model.showBeforeMove();
                 jumpModel.showBeforeMove();
             }
             if (keyEvent.getCode().toString() == "SPACE") {
+//                model.showAllSolution();
                 jumpModel.showAllSolution();
 //                mapGrid.drawSolution(model.solutionList);
             }
@@ -146,6 +160,7 @@ public class Controller {
             if (keyEvent.getCode().toString() == "TAB") {
                 btn_solveMap.fire();
             }
+//            mapGrid.setMap(model.map, model.agent);
             mapGrid.setMap(jumpModel.map, jumpModel.agent);
         }
         keyEvent.consume();

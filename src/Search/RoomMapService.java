@@ -20,8 +20,8 @@ public class RoomMapService {
     private HashMap<Position, HashSet<Double>> visualLineDictionary;
     private int totalWatches;
 //        VisualLineOfSightAdapter a = new VisualLineOfSightAdapter(new FourWayLos());
-        VisualLineOfSightAdapter a = new VisualLineOfSightAdapter(new EightWayLos());
-//    VisualLineOfSightAdapter a = new VisualLineOfSightAdapter(new BresLos(true));
+//        VisualLineOfSightAdapter a = new VisualLineOfSightAdapter(new EightWayLos());
+    VisualLineOfSightAdapter a = new VisualLineOfSightAdapter(new BresLos(true));
 //    VisualLineOfSightAdapter a = new VisualLineOfSightAdapter(new BresLos(false));
     public static ExampleBoard b;
 

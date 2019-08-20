@@ -35,8 +35,8 @@ public class MapGrid extends GridPane {
         for (int i = 0; i < numRows; i++) {
             for (int j = 0; j < numCols; j++) {
                 add(drawCell(i, j), j, i);
-                if (map[i][j] == 2)
-                    add(drawCharacter(), j, i);
+//                if (map[i][j] == 2)
+//                    add(drawCharacter(), j, i);
             }
         }
         //drawing chracter
@@ -59,6 +59,15 @@ public class MapGrid extends GridPane {
         Region cell = setRegion();
         if (map[cellPositionRow][cellPositionColumn] == 1)
             cell.setStyle("-fx-background-image: url('/images/black.png');-fx-background-repeat: no-repeat; -fx-background-size: cover,auto");
+//            cell.setStyle("-fx-background-image: url('/images/wall2.jpg');-fx-background-repeat: no-repeat; -fx-background-size: cover,auto");
+        else if (map[cellPositionRow][cellPositionColumn] == 4)
+            cell.setStyle("-fx-border-color: black; -fx-background-image: url('/images/grey.png');-fx-background-repeat: no-repeat; -fx-background-size: cover,auto");
+//            cell.setStyle("-fx-background-image: url('/images/wall2.jpg');-fx-background-repeat: no-repeat; -fx-background-size: cover,auto");
+        else if (map[cellPositionRow][cellPositionColumn] == 3)
+            cell.setStyle("-fx-border-color: black; -fx-background-image: url('/images/blue.png');-fx-background-repeat: no-repeat; -fx-background-size: cover,auto");
+//            cell.setStyle("-fx-background-image: url('/images/wall2.jpg');-fx-background-repeat: no-repeat; -fx-background-size: cover,auto");
+        else if (map[cellPositionRow][cellPositionColumn] == 2)
+            cell.setStyle("-fx-border-color: black; -fx-background-image: url('/images/green.png');-fx-background-repeat: no-repeat; -fx-background-size: cover,auto");
 //            cell.setStyle("-fx-background-image: url('/images/wall2.jpg');-fx-background-repeat: no-repeat; -fx-background-size: cover,auto");
         else
             cell.setStyle("-fx-border-color: black; -fx-background-image: url('/images/white.png');-fx-background-repeat: no-repeat; -fx-background-size: cover,auto");

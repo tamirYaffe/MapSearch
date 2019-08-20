@@ -21,7 +21,7 @@ public class RoomMapJumpState implements IProblemState {
         this.position = position;
         this.seen = seen;
         this.lastStep = lastStep;
-        RoomMapJumpGraphAdapter g = new RoomMapJumpGraphAdapter(roomMap.getWatchedDictionary(), roomMap.getVisualDictionary(), this, 10);
+        RoomMapJumpGraphAdapter g = new RoomMapJumpGraphAdapter(roomMap.getWatchedDictionary(), roomMap.getVisualDictionary(), this, 1000);
 //        RoomMapJumpGraphAdapter g = new RoomMapJumpGraphAdapter(roomMap.getWatchedDictionary(), roomMap.getVisualLineDictionary(), this, 0.0, 1000);
         updateNeighbors(g.getGraph());
     }
@@ -32,7 +32,7 @@ public class RoomMapJumpState implements IProblemState {
         this.seen = seen;
         this.lastStep = lastStep;
         this.cost = cost + getStateLastMoveCost();
-        RoomMapJumpGraphAdapter g = new RoomMapJumpGraphAdapter(roomMap.getWatchedDictionary(), roomMap.getVisualDictionary(), this, 10);
+        RoomMapJumpGraphAdapter g = new RoomMapJumpGraphAdapter(roomMap.getWatchedDictionary(), roomMap.getVisualDictionary(), this, 1000);
 //        RoomMapJumpGraphAdapter g = new RoomMapJumpGraphAdapter(roomMap.getWatchedDictionary(), roomMap.getVisualLineDictionary(), this, 0.0, 1000);
         updateNeighbors(g.getGraph());
     }
@@ -96,7 +96,7 @@ public class RoomMapJumpState implements IProblemState {
 
         //for each position that was seen on the way to this state
         for (Position p : seen) {
-            room[p.getY()][p.getX()] = "2"; //mark as seen on 'room'
+            room[p.getY()][p.getX()] = "4"; //mark as seen on 'room'
         }
 
         if (nextPoints != null) {
@@ -105,7 +105,7 @@ public class RoomMapJumpState implements IProblemState {
             }
         }
 
-        room[position.getY()][position.getX()] = "4";
+        room[position.getY()][position.getX()] = "2";
 
         //agent's current position
         String string = "position: " + position.getX() + "," + position.getY() + "\n";
