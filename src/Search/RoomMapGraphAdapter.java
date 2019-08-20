@@ -104,13 +104,8 @@ public class RoomMapGraphAdapter {
             double weight = 1.0 / visualLineDictionary.get(key).size();
             if (weight < threshold || maxLeavesCount <= 0|| prunnableVertices.size() == watchedDictionary.size()) break;
             boolean skip = false;
-            for (Position position : value) {
-                if (prunnableVertices.containsKey(position)){
-                    skip = true;
-                    break;
-                }
-            }
-            if (skip) continue;
+            if (!Collections.disjoint(value, prunnableVertices.keySet()) || s.getSeen().contains(key) || prunnableVertices.containsKey(key))
+                continue;
 //            if (!s.getSeen().contains(key)) {
             if (!prunnableVertices.containsKey(key)) {
                 maxLeavesCount--;

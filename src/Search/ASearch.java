@@ -42,12 +42,13 @@ abstract public class ASearch {
 
         while (openSize() > 0) {
             current = getBest();
+//            System.out.println(((RoomMapState)current._currentProblemState).getPosition() + "," + current.getH());
             if (current.isGoal()) {
                 System.out.println("\rexpanded: " + expanded + "\tgenerated: " + generated + "\tduplicates: " + duplicates + "\t\tg: " + current.getG() + "\t\th: " + current.getH() + "\t\tf: " + (current.getF()) + "\t\tTime: " + (System.currentTimeMillis() - start) + "ms" + (admissible ? "\t Admissible\n" : "\t Not Admissible!!!\n"));
                 return current;
             }
             List<ASearchNode> neighbors = current.getNeighbors();
-            System.out.println("\ncurrent:\nlast move: " + current.getLastMove() + "\n" + current._currentProblemState + "g: " + current.getG() + "\t\th: " + current.getH() + "\t\tf: " + (current.getF()) + "\n");
+//            System.out.println("\ncurrent:\nlast move: " + current.getLastMove() + "\n" + current._currentProblemState + "g: " + current.getG() + "\t\th: " + current.getH() + "\t\tf: " + (current.getF()) + "\n");
             int i = 0;
             for (ASearchNode Vn : neighbors) {
                 if (isClosed(Vn)) {
@@ -71,7 +72,7 @@ abstract public class ASearch {
 //            System.out.println(current._currentProblemState);
             expanded++;
 //            if (expanded % 1000 == 0 || (System.currentTimeMillis() - start) % 1000 < 50)
-            if (current.getH() > 90 - current.getG()) admissible = false;
+//            if (current.getH() > 90 - current.getG()) admissible = false;
             System.out.print("\rexpanded: " + expanded + "\tgenerated: " + generated + "\tduplicates: " + duplicates + "\t\tg: " + current.getG() + "\t\th: " + current.getH() + "\t\tf: " + (current.getF()) + "\t\tTime: " + (System.currentTimeMillis() - start) + "ms" + (admissible ? "\t Admissible" : "\t Not Admissible!!!"));
 //            System.out.print("\rg: " + current.getG() + "\th: " + current.getH() + "\tf: " + (current.getF()) + (admissible? "\t Admissible" : "\t Not Admissible!!!"));
         }
@@ -118,3 +119,17 @@ abstract public class ASearch {
 
 
 }
+
+//(0,4),12.0            (0,4),12.0
+//(0,3),11.0            (0,3),11.0
+//(0,2),10.0            (0,2),10.0
+//(1,2),9.0             (1,2),8.0
+//(2,2),8.0             (2,2),6.0
+//(2,1),7.0             (2,1),6.0
+//(2,0),6.0             (3,2),6.0
+//(2,1),5.0             (2,0),6.0
+//(2,2),4.0             (2,1),5.0
+//(3,2),3.0             (2,2),4.0
+//(4,2),2.0             (3,2),3.0
+//(4,3),1.0             (4,2),2.0
+//(4,4),-2.147483392E9  (4,3),1.0

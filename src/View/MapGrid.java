@@ -44,7 +44,8 @@ public class MapGrid extends GridPane {
     }
 
     public Node drawCharacter() {
-        Region charcter = setRegion("-fx-background-image: url('/images/drone.png');");
+        Region charcter = setRegion("-fx-background-image: url('/images/green.png');");
+//        Region charcter = setRegion("-fx-background-image: url('/images/drone.png');");
         return charcter;
     }
 
@@ -57,9 +58,10 @@ public class MapGrid extends GridPane {
     public Node drawCell(int cellPositionRow, int cellPositionColumn) {
         Region cell = setRegion();
         if (map[cellPositionRow][cellPositionColumn] == 1)
-            cell.setStyle("-fx-background-image: url('/images/wall2.jpg');-fx-background-repeat: no-repeat; -fx-background-size: cover,auto");
+            cell.setStyle("-fx-background-image: url('/images/black.png');-fx-background-repeat: no-repeat; -fx-background-size: cover,auto");
+//            cell.setStyle("-fx-background-image: url('/images/wall2.jpg');-fx-background-repeat: no-repeat; -fx-background-size: cover,auto");
         else
-            cell.setStyle("-fx-background-image: url('/images/blank2.png');-fx-background-repeat: no-repeat; -fx-background-size: cover,auto");
+            cell.setStyle("-fx-border-color: black; -fx-background-image: url('/images/white.png');-fx-background-repeat: no-repeat; -fx-background-size: cover,auto");
         return cell;
     }
 

@@ -13,9 +13,7 @@ public class RoomMapCountHeuristic implements IHeuristic {
         if (problemState instanceof RoomMapState) {
             RoomMapState s = (RoomMapState) problemState;
             RoomMap r = (RoomMap) s.getProblem();
-            //double h1=(r.totalRoomWeight - s.getSeenTotalWeight()) / r.maxPositionWeight ;
             double h = computeH2(r, s);
-//            return (double) (r.getNumberOfPositions() - s.getSeen().size()) / (r.getRoomMap().length + r.getRoomMap()[0].length - 2);
             return h;
         } else return Double.MAX_VALUE / 2;
     }
