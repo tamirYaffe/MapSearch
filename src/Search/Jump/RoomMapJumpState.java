@@ -60,25 +60,52 @@ public class RoomMapJumpState implements IProblemState {
         String[][] room = new String[roomMap.getRoomMap().length][roomMap.getRoomMap()[0].length];
 
         //initialize the String map ('room')
+//        for (int i = 0; i < room.length; i++) {
+//            for (int j = 0; j < room[0].length; j++) {
+//                room[i][j] = "   ";     //blank slot
+//                if (roomMap.getRoomMap()[i][j] == 1) room[i][j] = "###";    //obstacle
+//            }
+//        }
+//
+//        //for each position that was seen on the way to this state
+//        for (Position p : seen) {
+//            room[p.getY()][p.getX()] = "///"; //mark as seen on 'room'
+//        }
+//
+//        if (nextPoints != null) {
+//            for (Position p : nextPoints.keySet()) {
+//                room[p.getY()][p.getX()] = "@@@"; //mark as seen on 'room'
+//            }
+//        }
+//
+//        room[position.getY()][position.getX()] = "$$$";
+//
+//        //agent's current position
+//        String string = "position: " + position.getX() + "," + position.getY() + "\n";
+//
+//        //add to 'string' the String array with the seen positions ('room')
+//        for (int i = 0; i < room.length; i++) {
+//            string += Arrays.toString(room[i]) + "\n";
+//        }
         for (int i = 0; i < room.length; i++) {
             for (int j = 0; j < room[0].length; j++) {
-                room[i][j] = "   ";     //blank slot
-                if (roomMap.getRoomMap()[i][j] == 1) room[i][j] = "###";    //obstacle
+                room[i][j] = "0";     //blank slot
+                if (roomMap.getRoomMap()[i][j] == 1) room[i][j] = "1";    //obstacle
             }
         }
 
         //for each position that was seen on the way to this state
         for (Position p : seen) {
-            room[p.getY()][p.getX()] = "///"; //mark as seen on 'room'
+            room[p.getY()][p.getX()] = "2"; //mark as seen on 'room'
         }
 
         if (nextPoints != null) {
             for (Position p : nextPoints.keySet()) {
-                room[p.getY()][p.getX()] = "@@@"; //mark as seen on 'room'
+                room[p.getY()][p.getX()] = "3"; //mark as seen on 'room'
             }
         }
 
-        room[position.getY()][position.getX()] = "$$$";
+        room[position.getY()][position.getX()] = "4";
 
         //agent's current position
         String string = "position: " + position.getX() + "," + position.getY() + "\n";

@@ -8,10 +8,7 @@ import org.jgrapht.graph.DefaultUndirectedWeightedGraph;
 import rlforj.examples.ExampleBoard;
 import rlforj.los.BresLos;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.TreeMap;
+import java.util.*;
 
 public class RoomMapService {
 
@@ -22,8 +19,10 @@ public class RoomMapService {
     private HashMap<Position, HashSet<Position>> visualDictionary;
     private HashMap<Position, HashSet<Double>> visualLineDictionary;
     private int totalWatches;
-    //    VisualLineOfSightAdapter a = new VisualLineOfSightAdapter(new EightWayLos());
-    VisualLineOfSightAdapter a = new VisualLineOfSightAdapter(new BresLos(false));
+//        VisualLineOfSightAdapter a = new VisualLineOfSightAdapter(new FourWayLos());
+        VisualLineOfSightAdapter a = new VisualLineOfSightAdapter(new EightWayLos());
+//    VisualLineOfSightAdapter a = new VisualLineOfSightAdapter(new BresLos(true));
+//    VisualLineOfSightAdapter a = new VisualLineOfSightAdapter(new BresLos(false));
     public static ExampleBoard b;
 
     public RoomMapService(RoomMap roomMap) {
@@ -112,6 +111,20 @@ public class RoomMapService {
         });
         watchedDictionary.putAll(tempWatchedDictinary);
 
+//        String [][] temp = new String[room.length][room[0].length];
+//        for (int i = 0; i < temp.length; i++) {
+//            for (int j = 0; j < temp.length; j++) {
+//                temp[i][j]="#";
+//            }
+//        }
+//        for (Position p : watchedDictionary.keySet()) {
+//            temp[p.getY()][p.getX()]=tempWatchedDictinary.get(p)==null?"#":""+tempWatchedDictinary.get(p).size();
+//        }
+//        String s = "";
+//        for (int i = 0; i < temp.length; i++) {
+//            s += Arrays.toString(temp[i]) + "\n";
+//        }
+//        System.out.println(s);
     }
 
 

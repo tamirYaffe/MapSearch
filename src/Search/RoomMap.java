@@ -31,6 +31,7 @@ public class RoomMap implements IProblem {
         heuristic = new RoomMapMSTHeuristic();
 //        heuristic = new RoomMapTSPHeuristic();
 //        heuristic = new RoomMapUnseenSCCHeuristic();
+//        heuristic = new ZeroHeuristic();
     }
 
 

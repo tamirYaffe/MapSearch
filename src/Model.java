@@ -41,6 +41,7 @@ public class Model {
             x = (int) (Math.random() * map[0].length);
         } while (map[y][x] != 0);
         agent = new Position(y, x);
+//        agent = new Position(0,13);
         csvResults[0] = name;
         csvResults[1] = "" + map.length;
         csvResults[2] = "" + map[0].length;
@@ -55,19 +56,43 @@ public class Model {
 //        MapGenerator mapGenerator=new MapGenerator();
 //        map=mapGenerator.generate(rows,columns);
         csvResults = new String[16];
+//        int map[][] = {
+//                {0, 0, 0, 0, 0, 1, 0, 1},
+//                {1, 1, 1, 1, 0, 1, 0, 0},
+//                {0, 0, 0, 0, 0, 1, 0, 1},
+//                {0, 1, 0, 1, 0, 1, 0, 0},
+//                {0, 1, 0, 0, 0, 1, 1, 0},
+//                {1, 1, 0, 0, 0, 1, 0, 0},
+//                {0, 1, 0, 0, 1, 1, 0, 1},
+//                {0, 0, 0, 0, 0, 0, 0, 0}};
+//        agent = new Position(7, 6);
+
+//        int map[][] = {
+//                {0, 0, 0, 0, 0},
+//                {1, 1, 0, 1, 1},
+//                {0, 0, 0, 0, 0},
+//                {0, 1, 1, 1, 0},
+//                {0, 1, 0, 0, 0}};
+//        agent = new Position(4,0);
+
         int map[][] = {
-                {0, 0, 0, 0, 0, 1, 0, 1},
-                {1, 1, 1, 1, 0, 1, 0, 0},
-                {0, 0, 0, 0, 0, 1, 0, 1},
-                {0, 1, 0, 1, 0, 1, 0, 0},
-                {0, 1, 0, 0, 0, 1, 1, 0},
-                {1, 1, 0, 0, 0, 1, 0, 0},
-                {0, 1, 0, 0, 1, 1, 0, 1},
-                {0, 0, 0, 0, 0, 0, 0, 0}};
+                {0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0},
+                {0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0},
+                {1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0},
+                {0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1},
+                {0, 1, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0},
+                {0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0},
+                {1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1},
+                {0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1},
+                {0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1},
+                {1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0},
+                {0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0},
+                {0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0}};
+        agent = new Position(0,0);
         consoleString = "";
         this.map = map;
-        agent = new Position(7, 6);
-        csvResults[0] = "RoomMap basic map";
+        csvResults[0] = "RoomMap maze map";
+//        csvResults[0] = "RoomMap basic map";
         csvResults[1] = "8";
         csvResults[2] = "8";
         csvResults[3] = "42";
@@ -77,7 +102,7 @@ public class Model {
     public void solveMap() {
         if (map == null)
             generateMap(0, 6);
-//        agent = new Position(13,19);
+//        agent = new Position(0,13);
 //        agent = new Position(13,19);
 //        bfsRun();
 //        generateMap(0, 0);
@@ -112,14 +137,14 @@ public class Model {
 //            agent = new Position(61,1);
             long totalTime = 0;
             String instance = instancesType;
-            RoomMapJump problem = new RoomMapJump(map, agent);
+            RoomMap problem = new RoomMap(map, agent);
+//            RoomMapJump problem = new RoomMapJump(map, agent);
             DistanceService.setRoomMap(problem);
             for (ASearch solver : solvers) {
 //                System.out.println("Solver: " + solver.getSolverName());
                 consoleString += "\nSolver: " + solver.getSolverName();
                 consoleString += "\nH alg: " + (solver.getSolverName().equals("BFS") ? "None" : problem.getHeuristicName().substring(7));
                 consoleString += "\nLOS: " + problem.getVisualAlgorithm();
-                consoleString += "\nRoot H: " + (solver.getSolverName().equals("BFS") ? "None" : ASearch.rootH);
                 long startTime = System.nanoTime();
                 List<IProblemMove> solution = solver.solve(problem);
                 long finishTime = System.nanoTime();
@@ -133,6 +158,7 @@ public class Model {
                     // System.out.println("Moves: " + solution.size());
                     // System.out.println("Time:  " + (finishTime - startTime) / 1000000.0 + " ms");
                     // System.out.println(solution);
+                    consoleString += "\nRoot H: " + (solver.getSolverName().equals("BFS") ? "None" : ASearch.rootH);
                     consoleString += "\nGenerated: " + solver.generated;
                     consoleString += "\nDuplicates: " + solver.duplicates;
                     consoleString += "\nExpanded: " + solver.expanded;
@@ -169,7 +195,7 @@ public class Model {
                     csvResults[14] = problem.getVisualAlgorithm();
                     // csvResults[15] = Root H (heuristic value)
                     csvResults[15] = Double.toString(ASearch.rootH);
-                    RoomMapCSVWriter.writeToCSV("Results.csv", csvResults);
+                    RoomMapCSVWriter.writeToCSV("Presentation Results.csv", csvResults);
                 } else {                // invalid solution
                     // System.out.println("Invalid solution.");
                     consoleString += "\nInvalid solution.";
