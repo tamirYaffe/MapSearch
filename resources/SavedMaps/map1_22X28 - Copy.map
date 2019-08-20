@@ -1,0 +1,26 @@
+type octile
+height 13
+width 23
+map
+.............TTT...TTTT
+..TTT................TT
+.......TTT...TTTTTT..TT
+.TTTTT...T...........TT
+........TTTT.........TT
+.............TTTT....TT
+T.TTT.........TT.....TT
+T.....T.TTTT.........TT
+T....TTTTTTT...........
+T....TTTTTTT....TT.....
+T.TT..T@TTTT...........
+T.....T@TTTT....TTTTTTT
+T....TT@TTTT...TTTTTTTT
+agents:7
+0.12,2,15,10
+1.12,11,26,13
+2.21,8,18,2
+3.21,5,12,11
+4.7,4,24,14
+5.9,16,14,8
+6.4,4,17,17
+7.5,7,16,16

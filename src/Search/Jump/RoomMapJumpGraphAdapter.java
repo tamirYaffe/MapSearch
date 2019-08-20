@@ -80,7 +80,7 @@ public class RoomMapJumpGraphAdapter {
         for (Map.Entry<Position, PositionVertex> unprunnableVertice : unPrunnableVertices.entrySet()) {
             Position watchedPosition = unprunnableVertice.getKey();
             if (watchedPosition.equals(agentPosition)) continue;
-            GraphPath<Position, UndirectedWeightedEdge> prunePath = DistanceService.getPath(agentPosition, watchedPosition);
+//            GraphPath<Position, UndirectedWeightedEdge> prunePath = DistanceService.getPath(agentPosition, watchedPosition);
             HashSet<Position> prunnableSet = new HashSet<>(gettableWatchedDictionary.get(watchedPosition));
             prunnableSet.retainAll(prunnableVertices.keySet());
             for (Position prunnablePosition : prunnableSet) {
