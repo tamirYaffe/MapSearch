@@ -27,18 +27,6 @@ public class VisualLineOfSightAdapter {
 
     public String getLosName() {
         return los.getClass().getSimpleName();
-//        if (BresLos.class.equals(los.getClass())) {
-//            return "Asymetric Bresenham Line if sight";
-//        } else if (PrecisePermissive.class.equals(los.getClass())) {
-//            return "Precise Permissive";
-//        } else if (ShadowCasting.class.equals(los.getClass())) {
-//            return "Shadow Casting";
-//        } else if (BresOpportunisticLos.class.equals(los.getClass())) {
-//            return "BresOpportunisticLos";
-//        } else if (EightWayLos.class.equals(los.getClass())) {
-//            return "8-Way Line of sight";
-//        }
-//        return los.toString();
     }
 
     public void setLos(ILosAlgorithm los) {

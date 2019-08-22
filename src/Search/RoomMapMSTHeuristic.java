@@ -10,7 +10,6 @@ public class RoomMapMSTHeuristic implements IHeuristic {
     public double getHeuristic(IProblemState problemState) {
         if (problemState instanceof RoomMapJumpState) {
             RoomMapJumpState s = (RoomMapJumpState) problemState;
-//            if (s.getH()!=-1) return s.getH();
             RoomMap r = (RoomMap) s.getProblem();
             TreeMap<Position, HashSet<Position>> watchedDictionary = r.getWatchedDictionary();
             HashMap<Position, HashSet<Double>> visualLineDictionary = r.getVisualLineDictionary();

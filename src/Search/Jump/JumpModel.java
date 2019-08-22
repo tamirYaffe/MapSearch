@@ -85,7 +85,7 @@ public class JumpModel {
 //                        agent = new Position(13, 19);
 //        agent = new Position(38,10);
 //        agent = new Position(2,20);
-//        agent = new Position(7,6);
+        agent = new Position(5,8);
 //        agent = new Position(0,1);
 //        bfsRun();
 //        generateMap(0, 0);

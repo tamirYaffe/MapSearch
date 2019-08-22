@@ -21,9 +21,7 @@ public class RoomMapJumpState implements IProblemState {
         this.position = position;
         this.seen = seen;
         this.lastStep = lastStep;
-//        RoomMapJumpGraphAdapter g = new RoomMapJumpGraphAdapter(roomMap.getWatchedDictionary(), roomMap.getVisualDictionary(), this);
         RoomMapJumpGraphAdapter g = new RoomMapJumpGraphAdapter(roomMap.getWatchedDictionary(), roomMap.getVisualDictionary(), this, 1000);
-//        RoomMapJumpGraphAdapter g = new RoomMapJumpGraphAdapter(roomMap.getWatchedDictionary(), roomMap.getVisualLineDictionary(), this, 0.0, 1000);
         updateNeighbors(g.getGraph());
     }
 
@@ -33,9 +31,7 @@ public class RoomMapJumpState implements IProblemState {
         this.seen = seen;
         this.lastStep = lastStep;
         this.cost = cost + getStateLastMoveCost();
-//        RoomMapJumpGraphAdapter g = new RoomMapJumpGraphAdapter(roomMap.getWatchedDictionary(), roomMap.getVisualDictionary(), this);
-        RoomMapJumpGraphAdapter g = new RoomMapJumpGraphAdapter(roomMap.getWatchedDictionary(), roomMap.getVisualDictionary(), this,1000);
-//        RoomMapJumpGraphAdapter g = new RoomMapJumpGraphAdapter(roomMap.getWatchedDictionary(), roomMap.getVisualLineDictionary(), this, 0.0, 1000);
+        RoomMapJumpGraphAdapter g = new RoomMapJumpGraphAdapter(roomMap.getWatchedDictionary(), roomMap.getVisualDictionary(), this, 1000);
         updateNeighbors(g.getGraph());
     }
 
@@ -62,52 +58,25 @@ public class RoomMapJumpState implements IProblemState {
         String[][] room = new String[roomMap.getRoomMap().length][roomMap.getRoomMap()[0].length];
 
         //initialize the String map ('room')
-//        for (int i = 0; i < room.length; i++) {
-//            for (int j = 0; j < room[0].length; j++) {
-//                room[i][j] = "   ";     //blank slot
-//                if (roomMap.getRoomMap()[i][j] == 1) room[i][j] = "###";    //obstacle
-//            }
-//        }
-//
-//        //for each position that was seen on the way to this state
-//        for (Position p : seen) {
-//            room[p.getY()][p.getX()] = "///"; //mark as seen on 'room'
-//        }
-//
-//        if (nextPoints != null) {
-//            for (Position p : nextPoints.keySet()) {
-//                room[p.getY()][p.getX()] = "@@@"; //mark as seen on 'room'
-//            }
-//        }
-//
-//        room[position.getY()][position.getX()] = "$$$";
-//
-//        //agent's current position
-//        String string = "position: " + position.getX() + "," + position.getY() + "\n";
-//
-//        //add to 'string' the String array with the seen positions ('room')
-//        for (int i = 0; i < room.length; i++) {
-//            string += Arrays.toString(room[i]) + "\n";
-//        }
         for (int i = 0; i < room.length; i++) {
             for (int j = 0; j < room[0].length; j++) {
-                room[i][j] = "0";     //blank slot
-                if (roomMap.getRoomMap()[i][j] == 1) room[i][j] = "1";    //obstacle
+                room[i][j] = "   ";     //blank slot
+                if (roomMap.getRoomMap()[i][j] == 1) room[i][j] = "###";    //obstacle
             }
         }
 
         //for each position that was seen on the way to this state
         for (Position p : seen) {
-            room[p.getY()][p.getX()] = "4"; //mark as seen on 'room'
+            room[p.getY()][p.getX()] = "///"; //mark as seen on 'room'
         }
 
         if (nextPoints != null) {
             for (Position p : nextPoints.keySet()) {
-                room[p.getY()][p.getX()] = "3"; //mark as seen on 'room'
+                room[p.getY()][p.getX()] = "@@@"; //mark as seen on 'room'
             }
         }
 
-        room[position.getY()][position.getX()] = "2";
+        room[position.getY()][position.getX()] = "$$$";
 
         //agent's current position
         String string = "position: " + position.getX() + "," + position.getY() + "\n";
@@ -143,7 +112,6 @@ public class RoomMapJumpState implements IProblemState {
             binary.append(seen.contains(p) ? "1" : "0");
         }
         if (i > 0) addBinaryToString(binary, string);
-//        System.out.println(string);
         return string.toString().hashCode();
     }
 
@@ -157,10 +125,6 @@ public class RoomMapJumpState implements IProblemState {
 
         for (Position neighbor : nextPoints.keySet()) {
             RoomMapJumpStep step = new RoomMapJumpStep(position, neighbor);
-//            for (Position position1 : step.path) {
-//                if (position.equals(neighbor))continue;
-//
-//            }
             moveList.add(step);
         }
         return moveList;
@@ -220,19 +184,11 @@ public class RoomMapJumpState implements IProblemState {
 
     private void updateNeighbors(Graph<PositionVertex, UndirectedWeightedEdge> g) {
         HashMap<Position, double[]> tmpNext = new HashMap<>();
-//        for (UndirectedWeightedEdge edge : g.outgoingEdgesOf(new PositionVertex(position, PositionVertex.TYPE.PRUNEABLE))) {
         for (UndirectedWeightedEdge edge : g.outgoingEdgesOf(new PositionVertex(position, PositionVertex.TYPE.UNPRUNNABLE))) {
             Position s = edge.getSource().getPosition();
             Position t = edge.getTarget().getPosition();
             tmpNext.putIfAbsent(s, new double[]{edge.getWeight()});
             tmpNext.putIfAbsent(t, new double[]{edge.getWeight()});
-//            [[(19,13), (19,12), (19,11), (19,10), (19,9), (19,8), (19,7), (19,6)], [(19,6), (19,5), (18,5), (17,5), (16,5), (15,5), (14,5), (13,5), (12,5), (12,4), (12,3), (12,2), (11,2)], [(11,2), (11,3), (11,4), (10,4)], [(10,4), (9,4), (8,4), (8,3)], [(8,3), (7,3)], [(7,3), (6,3), (6,4), (6,5), (6,6), (5,6), (4,6), (3,6), (2,6)], [(2,6), (1,6), (0,6), (0,7), (0,8), (1,8), (1,9), (1,10), (1,11), (1,12), (1,13), (1,14)], [(1,14), (1,15)]]
-//            [[(19,13), (19,12), (19,11), (19,10), (19,9), (19,8), (19,7), (19,6)], [(19,6), (19,5), (18,5), (17,5), (16,5), (15,5), (14,5), (13,5), (12,5), (12,4), (12,3), (12,2), (11,2)], [(11,2), (11,3), (11,4), (10,4)], [(10,4), (9,4), (8,4), (8,3)], [(8,3), (8,4), (7,4), (7,5), (6,5), (6,6), (6,7), (6,8), (5,8), (4,8), (3,8), (2,8), (1,8), (0,8)], [(0,8), (1,8), (1,9), (1,10), (1,11), (1,12), (1,13), (1,14)]]
-//            if (!s.equals(position)) {
-//                tmpNext.put(s, new double[]{edge.getWeight()});
-//            } else if (!t.equals(position)) {
-//                tmpNext.put(t, new double[]{edge.getWeight()});
-//            }
         }
         tmpNext.remove(position);
         TreeMap<Position, HashSet<Position>> watchedDictionary = roomMap.getWatchedDictionary();

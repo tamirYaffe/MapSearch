@@ -64,10 +64,7 @@ public class RoomMapSCCGraphAdapter {
                 graph.addVertex(otherSccSubGraph);
                 Pair<Position, Double> ans = getMinEdge(startPosition, otherSccSubGraph);
                 UndirectedWeightedEdge edge = graph.addEdge(sccSubGraph, otherSccSubGraph);
-//                if (graph.containsEdge(sccSubGraph, otherSccSubGraph)) {
-//                    graph.setEdgeWeight(sccSubGraph, otherSccSubGraph, Math.min(graph.getEdge(sccSubGraph, otherSccSubGraph).getWeight(), ans.getValue()));
                 if (edge != null) {
-//                } else if (edge != null) {
                     graph.setEdgeWeight(edge, ans.getValue());
                 }
                 startPosition = ans.getKey();
@@ -82,8 +79,6 @@ public class RoomMapSCCGraphAdapter {
 
 
         TwoOptHeuristicTSP<SCCSubGraph, UndirectedWeightedEdge> twoOptHeuristicTSP = new TwoOptHeuristicTSP<>();
-
-//        return twoOptHeuristicTSP.getTour(graph).getWeight();
         double weight = twoOptHeuristicTSP.getTour(graph).getWeight();
         System.out.println("weight: " + weight);
         return weight;
@@ -121,7 +116,6 @@ public class RoomMapSCCGraphAdapter {
                 next = vertex.getPosition();
             }
         }
-//        System.out.println("next: "+next+" weight: "+minEdgeWeight);
         return new Pair<>(next, minEdgeWeight);
     }
 

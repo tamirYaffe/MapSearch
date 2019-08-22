@@ -12,16 +12,9 @@ public class RoomMapHeuristic implements IHeuristic {
             double h = 0;
             TreeMap<Position, HashSet<Position>> watchedDictionary = r.getWatchedDictionary();
             HashMap<Position, HashSet<Double>> visualLineDictionary=r.getVisualLineDictionary();
-//            double start = System.nanoTime();
             RoomMapGraphAdapter g = new RoomMapGraphAdapter(watchedDictionary,visualLineDictionary, s, 0.0, 5);
             PrimMinimumSpanningTree<PositionVertex, UndirectedWeightedEdge> primMinimumSpanningTree = new PrimMinimumSpanningTree<>(g.getGraph());
-//            System.out.println("prim: " + primMinimumSpanningTree.getSpanningTree().getWeight());
             h = primMinimumSpanningTree.getSpanningTree().getWeight();
-//            KruskalMinimumSpanningTree<PositionVertex, UndirectedWeightedEdge> kruskalMinimumSpanningTree = new KruskalMinimumSpanningTree<>(g);
-//            System.out.println("kruskal: " + kruskalMinimumSpanningTree.getSpanningTree().getWeight());
-//
-//            double end = System.nanoTime();
-//            System.out.println("\ntime: " + ((end - start) / 1000000) + " ms");
             return h;
         } else return Double.MAX_VALUE / 2;
     }

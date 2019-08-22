@@ -120,6 +120,8 @@ public class RoomMapState implements IProblemState {
             moveList.add(new RoomStep(RoomStep.MOVE.LEFT));
         if (position.getX() < width - 1)
             moveList.add(new RoomStep(RoomStep.MOVE.RIGHT));
+
+        // for the 8-way movement:
 //        if (position.getY() > 0 && position.getX() < width - 1)
 //            moveList.add(new RoomStep(RoomStep.MOVE.UP_RIGHT));
 //        if (position.getY() > 0 && position.getX() > 0)
@@ -174,6 +176,8 @@ public class RoomMapState implements IProblemState {
             newPosition.setX(x + 1);
         else if (roomStep._move == RoomStep.MOVE.LEFT)
             newPosition.setX(x - 1);
+
+        // for the 8-way movement:
 //        else if (roomStep._move == RoomStep.MOVE.UP_RIGHT) {
 //            newPosition.setY(y - 1);
 //            newPosition.setX(x + 1);
@@ -195,7 +199,6 @@ public class RoomMapState implements IProblemState {
         newSeen.addAll(roomMap.getVisualNeighbors(newPosition));
         // Create new state
         return new RoomMapState(newProblem, newPosition, newSeen, roomStep, cost);
-//        return new RoomMapState(newProblem, newPosition, newSeen, roomStep);
     }
 
     private boolean outOfBoundaries(int y, int x) {
