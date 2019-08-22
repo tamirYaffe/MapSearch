@@ -1,5 +1,6 @@
 import Search.Jump.JumpModel;
 import View.MapGrid;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -24,9 +25,17 @@ public class Controller {
     public Button btn_loadMap;
     public MapGrid mapGrid;
     public TextArea solution;
-
+    public ChoiceBox los;
+    public ChoiceBox heuristics;
+    public ChoiceBox movements;
 
     public void setModel(Model model) {
+        String heuristicsArray[] = { "Zero", "Singleton", "MST", "TSP" };
+        String movementsArray[] = { "4-way", "8-way", "Jump"};
+        String losArray[] = { "4-way", "8-way", "Breslos" };
+        los.setItems(FXCollections.observableArrayList(losArray)) ;
+        heuristics.setItems(FXCollections.observableArrayList(heuristicsArray)) ;
+        movements.setItems(FXCollections.observableArrayList(movementsArray)) ;
         this.model = model;
         solution.setWrapText(true);
         solution.setEditable(false);
@@ -35,6 +44,12 @@ public class Controller {
     }
 
     public void setJumpModel(JumpModel model) {
+        String heuristicsArray[] = { "Zero", "Singleton", "MST", "TSP" };
+        String movementsArray[] = { "4-way", "8-way", "Jump"};
+        String losArray[] = { "4-way", "8-way", "Breslos" };
+        los.setItems(FXCollections.observableArrayList(losArray)) ;
+        heuristics.setItems(FXCollections.observableArrayList(heuristicsArray)) ;
+        movements.setItems(FXCollections.observableArrayList(movementsArray)) ;
         this.jumpModel = model;
         solution.setWrapText(true);
         solution.setEditable(false);
@@ -99,6 +114,7 @@ public class Controller {
 
 
     public void solveMap() {
+        //setPreferences- model.setPreferences from the choice boxes.
         jumpModel.solveMap();
 //        model.solveMap();
         mapGrid.setMap(jumpModel.map, jumpModel.agent);
