@@ -25,10 +25,8 @@ import java.util.Set;
 
 public class DistanceService {
     private static DijkstraShortestPath<Position, UndirectedWeightedEdge> dijkstraShortestPath;
-    //    static BiconnectivityInspector biconnectivityInspector;
-    private static Graph<Position, UndirectedWeightedEdge> pathsGraph = new DefaultUndirectedWeightedGraph<>(UndirectedWeightedEdge.class);
+        private static Graph<Position, UndirectedWeightedEdge> pathsGraph = new DefaultUndirectedWeightedGraph<>(UndirectedWeightedEdge.class);
     private static Graph<Position, UndirectedWeightedEdge> graph = new DefaultUndirectedWeightedGraph<>(UndirectedWeightedEdge.class);
-//    static HashSet<Position> cutPoints;
 
 
     public static double minDistance(HashSet<Position> positions, Position currPosition) {
@@ -60,8 +58,6 @@ public class DistanceService {
             addEdges(graph, vertexPosition, roomMap.getVisualDictionary());
         }
         dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-//        biconnectivityInspector= new BiconnectivityInspector(graph);
-//        cutPoints=new HashSet<>(DistanceService.biconnectivityInspector.getCutpoints());
     }
 
 
@@ -102,7 +98,7 @@ public class DistanceService {
 
     public static double getWeight(Position current, Position other) {
         UndirectedWeightedEdge edge = pathsGraph.getEdge(current, other);
-        if (edge == null) {
+        if (edge == null) {//
 //            addEdgesToPathsGraphWithUpdates(getPositionPaths(current), current);
 //            addEdgesToPathsGraph(getPositionPaths(current), current);
 //            edge = pathsGraph.getEdge(current, other);
@@ -131,9 +127,8 @@ public class DistanceService {
             Pair<Double, UndirectedWeightedEdge> value1 = entry1.getValue();
             if (!pathsGraph.containsEdge(current,key1))
                 addPrevEdgesToGraph(distsMap, current,key1);
-//                addSingleEdgeToGraph(positionPaths, key1, value1.getFirst());
+                addSingleEdgeToGraph(positionPaths, key1, value1.getFirst());
         }
-//        printGraph("paths1.png");
     }
 
     private static double addPrevEdgesToGraph(Map<Position, Pair<Double, UndirectedWeightedEdge>> map, Position prev, Position current) {
@@ -155,19 +150,6 @@ public class DistanceService {
             }
 
         }
-//        if (map.get(position).getFirst()==0)return 0;
-//        else {
-//            Position prev = map.get(position).getSecond().getSource().getPosition();
-//            UndirectedWeightedEdge edge = pathsGraph.addEdge(prev, position);
-//            if (edge!=null){
-//                pathsGraph.setEdgeWeight(edge,1);
-//            }
-//            edge = pathsGraph.addEdge(prev, position);
-//            if (edge!=null){
-//                pathsGraph.setEdgeWeight(edge,1);
-//            }
-//            return addPrevEdgesToGraph(map,prev, current)+1;
-//        }
     }
 
     private static void addSingleEdgeToGraph(ShortestPathAlgorithm.SingleSourcePaths<Position, UndirectedWeightedEdge> positionPaths, Position position, Double delta) {
