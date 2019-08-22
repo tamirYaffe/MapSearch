@@ -70,7 +70,6 @@ public class RoomMapGraphAdapter {
 
     private void addAgentToGraph(RoomMapState s) {
         Position agentPosition = s.getPosition();
-//        ShortestPathAlgorithm.SingleSourcePaths<Position, UndirectedWeightedEdge> agentPaths=DistanceService.getPositionPaths(agentPosition);
         PositionVertex agentVertex = new PositionVertex(agentPosition, PositionVertex.TYPE.UNPRUNNABLE);
         graph.addVertex(agentVertex);
         for (Map.Entry<Position, PositionVertex> entry1 : prunnableVertices.entrySet()) {
@@ -84,7 +83,6 @@ public class RoomMapGraphAdapter {
     private void connectPrunnableVerticesInGraph() {
         for (Map.Entry<Position, PositionVertex> entry1 : prunnableVertices.entrySet()) {
             Position key1 = entry1.getKey();
-//            ShortestPathAlgorithm.SingleSourcePaths<Position, UndirectedWeightedEdge> key1Paths=DistanceService.getPositionPaths(key1);
             PositionVertex value1 = entry1.getValue();
             for (Map.Entry<Position, PositionVertex> entry2 : prunnableVertices.entrySet()) {
                 Position key2 = entry2.getKey();
@@ -106,7 +104,6 @@ public class RoomMapGraphAdapter {
             boolean skip = false;
             if (!Collections.disjoint(value, prunnableVertices.keySet()) || s.getSeen().contains(key) || prunnableVertices.containsKey(key))
                 continue;
-//            if (!s.getSeen().contains(key)) {
             if (!prunnableVertices.containsKey(key)) {
                 maxLeavesCount--;
                 PositionVertex watchedVertex = new PositionVertex(key, PositionVertex.TYPE.UNPRUNNABLE);
@@ -122,7 +119,6 @@ public class RoomMapGraphAdapter {
                 }
             }
         }
-//        System.out.print("\r prunnable: "+prunnableVertices.size()+"\t unprunnable: "+unPrunnableVertices.size()+"\ttotal: "+watchedDictionary.size());
     }
 
     public Graph<PositionVertex, UndirectedWeightedEdge> getGraph() {
@@ -139,7 +135,6 @@ public class RoomMapGraphAdapter {
 
     public double getPrimMSTWeight() {
         return getSpanningTree();
-//        return new PrimMinimumSpanningTree<>(graph).getSpanningTree().getWeight();
     }
 
     public double getTSPWeight(Position startPosition) {
@@ -152,14 +147,13 @@ public class RoomMapGraphAdapter {
                 continue;
             }
             UndirectedWeightedEdge edge = graph.addEdge(start, vertex);
-//            graph.setEdgeWeight(edge, 0);
             graph.setEdgeWeight(edge, HUGE_DOUBLE_VALUE);
         }
         graph.removeEdge(start, start);
         TwoOptHeuristicTSP<PositionVertex, UndirectedWeightedEdge> twoOptHeuristicTSP = new TwoOptHeuristicTSP<>();
 
-//        return twoOptHeuristicTSP.getTour(graph).getWeight();
-        return twoOptHeuristicTSP.getTour(graph).getWeight()-HUGE_DOUBLE_VALUE;
+        double h = twoOptHeuristicTSP.getTour(graph).getWeight();
+        return h > 0 ? h - HUGE_DOUBLE_VALUE : h;
 
     }
 

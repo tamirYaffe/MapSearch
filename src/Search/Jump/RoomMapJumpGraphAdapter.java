@@ -39,15 +39,6 @@ public class RoomMapJumpGraphAdapter {
         addVerticesToGraph(watchedDictionary, visualLineDictionary, s, threshold, maxLeavesCount);
         connectPrunnableVerticesInGraph(s);
         addAgentToGraph(s);
-//        for (Map.Entry<Position, PositionVertex> entry : unPrunnableVertices.entrySet()) {
-//            Position key = entry.getKey();
-//            PositionVertex value = entry.getValue();
-//            if (!key.equals(((RoomMapJump)s.getProblem()).getStartPosition())){
-//                graph.removeVertex(value);
-//            }
-//        }
-//        printGraph("basic constructor.png");
-//        printGraph("basic pruned constructor.png");
     }
 
     public RoomMapJumpGraphAdapter(TreeMap<Position, HashSet<Position>> watchedDictionary, HashMap<Position, HashSet<Position>> visualDictionary, RoomMapJumpState roomMapJumpState, int maxWatchedPositionsNumber) {
@@ -80,7 +71,6 @@ public class RoomMapJumpGraphAdapter {
         for (Map.Entry<Position, PositionVertex> unprunnableVertice : unPrunnableVertices.entrySet()) {
             Position watchedPosition = unprunnableVertice.getKey();
             if (watchedPosition.equals(agentPosition)) continue;
-//            GraphPath<Position, UndirectedWeightedEdge> prunePath = DistanceService.getPath(agentPosition, watchedPosition);
             HashSet<Position> prunnableSet = new HashSet<>(gettableWatchedDictionary.get(watchedPosition));
             prunnableSet.retainAll(prunnableVertices.keySet());
             for (Position prunnablePosition : prunnableSet) {
@@ -92,33 +82,23 @@ public class RoomMapJumpGraphAdapter {
                 } else prunnableVertices.remove(prunnablePosition);
             }
         }
-//        for (Map.Entry<Position, PositionVertex> entry : prunnableVertices.entrySet()) {
-//            Position key = entry.getKey();
-//            PositionVertex value = entry.getValue();
-//            UndirectedWeightedEdge edge = graph.addEdge(agentVertex, value);
-//            graph.setEdgeWeight(edge, path.getWeight());
-//        }
     }
 
     private boolean surroundedWithJumpPoints(Position key, HashSet<Position> watchedDictionary, boolean isInGraph) {
         boolean ans = true;
         Position checkPosition = new Position(key.getY(), key.getX() - 1);
-//        if (!prunnableVertices.containsKey(checkPosition)) {
         if (!prunnableVertices.containsKey(checkPosition) && watchedDictionary.contains(checkPosition)) {
             ans = false;
         }
         checkPosition = new Position(key.getY(), key.getX() + 1);
-//        if (ans && !prunnableVertices.containsKey(checkPosition)) {
         if (ans && !prunnableVertices.containsKey(checkPosition) && watchedDictionary.contains(checkPosition)) {
             ans = false;
         }
         checkPosition = new Position(key.getY() - 1, key.getX());
-//        if (ans && !prunnableVertices.containsKey(checkPosition)) {
         if (ans && !prunnableVertices.containsKey(checkPosition) && watchedDictionary.contains(checkPosition)) {
             ans = false;
         }
         checkPosition = new Position(key.getY() + 1, key.getX());
-//        if (ans && !prunnableVertices.containsKey(checkPosition)) {
         if (ans && !prunnableVertices.containsKey(checkPosition) && watchedDictionary.contains(checkPosition)) {
             ans = false;
         }
@@ -163,7 +143,6 @@ public class RoomMapJumpGraphAdapter {
 
     private void addAgentToGraph(RoomMapJumpState s) {
         Position agentPosition = s.getPosition();
-//        ShortestPathAlgorithm.SingleSourcePaths<Position, UndirectedWeightedEdge> agentPaths=DistanceService.getPositionPaths(agentPosition);
         PositionVertex agentVertex = new PositionVertex(agentPosition, PositionVertex.TYPE.UNPRUNNABLE);
         graph.addVertex(agentVertex);
         for (Map.Entry<Position, PositionVertex> entry1 : prunnableVertices.entrySet()) {
@@ -176,13 +155,8 @@ public class RoomMapJumpGraphAdapter {
 
     private void connectPrunnableVerticesInGraph(RoomMapJumpState s) {
         HashSet<Position> visualDictionary = new HashSet<>(((RoomMapJump) (s.getProblem())).getVisualDictionary().keySet());
-//        HashSet<Position> toRemove = new HashSet<>();
         for (Map.Entry<Position, PositionVertex> entry1 : prunnableVertices.entrySet()) {
             Position key1 = entry1.getKey();
-//            if (surroundedWithJumpPoints(key1, visualDictionary, true)) {
-//                toRemove.add(key1);
-//                continue;
-//            }
             PositionVertex value1 = entry1.getValue();
             for (Map.Entry<Position, PositionVertex> entry2 : prunnableVertices.entrySet()) {
                 Position key2 = entry2.getKey();
@@ -192,9 +166,6 @@ public class RoomMapJumpGraphAdapter {
                 graph.setEdgeWeight(edge, DistanceService.getWeight(key1, key2));
             }
         }
-//        for (Position position : toRemove) {
-//            prunnableVertices.remove(position);
-//        }
     }
 
     private void addVerticesToGraph(TreeMap<Position, HashSet<Position>> watchedDictionary, HashMap<Position, HashSet<Double>> visualLineDictionary, RoomMapJumpState s, double threshold, int maxLeavesCount) {
@@ -202,34 +173,21 @@ public class RoomMapJumpGraphAdapter {
         HashSet<Position> visualSet = new HashSet<>(visualLineDictionary.keySet());
         for (Map.Entry<Position, HashSet<Position>> entry : watchedDictionary.entrySet()) {
             Position key = entry.getKey();
-//            if (s.getSeen().contains(key)) continue;
             HashSet<Position> value = entry.getValue();
             double weight = 1.0 / visualLineDictionary.get(key).size();
             if (weight < threshold || maxLeavesCount <= 0 || prunnableVertices.size() == watchedDictionary.size())
                 break;
-//            boolean skip = false;
-//            for (Position position : value) {
-//                if (prunnableVertices.containsKey(position)) {
-//                    skip = true;
-//                    break;
-//                }
-//            }
-//            if (skip) continue;
-//            if (!s.getSeen().contains(key)) {
             if (!Collections.disjoint(value, prunnableVertices.keySet()) || s.getSeen().contains(key) || prunnableVertices.containsKey(key))
                 continue;
-//            if (!prunnableVertices.containsKey(key)) {
             maxLeavesCount--;
             PositionVertex watchedVertex = new PositionVertex(key, PositionVertex.TYPE.UNPRUNNABLE);
             unPrunnableVertices.put(key, watchedVertex);
             graph.addVertex(watchedVertex);
             addPrunabbleVeticesToSingleUnprunnable(watchedVertex, value, visualSet, toRemove, true);
-//            }
         }
         for (Position position : toRemove) {
             prunnableVertices.remove(position);
         }
-//        System.out.print("\r prunnable: "+prunnableVertices.size()+"\t unprunnable: "+unPrunnableVertices.size()+"\ttotal: "+watchedDictionary.size());
     }
 
     private void addPrunabbleVeticesToSingleUnprunnable(PositionVertex unprunnableVertex, HashSet<Position> prunnableSet, HashSet<Position> visualSet, HashSet<Position> toRemove, boolean addEdgeToUnprunnableVertex) {
@@ -281,7 +239,6 @@ public class RoomMapJumpGraphAdapter {
 
     public double getPrimMSTWeight() {
         return getSpanningTree();
-//        return new PrimMinimumSpanningTree<>(graph).getSpanningTree().getWeight();
     }
 
     public double getTSPWeight(Position startPosition) {
@@ -294,14 +251,12 @@ public class RoomMapJumpGraphAdapter {
                 continue;
             }
             UndirectedWeightedEdge edge = graph.addEdge(start, vertex);
-//            graph.setEdgeWeight(edge, 0);
             graph.setEdgeWeight(edge, HUGE_DOUBLE_VALUE);
         }
         graph.removeEdge(start, start);
         TwoOptHeuristicTSP<PositionVertex, UndirectedWeightedEdge> twoOptHeuristicTSP = new TwoOptHeuristicTSP<>();
-
-//        return twoOptHeuristicTSP.getTour(graph).getWeight();
-        return twoOptHeuristicTSP.getTour(graph).getWeight() - HUGE_DOUBLE_VALUE;
+        double h = twoOptHeuristicTSP.getTour(graph).getWeight();
+        return h > 0 ? h - HUGE_DOUBLE_VALUE : h;
 
     }
 
@@ -364,36 +319,6 @@ public class RoomMapJumpGraphAdapter {
                 }
             }
         }
-//        Graph<PositionVertex, UndirectedWeightedEdge> g = new DefaultUndirectedWeightedGraph<>(UndirectedWeightedEdge.class);
-////        Graph<PositionVertex, UndirectedWeightedEdge> graph2 = graph;
-////        graph = new DefaultUndirectedWeightedGraph<>(UndirectedWeightedEdge.class);
-//        for (UndirectedWeightedEdge edge : minimumSpanningTreeEdgeSet) {
-//            g.addVertex(edge.getSource());
-//            g.addVertex(edge.getTarget());
-//            g.addEdge(edge.getSource(),edge.getTarget());
-//            g.setEdgeWeight(edge.getSource(),edge.getTarget(),graph.getEdge(edge.getSource(),edge.getTarget()).getWeight());
-//        }
-//        graph = g;
-//        try {
-////            File imgFile = new File("resources/graph.png");
-//            File imgFile = new File("resources/MST.png");
-//            imgFile.createNewFile();
-//
-//            JGraphXAdapter<PositionVertex, UndirectedWeightedEdge> graphAdapter =
-//                    new JGraphXAdapter<PositionVertex, UndirectedWeightedEdge>(graph);
-////            mxIGraphLayout layout = new mxCircleLayout(graphAdapter);
-//            mxHierarchicalLayout layout = new mxHierarchicalLayout(graphAdapter);
-//            layout.setInterHierarchySpacing(layout.getInterHierarchySpacing() * 2);
-//            layout.setInterRankCellSpacing(layout.getInterRankCellSpacing() * 2);
-//            layout.execute(graphAdapter.getDefaultParent());
-//            BufferedImage image =
-//                    mxCellRenderer.createBufferedImage(graphAdapter, null, 5, Color.WHITE, true, null);
-//            imgFile = new File("resources/MST.png");
-//            ImageIO.write(image, "PNG", imgFile);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        System.exit(0);
         return spanningTreeWeight;
     }
 

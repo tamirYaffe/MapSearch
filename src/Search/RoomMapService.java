@@ -72,15 +72,11 @@ public class RoomMapService {
         numOfPositions = visualDictionary.size();
         b.resetVisitedAndMarks();
 
-//        BresLos a = new BresLos(false);
-
         //for each position add to all other counters it's watch (+1)
         for (Position watchingPosition : tempWatchedDictinary.keySet()) {
             for (Position position : tempWatchedDictinary.keySet()) {
                 int i = position.getY();
                 int j = position.getX();
-//            for (int i = 0; i < h; i++) {
-//                for (int j = 0; j < w; j++) {
                 if (room[i][j] != 1) {
                     if ((a.existsLineOfSight(b, watchingPosition.getX(), watchingPosition.getY(), j, i, true))) { //if (x,y) sees (j,i)
                         Position watchedPosition = new Position(i, j);
@@ -110,21 +106,6 @@ public class RoomMapService {
             }
         });
         watchedDictionary.putAll(tempWatchedDictinary);
-
-//        String [][] temp = new String[room.length][room[0].length];
-//        for (int i = 0; i < temp.length; i++) {
-//            for (int j = 0; j < temp.length; j++) {
-//                temp[i][j]="#";
-//            }
-//        }
-//        for (Position p : watchedDictionary.keySet()) {
-//            temp[p.getY()][p.getX()]=tempWatchedDictinary.get(p)==null?"#":""+tempWatchedDictinary.get(p).size();
-//        }
-//        String s = "";
-//        for (int i = 0; i < temp.length; i++) {
-//            s += Arrays.toString(temp[i]) + "\n";
-//        }
-//        System.out.println(s);
     }
 
 

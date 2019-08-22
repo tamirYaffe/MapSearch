@@ -22,6 +22,8 @@ public class RoomStep implements IProblemMove {
             return "LEFT";
         if (_move == MOVE.RIGHT)
             return "RIGHT";
+
+        // for the 8-way movement:
 //        if (_move == MOVE.UP_RIGHT)
 //            return "UP_RIGHT";
 //        if (_move == MOVE.UP_LEFT)
