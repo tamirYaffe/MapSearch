@@ -86,112 +86,67 @@ public class Model {
     }
 
     public void solveMap(String movement, String heuristic, String los) {
+        consoleString = "";
         if (map == null)
             generateMap();
-//        agent = new Position(0,13);
-//        agent = new Position(13, 19);
-//        bfsRun();
-//        generateMap(0, 0);
-//        if (agent == null)
-        AstarRun(movement, heuristic, los);
-    }
-
-
-//    private void bfsRun() {
-////        System.out.println("---------- run 1 ----------");
-//        consoleString = "------ run 1 ------";
-//        List<ASearch> solvers = new ArrayList<ASearch>();
-//        BreadthFirstSearch bfs = new BreadthFirstSearch();
-//        solvers.add(bfs);
-//        solveInstances(solvers, "roomMap", movement, heuristic, los);
-//    }
-
-    private void AstarRun(String movement, String heuristic, String los) {
-//        System.out.println("---------- run 2 ----------");
-        consoleString = "------ run 2 ------";
-        AStarSearch aStar = new AStarSearch();
-        solveInstances(aStar, movement, heuristic, los);
-    }
-
-
-    private void solveInstances(AStarSearch solver, String movement, String heuristic, String los) {
+        AStarSearch solver = new AStarSearch();
+        long totalTime = 0;
+        RoomMap problem = new RoomMap(map, agent, movement, heuristic, los);
+        DistanceService.setRoomMap(problem);
+        consoleString += "\nSolver: " + solver.getSolverName();
+        consoleString += "\nH alg: " + heuristic;
+        consoleString += "\nLOS: " + los;
+        long startTime = System.nanoTime();
+        List<IProblemMove> solution = solver.solve(problem);
+        long finishTime = System.nanoTime();
+        double cost = checkSolution(problem, solution);
+        if (cost >= 0)        // valid solution
         {
-//            agent = new Position(61,1);
-            long totalTime = 0;
-            RoomMap problem = new RoomMap(map, agent, movement, heuristic, los);
-//            RoomMapJump problem = new RoomMapJump(map, agent);
-            DistanceService.setRoomMap(problem);
-//            for (ASearch solver : solvers) {
-//                System.out.println("Solver: " + solver.getSolverName());
-            consoleString += "\nSolver: " + solver.getSolverName();
-            consoleString += "\nH alg: " + heuristic;
-            consoleString += "\nLOS: " + los;
-            long startTime = System.nanoTime();
-            List<IProblemMove> solution = solver.solve(problem);
-            long finishTime = System.nanoTime();
-            double cost = checkSolution(problem, solution);
-            if (cost >= 0)        // valid solution
-            {
-                // printSolution(problem, solution);
-                updateSolution(problem, solution);
-                // System.out.println("Closed: " + solver.closed);
-                // System.out.println("Cost:  " + cost);
-                // System.out.println("Moves: " + solution.size());
-                // System.out.println("Time:  " + (finishTime - startTime) / 1000000.0 + " ms");
-                // System.out.println(solution);
-                consoleString += "\nRoot H: " + ASearch.rootH;
-                consoleString += "\nGenerated: " + ASearch.generated;
-                consoleString += "\nDuplicates: " + ASearch.duplicates;
-                consoleString += "\nExpanded: " + ASearch.expanded;
-                consoleString += "\nCost:  " + cost;
-                consoleString += "\nMoves: " + solution.size();
-                consoleString += "\nTime:  " + (finishTime - startTime) / 1000000.0 + " ms\n\n";
-                consoleString += solution;
-                totalTime += (finishTime - startTime) / 1000000.0;
-
-                //csvResults[3] = Solver's Name
-                csvResults[3] = solver.getSolverName();
-                //csvResults[3] = Number of terrain positions in the map
-                csvResults[4] = Integer.toString(problem.getNumberOfPositions());
-                //csvResults[5] = Heuristic
-                csvResults[5] = problem.getHeuristicName();
-                //csvResults[6] = Time took to finish the run
-                csvResults[6] = Double.toString(totalTime);
-                //csvResults[7] = Number of Generated Nodes
-                csvResults[7] = Integer.toString(ASearch.generated);
-                //csvResults[8] = Number of Duplicate Nodes
-                csvResults[8] = Integer.toString(ASearch.duplicates);
-                //csvResults[9] = Number of Expanded Nodes
-                csvResults[9] = Integer.toString(ASearch.expanded);
-                //csvResults[10] = threshold( if available)
-                csvResults[10] = "0";
-                //csvResults[11] = Max leaves count ( if available)
-                csvResults[11] = "5";
-                //csvResults[12] = Solution Length
-                csvResults[12] = Integer.toString((int) cost);
-                //csvResults[13] = Start Position
-                csvResults[13] = problem.getStartPosition().toString().replace(",", ";");
-                // csvResults[14] = Line of Sight method
-                csvResults[14] = problem.getVisualAlgorithm();
-                // csvResults[15] = Root H (heuristic value)
-                csvResults[15] = Double.toString(ASearch.rootH);
-                RoomMapCSVWriter.writeToCSV("Results.csv", csvResults);
-            } else {                // invalid solution
-                // System.out.println("Invalid solution.");
-                consoleString += "\nInvalid solution.";
-            }
-//            }
-//            System.out.println("");
-//            System.out.println("Total time:  " + totalTime / 60000.0 + " min");
-            int totalTimeMinuts = (int) ((totalTime / 1000) % 60);
-            consoleString += "\n\nTotal time:  " + (int) (totalTime / 60000) + ":" + (totalTimeMinuts > 9 ? totalTimeMinuts : "0" + totalTimeMinuts) + " min\n";
-//            System.out.println("");
-            System.out.println(consoleString);
-
+            // printSolution(problem, solution);
+            updateSolution(problem, solution);
+            consoleString += "\nRoot H: " + ASearch.rootH;
+            consoleString += "\nGenerated: " + ASearch.generated;
+            consoleString += "\nDuplicates: " + ASearch.duplicates;
+            consoleString += "\nExpanded: " + ASearch.expanded;
+            consoleString += "\nCost:  " + cost;
+            consoleString += "\nMoves: " + solution.size();
+            consoleString += "\nTime:  " + (finishTime - startTime) / 1000000.0 + " ms\n\n";
+            consoleString += solution;
+            totalTime += (finishTime - startTime) / 1000000.0;
+            //csvResults[3] = Solver's Name
+            csvResults[3] = solver.getSolverName();
+            //csvResults[3] = Number of terrain positions in the map
+            csvResults[4] = Integer.toString(problem.getNumberOfPositions());
+            //csvResults[5] = Heuristic
+            csvResults[5] = problem.getHeuristicName();
+            //csvResults[6] = Time took to finish the run
+            csvResults[6] = Double.toString(totalTime);
+            //csvResults[7] = Number of Generated Nodes
+            csvResults[7] = Integer.toString(ASearch.generated);
+            //csvResults[8] = Number of Duplicate Nodes
+            csvResults[8] = Integer.toString(ASearch.duplicates);
+            //csvResults[9] = Number of Expanded Nodes
+            csvResults[9] = Integer.toString(ASearch.expanded);
+            //csvResults[10] = threshold( if available)
+            csvResults[10] = "0";
+            //csvResults[11] = Max leaves count ( if available)
+            csvResults[11] = "5";
+            //csvResults[12] = Solution Length
+            csvResults[12] = Integer.toString((int) cost);
+            //csvResults[13] = Start Position
+            csvResults[13] = problem.getStartPosition().toString().replace(",", ";");
+            // csvResults[14] = Line of Sight method
+            csvResults[14] = problem.getVisualAlgorithm();
+            // csvResults[15] = Root H (heuristic value)
+            csvResults[15] = Double.toString(ASearch.rootH);
+            RoomMapCSVWriter.writeToCSV("Results.csv", csvResults);
+        } else {                // invalid solution
+            consoleString += "\nInvalid solution.";
         }
-
+        int totalTimeMinuts = (int) ((totalTime / 1000) % 60);
+        consoleString += "\n\nTotal time:  " + (int) (totalTime / 60000) + ":" + (totalTimeMinuts > 9 ? totalTimeMinuts : "0" + totalTimeMinuts) + " min\n";
+        System.out.println(consoleString);
     }
-
 
     private double checkSolution(IProblem instance, List<IProblemMove> solution) {
         if (solution == null)
