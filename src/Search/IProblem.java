@@ -2,11 +2,8 @@ package Search;
 
 public interface IProblem
 {
-	public IProblemState		getProblemState();
+	IProblemState		getProblemState();
 	
-	public IHeuristic			getProblemHeuristic();
-
-	public boolean 				performMove(IProblemMove move);
-
+	IHeuristic			getProblemHeuristic();
 }
 

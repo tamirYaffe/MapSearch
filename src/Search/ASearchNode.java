@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 abstract public class ASearchNode {
-    ASearchNode _prev;
-    IProblemState _currentProblemState;
+    ASearchNode prev;
+    IProblemState currentProblemState;
 
     public List<ASearchNode> getNeighbors() {
-        List<ASearchNode> neighbors = new ArrayList<ASearchNode>();
-        List<IProblemState> neighborStates = _currentProblemState.getNeighborStates();
+        List<ASearchNode> neighbors = new ArrayList<>();
+        List<IProblemState> neighborStates = currentProblemState.getNeighborStates();
 
         for (IProblemState state : neighborStates) {
             ASearchNode newNode = createSearchNode(state);
@@ -19,11 +19,11 @@ abstract public class ASearchNode {
     }
 
     public boolean isGoal() {
-        return _currentProblemState.isGoalState();
+        return currentProblemState.isGoalState();
     }
 
     public IProblemMove getLastMove() {
-        return _currentProblemState.getStateLastMove();
+        return currentProblemState.getStateLastMove();
     }
 
     abstract public double getH();

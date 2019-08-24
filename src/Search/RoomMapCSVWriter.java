@@ -11,9 +11,8 @@ public class RoomMapCSVWriter {
 
     public  static void writeToCSV(String fileName, String[] record){
         File file = new File(fileName);
-        FileWriter output = null;
         try {
-            output = new FileWriter(file,true);
+            FileWriter output = new FileWriter(file, true);
             CSVWriter write = new CSVWriter(output,CSVWriter.DEFAULT_SEPARATOR,CSVWriter.NO_QUOTE_CHARACTER,CSVWriter.DEFAULT_LINE_END);
             write.writeNext(record);
 //            write.flush();

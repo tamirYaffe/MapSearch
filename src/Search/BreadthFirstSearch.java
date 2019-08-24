@@ -6,10 +6,10 @@ import java.util.LinkedList;
 
 public class BreadthFirstSearch extends ASearch {
     // Define lists here ...
-    LinkedList<ASearchNode> openList;
-    HashSet<IProblemState> antiReGenerator;
+    private LinkedList<ASearchNode> openList;
+    private HashSet<IProblemState> antiReGenerator;
     //    HashMap<String, String> antiReGenerator;
-    HashMap<IProblemState, ASearchNode> closedList;
+    private HashMap<IProblemState, ASearchNode> closedList;
 
     @Override
     public String getSolverName() {
@@ -18,8 +18,7 @@ public class BreadthFirstSearch extends ASearch {
 
     @Override
     public ASearchNode createSearchRoot(IProblemState problemState) {
-        ASearchNode newNode = new BlindSearchNode(problemState);
-        return newNode;
+        return new BlindSearchNode(problemState);
     }
 
     @Override
@@ -39,24 +38,24 @@ public class BreadthFirstSearch extends ASearch {
 
     @Override
     public boolean isOpen(ASearchNode node) {
-        return antiReGenerator.contains(node._currentProblemState);
+        return antiReGenerator.contains(node.currentProblemState);
 //        return openList.contains(node._currentProblemState);
     }
 
     @Override
     public boolean isClosed(ASearchNode node) {
-        return closedList.containsKey(node._currentProblemState);
+        return closedList.containsKey(node.currentProblemState);
     }
 
     @Override
     public void addToOpen(ASearchNode node) {
         openList.add(node);
-        antiReGenerator.add(node._currentProblemState);
+        antiReGenerator.add(node.currentProblemState);
     }
 
     @Override
     public void addToClosed(ASearchNode node) {
-        closedList.put(node._currentProblemState, node);
+        closedList.put(node.currentProblemState, node);
     }
 
     @Override

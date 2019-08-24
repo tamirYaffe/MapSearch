@@ -10,7 +10,6 @@ public class RoomMapUnseenSCCHeuristic implements IHeuristic {
         if (problemState instanceof RoomMapState) {
             RoomMapState s = (RoomMapState) problemState;
             RoomMap r = (RoomMap) s.getProblem();
-            double h = 0;
             TreeMap<Position, HashSet<Position>> watchedDictionary = r.getWatchedDictionary();
             HashMap<Position, HashSet<Double>> visualLineDictionary=r.getVisualLineDictionary();
             RoomMapSCCGraphAdapter g = new RoomMapSCCGraphAdapter(watchedDictionary,visualLineDictionary, s, 0, 10);

@@ -12,8 +12,7 @@ public class RoomMapSingletonHeuristic implements IHeuristic {
         if (problemState instanceof RoomMapState) {
             RoomMapState s = (RoomMapState) problemState;
             RoomMap r = (RoomMap) s.getProblem();
-            double h = computeH(r, s);
-            return h;
+            return computeH(r, s);
         } else return Double.MAX_VALUE / 2;
     }
 

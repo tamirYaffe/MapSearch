@@ -2,18 +2,16 @@ package View;
 
 import Search.Position;
 import javafx.scene.Node;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
-import javafx.scene.layout.BorderPane;
+//import javafx.scene.canvas.Canvas;
+//import javafx.scene.canvas.GraphicsContext;
+//import javafx.scene.image.Image;
+//import java.util.ArrayList;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
 
-import java.util.ArrayList;
 
 public class MapGrid extends GridPane {
     private int[][] map;
-    private Canvas canvas;
 
 
     public double getCellHeight() {
@@ -43,19 +41,18 @@ public class MapGrid extends GridPane {
         add(drawCharacter(), agent.getX(), agent.getY());
     }
 
-    public Node drawCharacter() {
-        Region charcter = setRegion("-fx-background-image: url('/images/green.png');");
-//        Region charcter = setRegion("-fx-background-image: url('/images/drone.png');");
-        return charcter;
+    private Node drawCharacter() {
+        //        Region charcter = setRegion("-fx-background-image: url('/images/drone.png');");
+        return setRegion("-fx-background-image: url('/images/green.png');");
     }
 
-    public Node drawSolution() {
-        Region solutionCell = setRegion("-fx-background-image: url('/images/sol_coin.png');");
-        return solutionCell;
-    }
+//    public Node drawSolution() {
+//        Region solutionCell = setRegion("-fx-background-image: url('/images/sol_coin.png');");
+//        return solutionCell;
+//    }
 
 
-    public Node drawCell(int cellPositionRow, int cellPositionColumn) {
+    private Node drawCell(int cellPositionRow, int cellPositionColumn) {
         Region cell = setRegion();
         if (map[cellPositionRow][cellPositionColumn] == 1)
             cell.setStyle("-fx-background-image: url('/images/black.png');-fx-background-repeat: no-repeat; -fx-background-size: cover,auto");
@@ -78,14 +75,14 @@ public class MapGrid extends GridPane {
      * Sets and returns a region with basic settings and input style implementation.
      *
      * @param style - the region style to implement.
-     * @returna - region with basic settings and input style implementation.
+     * @return - region with basic settings and input style implementation.
      */
     private Region setRegion(String style) {
         Region region = new Region();
         region.setMaxSize(300, 300);
         region.setMinSize(1, 1);
         region.setPrefSize(300, 300);
-        region.setStyle(style + "-fx-background-repeat: no-repeat; -fx-background-size: cover,auto");
+        region.setStyle(String.format("%s -fx-background-repeat: no-repeat; -fx-background-size: cover,auto", style));
         return region;
     }
 
@@ -102,10 +99,14 @@ public class MapGrid extends GridPane {
         return region;
     }
 
-    public void drawSolution(ArrayList<Position> solutionList) {
-        canvas = new Canvas();
-        getParent().getChildrenUnmodifiable().add(canvas);
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-        gc.drawImage(Image.impl_fromPlatformImage("/images/blank2.jpg"), 0, 0);
+//    public void drawSolution(ArrayList<Position> solutionList) {
+//        Canvas canvas = new Canvas();
+//        getParent().getChildrenUnmodifiable().add(canvas);
+//        GraphicsContext gc = canvas.getGraphicsContext2D();
+//        gc.drawImage(Image.impl_fromPlatformImage("/images/blank2.jpg"), 0, 0);
+//    }
+
+    public boolean isSet() {
+        return map!=null;
     }
 }

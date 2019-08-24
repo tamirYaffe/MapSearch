@@ -1,17 +1,10 @@
 package Search;
 
-import java.util.Objects;
-
 public class PositionVertex {
     public enum TYPE {PRUNEABLE, UNPRUNNABLE}
 
     private Position position;
     private TYPE type;
-
-    public PositionVertex(Position position) {
-        this.position = position;
-        type = TYPE.PRUNEABLE;
-    }
 
     public PositionVertex(Position position, TYPE type) {
         this.position = position;
