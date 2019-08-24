@@ -15,9 +15,7 @@ public class Main extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader();
         Parent root = fxmlLoader.load(getClass().getResource("sample.fxml").openStream());
         Scene scene = new Scene(root, 1000, 1000);
-//        scene.getStylesheets().add(getClass().getResource("ViewStyle.css").toExternalForm());
         primaryStage.setScene(scene);
-        //--------------
         Controller controller = fxmlLoader.getController();
         controller.setModel(model);
         primaryStage.show();
