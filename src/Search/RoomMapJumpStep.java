@@ -1,4 +1,4 @@
-package Search.Jump;
+package Search;
 
 import Search.DistanceService;
 import Search.IProblemMove;
@@ -13,19 +13,40 @@ public class RoomMapJumpStep implements IProblemMove {
     final Position target;
     ArrayList<Position> path;
 
+    public Position getSource() {
+        return source;
+    }
+
+    public Position getTarget() {
+        return target;
+    }
+
+    public ArrayList<Position> getPath() {
+        return path;
+    }
+
     public RoomMapJumpStep(Position source, Position target) {
         this.source = source;
         this.target = target;
         GraphPath<Position, Search.UndirectedWeightedEdge> path = DistanceService.minPath(source, target);
         this.path = new ArrayList<>(path.getVertexList());
-//        int i=0;
-//        for (Object o : path.getVertexList()) {
-//            this.path[i++]=(Position)o;
-//        }
     }
 
-    public double getWeight(){
-        return path.size()-1;
+    @Override
+    public double getCost() {
+        return path.size() - 1;
+    }
+
+    @Override
+    public Position getNewPosition(int x, int y) {
+        if (source.equals(x, y))
+            return target;
+        return null;
+    }
+
+    @Override
+    public Position getNewPosition(Position newPosition) {
+        return getNewPosition(newPosition.getX(), newPosition.getY());
     }
 
     @Override

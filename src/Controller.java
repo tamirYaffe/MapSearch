@@ -1,5 +1,5 @@
-import Search.Jump.JumpModel;
 import View.MapGrid;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -12,7 +12,6 @@ import java.io.File;
 public class Controller {
     public Label xIndex;
     public Label yIndex;
-    JumpModel jumpModel;
     Model model;
 
     @FXML
@@ -24,18 +23,18 @@ public class Controller {
     public Button btn_loadMap;
     public MapGrid mapGrid;
     public TextArea solution;
-
+    public ChoiceBox los;
+    public ChoiceBox heuristics;
+    public ChoiceBox movements;
 
     public void setModel(Model model) {
+        String heuristicsArray[] = {"Zero", "Singleton", "MST", "TSP"};
+        String movementsArray[] = {"4-way", "8-way", "Jump"};
+        String losArray[] = {"4-way", "8-way", "Symmetric Breslos", "Asymmetric Breslos"};
+        los.setItems(FXCollections.observableArrayList(losArray));
+        heuristics.setItems(FXCollections.observableArrayList(heuristicsArray));
+        movements.setItems(FXCollections.observableArrayList(movementsArray));
         this.model = model;
-        solution.setWrapText(true);
-        solution.setEditable(false);
-        solution.setMinHeight(250);
-        solution.setMinWidth(150);
-    }
-
-    public void setJumpModel(JumpModel model) {
-        this.jumpModel = model;
         solution.setWrapText(true);
         solution.setEditable(false);
         solution.setMinHeight(250);
@@ -53,10 +52,8 @@ public class Controller {
         if (isInteger(rowSize) && isInteger(columnSize) && Integer.valueOf(rowSize) > 4 && Integer.valueOf(columnSize) > 4) {
             int rows = Integer.valueOf(rowSize);
             int columns = Integer.valueOf(columnSize);
-            jumpModel.generateMap(rows, columns);
-            mapGrid.setMap(jumpModel.map, jumpModel.agent);
-//            model.generateMap(rows, columns);
-//            mapGrid.setMap(model.map, model.agent);
+            model.generateMap(rows, columns);
+            mapGrid.setMap(model.map, model.agent);
         } else {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("input alert");
@@ -81,11 +78,9 @@ public class Controller {
         String path = "";
         File file = loadMapFile(path);
         if (file != null) {
-//            model.loadMap(new StringMapGenerator().generate(file),new Position(22,13));
-//            model.loadMap(new StringMapGenerator().generate(file), file.getName());
-            jumpModel.loadMap(new StringMapGenerator().generate(file), file.getName());
-//            mapGrid.setMap(model.map, model.agent);
-            mapGrid.setMap(jumpModel.map, jumpModel.agent);
+//            model.loadMap(new StringMapGenerator().generate(file),new Position(yIndex,xIndex));
+            model.loadMap(new StringMapGenerator().generate(file), file.getName());
+            mapGrid.setMap(model.map, model.agent);
         }
         event.consume();
     }
@@ -99,12 +94,29 @@ public class Controller {
 
 
     public void solveMap() {
-        jumpModel.solveMap();
-//        model.solveMap();
-        mapGrid.setMap(jumpModel.map, jumpModel.agent);
-//        mapGrid.setMap(model.map, model.agent);
-        solution.setText(jumpModel.consoleString);
-//        solution.setText(model.consoleString);
+        if (los.getValue() == null) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("input alert");
+            alert.setHeaderText("LOS Selection");
+            alert.setContentText("Please insert Line of Sight method.");
+            alert.show();
+        } else if (heuristics.getValue() == null) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("input alert");
+            alert.setHeaderText("Heuristic Selection");
+            alert.setContentText("Please insert Heuristic");
+            alert.show();
+        } else if (movements.getValue() == null) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("input alert");
+            alert.setHeaderText("Movement Selection");
+            alert.setContentText("Please insert Movement method");
+            alert.show();
+        } else {
+            model.solveMap(movements.getValue().toString(), heuristics.getValue().toString(), los.getValue().toString());
+            mapGrid.setMap(model.map, model.agent);
+            solution.setText(model.consoleString);
+        }
     }
 
 
@@ -127,14 +139,11 @@ public class Controller {
         yIndex.setText("Y: " + (int) y);
         if (solution.getText() != "") {
             if (mouseEvent.isShiftDown()) {
-//                model.showBeforeMove();
-                jumpModel.showBeforeMove();
+                model.showBeforeMove();
             } else {
-//                model.showNextMove();
-                jumpModel.showNextMove();
+                model.showNextMove();
             }
-//            mapGrid.setMap(model.map, model.agent);
-            mapGrid.setMap(jumpModel.map, jumpModel.agent);
+            mapGrid.setMap(model.map, model.agent);
         }
     }
 
@@ -142,16 +151,13 @@ public class Controller {
         System.out.println(keyEvent.getCode());
         if (solution.getText() != "") {
             if (keyEvent.getCode().toString() == "UP") {
-//                model.showNextMove();
-                jumpModel.showNextMove();
+                model.showNextMove();
             }
             if (keyEvent.getCode().toString() == "DOWN") {
-//                model.showBeforeMove();
-                jumpModel.showBeforeMove();
+                model.showBeforeMove();
             }
             if (keyEvent.getCode().toString() == "SPACE") {
-//                model.showAllSolution();
-                jumpModel.showAllSolution();
+                model.showAllSolution();
 //                mapGrid.drawSolution(model.solutionList);
             }
             if (keyEvent.getCode().toString() == "ESCAPE") {
@@ -160,8 +166,8 @@ public class Controller {
             if (keyEvent.getCode().toString() == "TAB") {
                 btn_solveMap.fire();
             }
-//            mapGrid.setMap(model.map, model.agent);
-            mapGrid.setMap(jumpModel.map, jumpModel.agent);
+            if (model.map != null && model.agent != null)
+                mapGrid.setMap(model.map, model.agent);
         }
         keyEvent.consume();
     }

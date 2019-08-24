@@ -19,10 +19,10 @@ public class RoomMapService {
     private HashMap<Position, HashSet<Position>> visualDictionary;
     private HashMap<Position, HashSet<Double>> visualLineDictionary;
     private int totalWatches;
-//        VisualLineOfSightAdapter a = new VisualLineOfSightAdapter(new FourWayLos());
+    //        VisualLineOfSightAdapter a = new VisualLineOfSightAdapter(new FourWayLos());
 //        VisualLineOfSightAdapter a = new VisualLineOfSightAdapter(new EightWayLos());
-    VisualLineOfSightAdapter a = new VisualLineOfSightAdapter(new BresLos(true));
-//    VisualLineOfSightAdapter a = new VisualLineOfSightAdapter(new BresLos(false));
+    VisualLineOfSightAdapter a = null;
+    //    VisualLineOfSightAdapter a = new VisualLineOfSightAdapter(new BresLos(false));
     public static ExampleBoard b;
 
     public RoomMapService(RoomMap roomMap) {
@@ -33,6 +33,26 @@ public class RoomMapService {
     public RoomMapService(RoomMap roomMap, int[][] room) {
         this.room = getRoomMapCopy(room);
         this.roomMap = roomMap;
+        makeVisualDictionaries();
+    }
+
+    public RoomMapService(RoomMap roomMap, int[][] room, String los) {
+        this.room = getRoomMapCopy(room);
+        this.roomMap = roomMap;
+        switch (los) {
+            case "4-way":
+                a = new VisualLineOfSightAdapter(new FourWayLos());
+                break;
+            case "8-way":
+                a = new VisualLineOfSightAdapter(new EightWayLos());
+                break;
+            case "Symmetric Breslos":
+                a = new VisualLineOfSightAdapter(new BresLos(true));
+                break;
+            case "Asymmetric Breslos":
+                a = new VisualLineOfSightAdapter(new BresLos(false));
+                break;
+        }
         makeVisualDictionaries();
     }
 

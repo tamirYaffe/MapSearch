@@ -85,6 +85,10 @@ public class Position {
                 x == position.x;
     }
 
+    public boolean equals(int x, int y) {
+        return this.x == x && this.y == y;
+    }
+
     @Override
     public int hashCode() {
         return (((y + x) * (y + x + 1)) / 2) + y;

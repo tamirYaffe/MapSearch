@@ -1,44 +1,55 @@
 package Search;
 
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import org.jgrapht.Graph;
+
+import java.util.*;
+
+import static Search.RoomMap.MOVEMENT_METHOD;
+import static Search.RoomMap8WayStep.SQRT_OF_TWO;
 
 public class RoomMapState implements IProblemState {
     private RoomMap roomMap; //the room map
     private Position position;  //current position
     private HashSet<Position> seen;       //seen positions
-    private RoomStep lastStep;  //last step
+    private IProblemMove lastStep;  //last step
     private double cost = 0;
+    protected TreeMap<Position, double[]> nextPoints;       //neighbor positions in the MST
 
 
-    public RoomMapState(RoomMap roomMap, Position position, HashSet<Position> seen, RoomStep lastStep) {
+    public RoomMapState(RoomMap roomMap, Position position, HashSet<Position> seen, IProblemMove lastStep) {
         this.roomMap = roomMap;
         this.position = position;
         this.seen = seen;
         this.lastStep = lastStep;
+        if (MOVEMENT_METHOD.equals("Jump")) {
+            RoomMapGraphAdapter g = new RoomMapGraphAdapter(roomMap.getWatchedDictionary(), roomMap.getVisualDictionary(), this, 1000);
+            updateNeighbors(g.getGraph());
+        } else updateNeighbors();
     }
 
-    public RoomMapState(RoomMap roomMap, Position position, HashSet<Position> seen, RoomStep lastStep, double cost) {
+    public RoomMapState(RoomMap roomMap, Position position, HashSet<Position> seen, IProblemMove lastStep, double cost) {
         this.roomMap = roomMap;
         this.position = position;
         this.seen = seen;
         this.lastStep = lastStep;
         this.cost = cost + getStateLastMoveCost();
+        if (MOVEMENT_METHOD.equals("Jump")) {
+            RoomMapGraphAdapter g = new RoomMapGraphAdapter(roomMap.getWatchedDictionary(), roomMap.getVisualDictionary(), this, 1000);
+            updateNeighbors(g.getGraph());
+        } else updateNeighbors();
     }
-
-    public RoomMapState(RoomMap roomMap, Position vertexPosition) {
-        this.roomMap = roomMap;
-        this.position = vertexPosition;
-    }
+//
+//    public RoomMapState(RoomMap roomMap, Position vertexPosition) {
+//        this.roomMap = roomMap;
+//        this.position = vertexPosition;
+//    }
 
     @Override
     public List<IProblemState> getNeighborStates() {
         List<IProblemState> neighborStates = new ArrayList<>();
-        List<RoomStep> legalMoves = getLegalMoves();
-        for (RoomStep move : legalMoves) {
+        List<IProblemMove> legalMoves = getLegalMoves();
+        for (IProblemMove move : legalMoves) {
             IProblemState newState = performMove(move);
             if (newState != null)
                 neighborStates.add(newState);
@@ -63,7 +74,14 @@ public class RoomMapState implements IProblemState {
         for (Position p : seen) {
             room[p.getY()][p.getX()] = "///"; //mark as seen on 'room'
         }
-        room[position.getY()][position.getX()]="$$$";
+
+        if (nextPoints != null) {
+            for (Position p : nextPoints.keySet()) {
+                room[p.getY()][p.getX()] = "@@@"; //mark as seen on 'room'
+            }
+        }
+
+        room[position.getY()][position.getX()] = "$$$";
 
         //agent's current position
         String string = "position: " + position.getX() + "," + position.getY() + "\n";
@@ -91,15 +109,14 @@ public class RoomMapState implements IProblemState {
         string.append(Integer.toString(position.getX(), 36)).append(",").append(Integer.toString(position.getY(), 36)).append(",");
         int i = 0;
         for (Position p : roomMap.getWatchedDictionary().keySet()) {
-            if (i++ >61) {
+            if (i++ > 61) {
                 addBinaryToString(binary, string);
                 i = 0;
                 binary.setLength(0);
             }
             binary.append(seen.contains(p) ? "1" : "0");
         }
-        if (i>0)addBinaryToString(binary,string);
-//        System.out.println(string);
+        if (i > 0) addBinaryToString(binary, string);
         return string.toString().hashCode();
     }
 
@@ -107,29 +124,25 @@ public class RoomMapState implements IProblemState {
         string.append(Long.toString(Long.parseLong(binary.toString(), 2), 36));
     }
 
-    private List<RoomStep> getLegalMoves() {
-        int height = roomMap.getRoomMap().length;
-        int width = roomMap.getRoomMap()[0].length;
+    private List<IProblemMove> getLegalMoves() {
+        List<IProblemMove> moveList = new ArrayList<>();
+        if (MOVEMENT_METHOD.equals("4-way")) {
+            for (Position neighbor : nextPoints.keySet()) {
+                RoomStep step = new RoomStep(position, neighbor);
+                moveList.add(step);
+            }
+        } else if (MOVEMENT_METHOD.equals("8-way")) {
+            for (Position neighbor : nextPoints.keySet()) {
+                RoomMap8WayStep step = new RoomMap8WayStep(position, neighbor);
+                moveList.add(step);
+            }
+        } else if (MOVEMENT_METHOD.equals("Jump")) {
+            for (Position neighbor : nextPoints.keySet()) {
+                RoomMapJumpStep step = new RoomMapJumpStep(position, neighbor);
+                moveList.add(step);
+            }
+        }
 
-        List<RoomStep> moveList = new ArrayList<>();
-        if (position.getY() > 0)
-            moveList.add(new RoomStep(RoomStep.MOVE.UP));
-        if (position.getY() < height - 1)
-            moveList.add(new RoomStep(RoomStep.MOVE.DOWN));
-        if (position.getX() > 0)
-            moveList.add(new RoomStep(RoomStep.MOVE.LEFT));
-        if (position.getX() < width - 1)
-            moveList.add(new RoomStep(RoomStep.MOVE.RIGHT));
-
-        // for the 8-way movement:
-//        if (position.getY() > 0 && position.getX() < width - 1)
-//            moveList.add(new RoomStep(RoomStep.MOVE.UP_RIGHT));
-//        if (position.getY() > 0 && position.getX() > 0)
-//            moveList.add(new RoomStep(RoomStep.MOVE.UP_LEFT));
-//        if (position.getY() < height - 1 && position.getX() < width - 1)
-//            moveList.add(new RoomStep(RoomStep.MOVE.DOWN_RIGHT));
-//        if (position.getY() < height - 1 && position.getX() > 0)
-//            moveList.add(new RoomStep(RoomStep.MOVE.DOWN_LEFT));
         return moveList;
     }
 
@@ -150,55 +163,29 @@ public class RoomMapState implements IProblemState {
 
     @Override
     public double getStateLastMoveCost() {
-        if (lastStep != null && (lastStep._move == RoomStep.MOVE.DOWN || lastStep._move == RoomStep.MOVE.UP
-                || lastStep._move == RoomStep.MOVE.RIGHT || lastStep._move == RoomStep.MOVE.LEFT))
-            return 1;
-        else return Math.sqrt(2);
+        if (lastStep != null)
+            return lastStep.getCost();
+        else return 0;
     }
 
     @Override
     public IProblemState performMove(IProblemMove move) {
-        if (!(move instanceof RoomStep))
-            return null;
         RoomMap newProblem = roomMap;
-        Position newPosition = new Position(position);
+        Position newPosition = move.getNewPosition(position);
         HashSet<Position> newSeen = new HashSet<>(seen);
-        int x = newPosition.getX();
-        int y = newPosition.getY();
-        RoomStep roomStep = (RoomStep) move;
+        if (MOVEMENT_METHOD.equals("Jump")) {
+            for (Position position : ((RoomMapJumpStep) move).getPath()) {
+                newSeen.addAll(roomMap.getVisualNeighbors(position));
+            }
+        } else {
+            // Validation
+            if (outOfBoundaries(newPosition.getY(), newPosition.getX()))
+                return null;
+            newSeen.addAll(roomMap.getVisualNeighbors(newPosition));
+        }
 
-        // Find the moving cell
-        if (roomStep._move == RoomStep.MOVE.DOWN)
-            newPosition.setY(y + 1);
-        else if (roomStep._move == RoomStep.MOVE.UP)
-            newPosition.setY(y - 1);
-        else if (roomStep._move == RoomStep.MOVE.RIGHT)
-            newPosition.setX(x + 1);
-        else if (roomStep._move == RoomStep.MOVE.LEFT)
-            newPosition.setX(x - 1);
-
-        // for the 8-way movement:
-//        else if (roomStep._move == RoomStep.MOVE.UP_RIGHT) {
-//            newPosition.setY(y - 1);
-//            newPosition.setX(x + 1);
-//        } else if (roomStep._move == RoomStep.MOVE.UP_LEFT) {
-//            newPosition.setY(y - 1);
-//            newPosition.setX(x - 1);
-//        } else if (roomStep._move == RoomStep.MOVE.DOWN_RIGHT) {
-//            newPosition.setY(y + 1);
-//            newPosition.setX(x + 1);
-//        } else if (roomStep._move == RoomStep.MOVE.DOWN_LEFT) {
-//            newPosition.setY(y + 1);
-//            newPosition.setX(x - 1);
-//        }
-
-        // Validation
-        if (outOfBoundaries(newPosition.getY(), newPosition.getX()))
-            return null;
-
-        newSeen.addAll(roomMap.getVisualNeighbors(newPosition));
         // Create new state
-        return new RoomMapState(newProblem, newPosition, newSeen, roomStep, cost);
+        return new RoomMapState(newProblem, newPosition, newSeen, move, cost);
     }
 
     private boolean outOfBoundaries(int y, int x) {
@@ -216,4 +203,71 @@ public class RoomMapState implements IProblemState {
         return seen;
     }
 
+    private void updateNeighbors(Graph<PositionVertex, UndirectedWeightedEdge> g) {
+        HashMap<Position, double[]> tmpNext = new HashMap<>();
+        for (UndirectedWeightedEdge edge : g.outgoingEdgesOf(new PositionVertex(position, PositionVertex.TYPE.UNPRUNNABLE))) {
+            Position s = edge.getSource().getPosition();
+            Position t = edge.getTarget().getPosition();
+            tmpNext.putIfAbsent(s, new double[]{edge.getWeight()});
+            tmpNext.putIfAbsent(t, new double[]{edge.getWeight()});
+        }
+        tmpNext.remove(position);
+        nextPoints = new TreeMap<>(new Comparator<Position>() {
+            @Override
+            public int compare(Position o1, Position o2) {
+                if (o1.equals(o2)) return 0;
+                if (tmpNext.getOrDefault(o1, new double[1])[0] > tmpNext.getOrDefault(o2, new double[1])[0])
+                    return 1;
+                else return -1;
+            }
+        });
+        nextPoints.putAll(tmpNext);
+    }
+
+    private void updateNeighbors() {
+        int height = roomMap.getRoomMap().length;
+        int width = roomMap.getRoomMap()[0].length;
+        HashMap<Position, double[]> tmpNext = new HashMap<>();
+        int x = position.getX();
+        int y = position.getY();
+        if (lastStep instanceof RoomStep) {
+            if (y > 0)
+                tmpNext.put(new Position(y - 1, x), new double[]{1});
+            if (y < height - 1)
+                tmpNext.put(new Position(y + 1, x), new double[]{1});
+            if (x > 0)
+                tmpNext.put(new Position(y, x - 1), new double[]{1});
+            if (x < width - 1)
+                tmpNext.put(new Position(y, x + 1), new double[]{1});
+            if (lastStep instanceof RoomMap8WayStep) {
+                if (y > 0 && x > 0)
+                    tmpNext.put(new Position(y - 1, x - 1), new double[]{SQRT_OF_TWO});
+                if (y < height - 1 && x > 0)
+                    tmpNext.put(new Position(y + 1, x - 1), new double[]{SQRT_OF_TWO});
+                if (y > 0 && x < width - 1)
+                    tmpNext.put(new Position(y - 1, x + 1), new double[]{SQRT_OF_TWO});
+                if (y < height - 1 && x < width - 1)
+                    tmpNext.put(new Position(y + 1, x + 1), new double[]{SQRT_OF_TWO});
+            }
+        }
+        nextPoints = new TreeMap<>(new Comparator<Position>() {
+            @Override
+            public int compare(Position o1, Position o2) {
+                if (o1.equals(o2)) return 0;
+                if (tmpNext.getOrDefault(o1, new double[1])[0] > tmpNext.getOrDefault(o2, new double[1])[0])
+                    return 1;
+                else return -1;
+            }
+        });
+        nextPoints.putAll(tmpNext);
+    }
+
+    public ArrayList<Position> asPartOfSolution() {
+        if (MOVEMENT_METHOD.equals("Jump") && lastStep != null) {
+            return new ArrayList<>(((RoomMapJumpStep) lastStep).getPath());
+        }
+        ArrayList<Position> pos = new ArrayList<>();
+        pos.add(position);
+        return pos;
+    }
 }

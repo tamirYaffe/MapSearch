@@ -1,14 +1,18 @@
 package Search;
 
-import com.mxgraph.layout.mxFastOrganicLayout;
+import com.mxgraph.layout.mxCircleLayout;
 import com.mxgraph.layout.mxIGraphLayout;
 import com.mxgraph.util.mxCellRenderer;
 import org.jgrapht.Graph;
+import org.jgrapht.GraphPath;
 import org.jgrapht.Graphs;
+import org.jgrapht.alg.tour.HeldKarpTSP;
 import org.jgrapht.alg.tour.TwoOptHeuristicTSP;
 import org.jgrapht.ext.JGraphXAdapter;
 import org.jgrapht.graph.DefaultUndirectedWeightedGraph;
-import org.jgrapht.util.*;
+import org.jgrapht.util.FibonacciHeap;
+import org.jgrapht.util.FibonacciHeapNode;
+import org.jgrapht.util.VertexToIntegerMapping;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -34,6 +38,72 @@ public class RoomMapGraphAdapter {
         addAgentToGraph(s);
     }
 
+    public RoomMapGraphAdapter(TreeMap<Position, HashSet<Position>> watchedDictionary, HashMap<Position, HashSet<Position>> visualDictionary, RoomMapState roomMapJumpState, int maxWatchedPositionsNumber) {
+        graph = new DefaultUndirectedWeightedGraph<>(UndirectedWeightedEdge.class);
+        prunnableVertices = new HashMap<>();
+        unPrunnableVertices = new HashMap<>();
+        HashMap<Position, HashSet<Position>> gettableWatchedDictionary = new HashMap<>(watchedDictionary);
+        HashSet<Position> toRemove = new HashSet<>();
+        HashSet<Position> visualSet = new HashSet<>(visualDictionary.keySet());
+        for (Map.Entry<Position, HashSet<Position>> entry : watchedDictionary.entrySet()) {
+            if (maxWatchedPositionsNumber <= 0) break;
+            Position key = entry.getKey();
+            if (roomMapJumpState.getSeen().contains(key)) continue;
+            HashSet<Position> value = entry.getValue();
+            if (Collections.disjoint(value, prunnableVertices.keySet()) && !prunnableVertices.containsKey(key) && !toRemove.contains(key)) {
+                maxWatchedPositionsNumber--;
+                PositionVertex watchedVertex = new PositionVertex(key, PositionVertex.TYPE.UNPRUNNABLE);
+                unPrunnableVertices.put(key, watchedVertex);
+                addPrunabbleVeticesToSingleUnprunnable(watchedVertex, value, visualSet, toRemove, false);
+            }
+        }
+        for (Position position : toRemove) {
+            prunnableVertices.remove(position);
+        }
+        toRemove.clear();
+        Position agentPosition = roomMapJumpState.getPosition();
+        PositionVertex agentVertex = new PositionVertex(agentPosition, PositionVertex.TYPE.UNPRUNNABLE);
+        graph.addVertex(agentVertex);
+        unPrunnableVertices.put(agentPosition, agentVertex);
+        for (Map.Entry<Position, PositionVertex> unprunnableVertice : unPrunnableVertices.entrySet()) {
+            Position watchedPosition = unprunnableVertice.getKey();
+            if (watchedPosition.equals(agentPosition)) continue;
+            HashSet<Position> prunnableSet = new HashSet<>(gettableWatchedDictionary.get(watchedPosition));
+            prunnableSet.retainAll(prunnableVertices.keySet());
+            for (Position prunnablePosition : prunnableSet) {
+                GraphPath<Position, UndirectedWeightedEdge> path = DistanceService.getPath(agentPosition, prunnablePosition);
+                if (path.getLength() > 1 && Collections.disjoint(path.getVertexList().subList(1, path.getLength()), gettableWatchedDictionary.get(watchedPosition))) {
+                    UndirectedWeightedEdge edge = graph.addEdge(agentVertex, prunnableVertices.get(prunnablePosition));
+                    if (edge != null)
+                        graph.setEdgeWeight(edge, path.getWeight());
+                } else prunnableVertices.remove(prunnablePosition);
+            }
+        }
+    }
+
+    private boolean surroundedWithJumpPoints(Position key, HashSet<Position> watchedDictionary, boolean isInGraph) {
+        boolean ans = true;
+        Position checkPosition = new Position(key.getY(), key.getX() - 1);
+        if (!prunnableVertices.containsKey(checkPosition) && watchedDictionary.contains(checkPosition)) {
+            ans = false;
+        }
+        checkPosition = new Position(key.getY(), key.getX() + 1);
+        if (ans && !prunnableVertices.containsKey(checkPosition) && watchedDictionary.contains(checkPosition)) {
+            ans = false;
+        }
+        checkPosition = new Position(key.getY() - 1, key.getX());
+        if (ans && !prunnableVertices.containsKey(checkPosition) && watchedDictionary.contains(checkPosition)) {
+            ans = false;
+        }
+        checkPosition = new Position(key.getY() + 1, key.getX());
+        if (ans && !prunnableVertices.containsKey(checkPosition) && watchedDictionary.contains(checkPosition)) {
+            ans = false;
+        }
+        if (ans && isInGraph) {
+            graph.removeVertex(prunnableVertices.get(key));
+        }
+        return ans;
+    }
 
 
     public void pruneGraph() {
@@ -95,30 +165,61 @@ public class RoomMapGraphAdapter {
     }
 
     private void addVerticesToGraph(TreeMap<Position, HashSet<Position>> watchedDictionary, HashMap<Position, HashSet<Double>> visualLineDictionary, RoomMapState s, double threshold, int maxLeavesCount) {
+        HashSet<Position> toRemove = new HashSet<>();
+        HashSet<Position> visualSet = new HashSet<>(visualLineDictionary.keySet());
         for (Map.Entry<Position, HashSet<Position>> entry : watchedDictionary.entrySet()) {
             Position key = entry.getKey();
-            if (s.getSeen().contains(key))continue;
+            if (s.getSeen().contains(key)) continue;
             HashSet<Position> value = entry.getValue();
             double weight = 1.0 / visualLineDictionary.get(key).size();
-            if (weight < threshold || maxLeavesCount <= 0|| prunnableVertices.size() == watchedDictionary.size()) break;
-            boolean skip = false;
-            if (!Collections.disjoint(value, prunnableVertices.keySet()) || s.getSeen().contains(key) || prunnableVertices.containsKey(key))
+            if (weight < threshold || maxLeavesCount <= 0 || prunnableVertices.size() == watchedDictionary.size())
+                break;
+            if (!Collections.disjoint(value, prunnableVertices.keySet()) || prunnableVertices.containsKey(key))
                 continue;
-            if (!prunnableVertices.containsKey(key)) {
-                maxLeavesCount--;
-                PositionVertex watchedVertex = new PositionVertex(key, PositionVertex.TYPE.UNPRUNNABLE);
-                unPrunnableVertices.put(key, watchedVertex);
-                graph.addVertex(watchedVertex);
-                for (Position position : value) {
-                    if (unPrunnableVertices.containsKey(position)) continue;
-                    PositionVertex vertex = new PositionVertex(position, PositionVertex.TYPE.PRUNEABLE);
-                    prunnableVertices.put(position, vertex);
-                    graph.addVertex(vertex);
-                    UndirectedWeightedEdge edge = graph.addEdge(vertex, watchedVertex);
+            maxLeavesCount--;
+            PositionVertex watchedVertex = new PositionVertex(key, PositionVertex.TYPE.UNPRUNNABLE);
+            unPrunnableVertices.put(key, watchedVertex);
+            graph.addVertex(watchedVertex);
+            addPrunabbleVeticesToSingleUnprunnable(watchedVertex, value, visualSet, toRemove, true);
+        }
+        for (Position position : toRemove) {
+            prunnableVertices.remove(position);
+        }
+    }
+
+    private void addPrunabbleVeticesToSingleUnprunnable(PositionVertex unprunnableVertex, HashSet<Position> prunnableSet, HashSet<Position> visualSet, HashSet<Position> toRemove, boolean addEdgeToUnprunnableVertex) {
+        for (Position position : prunnableSet) {
+            PositionVertex vertex = new PositionVertex(position, PositionVertex.TYPE.PRUNEABLE);
+            prunnableVertices.put(position, vertex);
+            if (!unPrunnableVertices.containsKey(position) && isFrontier(position, prunnableSet, visualSet)) {
+                graph.addVertex(vertex);
+                if (addEdgeToUnprunnableVertex) {
+                    UndirectedWeightedEdge edge = graph.addEdge(vertex, unprunnableVertex);
                     graph.setEdgeWeight(edge, 0);
                 }
-            }
+            } else toRemove.add(position);
         }
+    }
+
+    private boolean isFrontier(Position key, HashSet<Position> prunnableSet, HashSet<Position> visualSet) {
+        boolean ans = false;
+        Position checkPosition = new Position(key.getY(), key.getX() - 1);
+        if (!prunnableSet.contains(checkPosition) && visualSet.contains(checkPosition)) {
+            ans = true;
+        }
+        checkPosition = new Position(key.getY(), key.getX() + 1);
+        if (!ans && !prunnableSet.contains(checkPosition) && visualSet.contains(checkPosition)) {
+            ans = true;
+        }
+        checkPosition = new Position(key.getY() - 1, key.getX());
+        if (!ans && !prunnableSet.contains(checkPosition) && visualSet.contains(checkPosition)) {
+            ans = true;
+        }
+        checkPosition = new Position(key.getY() + 1, key.getX());
+        if (!ans && !prunnableSet.contains(checkPosition) && visualSet.contains(checkPosition)) {
+            ans = true;
+        }
+        return ans;
     }
 
     public Graph<PositionVertex, UndirectedWeightedEdge> getGraph() {
@@ -134,14 +235,14 @@ public class RoomMapGraphAdapter {
     }
 
     public double getPrimMSTWeight() {
-        return getSpanningTree();
+        return getSpanningTreeWeight();
     }
 
     public double getTSPWeight(Position startPosition) {
         PositionVertex start = new PositionVertex(new Position(), PositionVertex.TYPE.PRUNEABLE);
         graph.addVertex(start);
         for (PositionVertex vertex : graph.vertexSet()) {
-            if (vertex.getPosition().equals(startPosition)){
+            if (vertex.getPosition().equals(startPosition)) {
                 UndirectedWeightedEdge edge = graph.addEdge(start, vertex);
                 graph.setEdgeWeight(edge, 0);
                 continue;
@@ -150,15 +251,14 @@ public class RoomMapGraphAdapter {
             graph.setEdgeWeight(edge, HUGE_DOUBLE_VALUE);
         }
         graph.removeEdge(start, start);
-        TwoOptHeuristicTSP<PositionVertex, UndirectedWeightedEdge> twoOptHeuristicTSP = new TwoOptHeuristicTSP<>();
-
-        double h = twoOptHeuristicTSP.getTour(graph).getWeight();
+        HeldKarpTSP<PositionVertex, UndirectedWeightedEdge> heldKarpTSP = new HeldKarpTSP<>();
+        double h = heldKarpTSP.getTour(graph).getWeight();
         return h > 0 ? h - HUGE_DOUBLE_VALUE : h;
 
     }
 
 
-    public double getSpanningTree() {
+    public double getSpanningTreeWeight() {
         Set<UndirectedWeightedEdge> minimumSpanningTreeEdgeSet = new HashSet<>(graph.vertexSet().size());
         double spanningTreeWeight = 0d;
 
@@ -233,12 +333,11 @@ public class RoomMapGraphAdapter {
             imgFile.createNewFile();
             JGraphXAdapter<PositionVertex, UndirectedWeightedEdge> graphAdapter =
                     new JGraphXAdapter<PositionVertex, UndirectedWeightedEdge>(graph);
-            mxIGraphLayout layout = new mxFastOrganicLayout(graphAdapter);
-//            mxIGraphLayout layout = new mxCircleLayout(graphAdapter);
+            mxIGraphLayout layout = new mxCircleLayout(graphAdapter);
 //            mxHierarchicalLayout layout = new mxHierarchicalLayout(graphAdapter);
-//            layout.setInterHierarchySpacing(layout.getInterHierarchySpacing() * 10);
-//            layout.setInterRankCellSpacing(layout.getInterRankCellSpacing() * 10);
-//            layout.execute(graphAdapter.getDefaultParent());
+//            layout.setInterHierarchySpacing(layout.getInterHierarchySpacing() * 15);
+//            layout.setInterRankCellSpacing(layout.getInterRankCellSpacing() * 15);
+            layout.execute(graphAdapter.getDefaultParent());
             BufferedImage image =
                     mxCellRenderer.createBufferedImage(graphAdapter, null, 2, Color.WHITE, true, null);
             imgFile = new File(path);
