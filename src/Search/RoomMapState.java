@@ -2,6 +2,7 @@ package Search;
 
 
 import org.jgrapht.Graph;
+import org.jgrapht.GraphPath;
 
 import java.util.*;
 
@@ -140,6 +141,7 @@ public class RoomMapState implements IProblemState {
                 }
                 break;
             case "Jump":
+            case "Expanding Border":
                 for (Position neighbor : nextPoints.keySet()) {
                     RoomMapJumpStep step = new RoomMapJumpStep(position, neighbor);
                     moveList.add(step);
@@ -177,7 +179,7 @@ public class RoomMapState implements IProblemState {
         RoomMap newProblem = roomMap;
         Position newPosition = move.getNewPosition(position);
         HashSet<Position> newSeen = new HashSet<>(seen);
-        if (MOVEMENT_METHOD.equals("Jump")) {
+        if (MOVEMENT_METHOD.equals("Jump") || MOVEMENT_METHOD.equals("Expanding Border")) {
             for (Position position : ((RoomMapJumpStep) move).getPath()) {
                 newSeen.addAll(roomMap.getVisualNeighbors(position));
             }
@@ -250,6 +252,22 @@ public class RoomMapState implements IProblemState {
                 if (y < height - 1 && x < width - 1)
                     tmpNext.put(new Position(y + 1, x + 1), new double[]{SQRT_OF_TWO});
             }
+        } else if (MOVEMENT_METHOD.equals("Expanding Border")) {
+            HashMap<Position, HashSet<Position>> visualDictionary = roomMap.getVisualDictionary();
+            for (Position position : seen) {
+                if (!seen.containsAll(visualDictionary.get(position))) {
+                    tmpNext.put(position, new double[]{DistanceService.getWeight(this.position, position)});
+                }
+            }
+            HashSet<Position> toRemove = new HashSet<>();
+            for (Position position : tmpNext.keySet()) {
+                GraphPath<Position, UndirectedWeightedEdge> path = DistanceService.getPath(this.position, position);
+                if (!Collections.disjoint(tmpNext.keySet(), path.getVertexList().subList(1, path.getLength())))
+                    toRemove.add(position);
+            }
+            for (Position position : toRemove) {
+                tmpNext.remove(position);
+            }
         }
         nextPoints = new TreeMap<>((o1, o2) -> {
             if (o1.equals(o2)) return 0;
@@ -261,7 +279,7 @@ public class RoomMapState implements IProblemState {
     }
 
     public ArrayList<Position> asPartOfSolution() {
-        if (MOVEMENT_METHOD.equals("Jump") && lastStep != null) {
+        if ((MOVEMENT_METHOD.equals("Jump") || MOVEMENT_METHOD.equals("Expanding Border")) && lastStep != null) {
             return new ArrayList<>(((RoomMapJumpStep) lastStep).getPath());
         }
         ArrayList<Position> pos = new ArrayList<>();
