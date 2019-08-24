@@ -11,20 +11,13 @@ abstract public class ASearch {
     public static int duplicates;
     public static double rootH = 0.0;
 
-    public List<IProblemMove> solve
-            (
-                    IProblem problem
-            ) {
+    public List<IProblemMove> solve ( IProblem problem ) {
         IProblemState problemState = problem.getProblemState();
         ASearchNode goal = abstractSearch(problemState);
-        //		System.out.println("list size: "+openSize());
         return goalNodeToSolutionPath(goal);
     }
 
-    private ASearchNode abstractSearch
-            (
-                    IProblemState problemState
-            ) {
+    private ASearchNode abstractSearch ( IProblemState problemState ) {
         initLists();
         ASearchNode Vs = createSearchRoot(problemState);
         System.out.println(problemState);
@@ -80,10 +73,7 @@ abstract public class ASearch {
     }
 
 
-    private List<IProblemMove> goalNodeToSolutionPath
-            (
-                    ASearchNode goal
-            ) {
+    private List<IProblemMove> goalNodeToSolutionPath ( ASearchNode goal ) {
         if (goal == null)
             return null;
         ASearchNode currentNode = goal;

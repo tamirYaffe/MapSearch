@@ -231,7 +231,7 @@ public class RoomMapState implements IProblemState {
         HashMap<Position, double[]> tmpNext = new HashMap<>();
         int x = position.getX();
         int y = position.getY();
-        if (lastStep instanceof RoomStep) {
+        if (MOVEMENT_METHOD.endsWith("way")) {
             if (y > 0)
                 tmpNext.put(new Position(y - 1, x), new double[]{1});
             if (y < height - 1)
@@ -240,7 +240,7 @@ public class RoomMapState implements IProblemState {
                 tmpNext.put(new Position(y, x - 1), new double[]{1});
             if (x < width - 1)
                 tmpNext.put(new Position(y, x + 1), new double[]{1});
-            if (lastStep instanceof RoomMap8WayStep) {
+            if (MOVEMENT_METHOD.startsWith("8")) {
                 if (y > 0 && x > 0)
                     tmpNext.put(new Position(y - 1, x - 1), new double[]{SQRT_OF_TWO});
                 if (y < height - 1 && x > 0)
