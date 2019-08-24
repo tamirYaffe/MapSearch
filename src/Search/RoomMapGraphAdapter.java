@@ -1,24 +1,24 @@
 package Search;
 
-import com.mxgraph.layout.mxCircleLayout;
-import com.mxgraph.layout.mxIGraphLayout;
-import com.mxgraph.util.mxCellRenderer;
+//import com.mxgraph.layout.mxCircleLayout;
+//import com.mxgraph.layout.mxIGraphLayout;
+//import com.mxgraph.util.mxCellRenderer;
+//import javax.imageio.ImageIO;
+//import java.awt.*;
+//import java.awt.image.BufferedImage;
+//import java.io.File;
+//import java.io.IOException;
+//import org.jgrapht.ext.JGraphXAdapter;
+
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.Graphs;
 import org.jgrapht.alg.tour.HeldKarpTSP;
-import org.jgrapht.alg.tour.TwoOptHeuristicTSP;
-import org.jgrapht.ext.JGraphXAdapter;
 import org.jgrapht.graph.DefaultUndirectedWeightedGraph;
 import org.jgrapht.util.FibonacciHeap;
 import org.jgrapht.util.FibonacciHeapNode;
 import org.jgrapht.util.VertexToIntegerMapping;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.*;
 import java.util.List;
@@ -27,7 +27,7 @@ public class RoomMapGraphAdapter {
     private Graph<PositionVertex, UndirectedWeightedEdge> graph;
     private HashMap<Position, PositionVertex> prunnableVertices;
     private HashMap<Position, PositionVertex> unPrunnableVertices;
-    public static final int HUGE_DOUBLE_VALUE = 0x7fffff00;
+    private static final int HUGE_DOUBLE_VALUE = 0x7fffff00;
 
     public RoomMapGraphAdapter(TreeMap<Position, HashSet<Position>> watchedDictionary, HashMap<Position, HashSet<Double>> visualLineDictionary, RoomMapState s, double threshold, int maxLeavesCount) {
         graph = new DefaultUndirectedWeightedGraph<>(UndirectedWeightedEdge.class);
@@ -81,29 +81,29 @@ public class RoomMapGraphAdapter {
         }
     }
 
-    private boolean surroundedWithJumpPoints(Position key, HashSet<Position> watchedDictionary, boolean isInGraph) {
-        boolean ans = true;
-        Position checkPosition = new Position(key.getY(), key.getX() - 1);
-        if (!prunnableVertices.containsKey(checkPosition) && watchedDictionary.contains(checkPosition)) {
-            ans = false;
-        }
-        checkPosition = new Position(key.getY(), key.getX() + 1);
-        if (ans && !prunnableVertices.containsKey(checkPosition) && watchedDictionary.contains(checkPosition)) {
-            ans = false;
-        }
-        checkPosition = new Position(key.getY() - 1, key.getX());
-        if (ans && !prunnableVertices.containsKey(checkPosition) && watchedDictionary.contains(checkPosition)) {
-            ans = false;
-        }
-        checkPosition = new Position(key.getY() + 1, key.getX());
-        if (ans && !prunnableVertices.containsKey(checkPosition) && watchedDictionary.contains(checkPosition)) {
-            ans = false;
-        }
-        if (ans && isInGraph) {
-            graph.removeVertex(prunnableVertices.get(key));
-        }
-        return ans;
-    }
+//    private boolean surroundedWithJumpPoints(Position key, HashSet<Position> watchedDictionary, boolean isInGraph) {
+//        boolean ans = true;
+//        Position checkPosition = new Position(key.getY(), key.getX() - 1);
+//        if (!prunnableVertices.containsKey(checkPosition) && watchedDictionary.contains(checkPosition)) {
+//            ans = false;
+//        }
+//        checkPosition = new Position(key.getY(), key.getX() + 1);
+//        if (ans && !prunnableVertices.containsKey(checkPosition) && watchedDictionary.contains(checkPosition)) {
+//            ans = false;
+//        }
+//        checkPosition = new Position(key.getY() - 1, key.getX());
+//        if (ans && !prunnableVertices.containsKey(checkPosition) && watchedDictionary.contains(checkPosition)) {
+//            ans = false;
+//        }
+//        checkPosition = new Position(key.getY() + 1, key.getX());
+//        if (ans && !prunnableVertices.containsKey(checkPosition) && watchedDictionary.contains(checkPosition)) {
+//            ans = false;
+//        }
+//        if (ans && isInGraph) {
+//            graph.removeVertex(prunnableVertices.get(key));
+//        }
+//        return ans;
+//    }
 
 
     public void pruneGraph() {
@@ -226,14 +226,6 @@ public class RoomMapGraphAdapter {
         return graph;
     }
 
-    public HashMap<Position, PositionVertex> getPrunnableVertices() {
-        return prunnableVertices;
-    }
-
-    public HashMap<Position, PositionVertex> getUnPrunnableVertices() {
-        return unPrunnableVertices;
-    }
-
     public double getPrimMSTWeight() {
         return getSpanningTreeWeight();
     }
@@ -258,8 +250,8 @@ public class RoomMapGraphAdapter {
     }
 
 
-    public double getSpanningTreeWeight() {
-        Set<UndirectedWeightedEdge> minimumSpanningTreeEdgeSet = new HashSet<>(graph.vertexSet().size());
+    private double getSpanningTreeWeight() {
+//        Set<UndirectedWeightedEdge> minimumSpanningTreeEdgeSet = new HashSet<>(graph.vertexSet().size());
         double spanningTreeWeight = 0d;
 
         final int N = graph.vertexSet().size();
@@ -294,7 +286,7 @@ public class RoomMapGraphAdapter {
 
             // Add the edge from its parent to the spanning tree (if it exists)
             if (vertexInfo.edgeFromParent != null) {
-                minimumSpanningTreeEdgeSet.add(vertexInfo.edgeFromParent);
+//                minimumSpanningTreeEdgeSet.add(vertexInfo.edgeFromParent);
                 spanningTreeWeight += graph.getEdgeWeight(vertexInfo.edgeFromParent);
             }
 
@@ -320,32 +312,32 @@ public class RoomMapGraphAdapter {
     }
 
     private class VertexInfo {
-        public int id;
-        public boolean spanned;
-        public double distance;
-        public UndirectedWeightedEdge edgeFromParent;
+        int id;
+        boolean spanned;
+        double distance;
+        UndirectedWeightedEdge edgeFromParent;
     }
 
-    public void printGraph(String path) {
-        try {
-//            File imgFile = new File("resources/graph.png");
-            File imgFile = new File(path);
-            imgFile.createNewFile();
-            JGraphXAdapter<PositionVertex, UndirectedWeightedEdge> graphAdapter =
-                    new JGraphXAdapter<PositionVertex, UndirectedWeightedEdge>(graph);
-            mxIGraphLayout layout = new mxCircleLayout(graphAdapter);
-//            mxHierarchicalLayout layout = new mxHierarchicalLayout(graphAdapter);
-//            layout.setInterHierarchySpacing(layout.getInterHierarchySpacing() * 15);
-//            layout.setInterRankCellSpacing(layout.getInterRankCellSpacing() * 15);
-            layout.execute(graphAdapter.getDefaultParent());
-            BufferedImage image =
-                    mxCellRenderer.createBufferedImage(graphAdapter, null, 2, Color.WHITE, true, null);
-            imgFile = new File(path);
-            ImageIO.write(image, "PNG", imgFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        System.exit(0);
-    }
+//    public void printGraph(String path) {
+//        try {
+////            File imgFile = new File("resources/graph.png");
+//            File imgFile = new File(path);
+//            boolean newFileMade = imgFile.createNewFile();
+//            if (newFileMade) System.out.println("Created Graph image in: " + path);
+//            JGraphXAdapter<PositionVertex, UndirectedWeightedEdge> graphAdapter = new JGraphXAdapter<>(graph);
+//            mxIGraphLayout layout = new mxCircleLayout(graphAdapter);
+////            mxHierarchicalLayout layout = new mxHierarchicalLayout(graphAdapter);
+////            layout.setInterHierarchySpacing(layout.getInterHierarchySpacing() * 15);
+////            layout.setInterRankCellSpacing(layout.getInterRankCellSpacing() * 15);
+//            layout.execute(graphAdapter.getDefaultParent());
+//            BufferedImage image =
+//                    mxCellRenderer.createBufferedImage(graphAdapter, null, 2, Color.WHITE, true, null);
+//            imgFile = new File(path);
+//            ImageIO.write(image, "PNG", imgFile);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        System.exit(0);
+//    }
 
 }

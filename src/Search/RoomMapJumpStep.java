@@ -1,25 +1,14 @@
 package Search;
 
-import Search.DistanceService;
-import Search.IProblemMove;
-import Search.Position;
 import org.jgrapht.GraphPath;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class RoomMapJumpStep implements IProblemMove {
-    final Position source;
-    final Position target;
-    ArrayList<Position> path;
-
-    public Position getSource() {
-        return source;
-    }
-
-    public Position getTarget() {
-        return target;
-    }
+    private final Position source;
+    private final Position target;
+    private ArrayList<Position> path;
 
     public ArrayList<Position> getPath() {
         return path;

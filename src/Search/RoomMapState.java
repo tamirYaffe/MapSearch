@@ -14,7 +14,7 @@ public class RoomMapState implements IProblemState {
     private HashSet<Position> seen;       //seen positions
     private IProblemMove lastStep;  //last step
     private double cost = 0;
-    protected TreeMap<Position, double[]> nextPoints;       //neighbor positions in the MST
+    private TreeMap<Position, double[]> nextPoints;       //neighbor positions
 
 
     public RoomMapState(RoomMap roomMap, Position position, HashSet<Position> seen, IProblemMove lastStep) {
@@ -84,14 +84,14 @@ public class RoomMapState implements IProblemState {
         room[position.getY()][position.getX()] = "$$$";
 
         //agent's current position
-        String string = "position: " + position.getX() + "," + position.getY() + "\n";
+        StringBuilder string = new StringBuilder("position: " + position.getX() + "," + position.getY() + "\n");
 
         //add to 'string' the String array with the seen positions ('room')
-        for (int i = 0; i < room.length; i++) {
-            string += Arrays.toString(room[i]) + "\n";
+        for (String[] strings : room) {
+            string.append(Arrays.toString(strings)).append("\n");
         }
 
-        return string;
+        return string.toString();
     }
 
     @Override
@@ -126,21 +126,25 @@ public class RoomMapState implements IProblemState {
 
     private List<IProblemMove> getLegalMoves() {
         List<IProblemMove> moveList = new ArrayList<>();
-        if (MOVEMENT_METHOD.equals("4-way")) {
-            for (Position neighbor : nextPoints.keySet()) {
-                RoomStep step = new RoomStep(position, neighbor);
-                moveList.add(step);
-            }
-        } else if (MOVEMENT_METHOD.equals("8-way")) {
-            for (Position neighbor : nextPoints.keySet()) {
-                RoomMap8WayStep step = new RoomMap8WayStep(position, neighbor);
-                moveList.add(step);
-            }
-        } else if (MOVEMENT_METHOD.equals("Jump")) {
-            for (Position neighbor : nextPoints.keySet()) {
-                RoomMapJumpStep step = new RoomMapJumpStep(position, neighbor);
-                moveList.add(step);
-            }
+        switch (MOVEMENT_METHOD) {
+            case "4-way":
+                for (Position neighbor : nextPoints.keySet()) {
+                    RoomStep step = new RoomStep(position, neighbor);
+                    moveList.add(step);
+                }
+                break;
+            case "8-way":
+                for (Position neighbor : nextPoints.keySet()) {
+                    RoomMap8WayStep step = new RoomMap8WayStep(position, neighbor);
+                    moveList.add(step);
+                }
+                break;
+            case "Jump":
+                for (Position neighbor : nextPoints.keySet()) {
+                    RoomMapJumpStep step = new RoomMapJumpStep(position, neighbor);
+                    moveList.add(step);
+                }
+                break;
         }
 
         return moveList;
@@ -212,14 +216,11 @@ public class RoomMapState implements IProblemState {
             tmpNext.putIfAbsent(t, new double[]{edge.getWeight()});
         }
         tmpNext.remove(position);
-        nextPoints = new TreeMap<>(new Comparator<Position>() {
-            @Override
-            public int compare(Position o1, Position o2) {
-                if (o1.equals(o2)) return 0;
-                if (tmpNext.getOrDefault(o1, new double[1])[0] > tmpNext.getOrDefault(o2, new double[1])[0])
-                    return 1;
-                else return -1;
-            }
+        nextPoints = new TreeMap<>((o1, o2) -> {
+            if (o1.equals(o2)) return 0;
+            if (tmpNext.getOrDefault(o1, new double[1])[0] > tmpNext.getOrDefault(o2, new double[1])[0])
+                return 1;
+            else return -1;
         });
         nextPoints.putAll(tmpNext);
     }
@@ -250,14 +251,11 @@ public class RoomMapState implements IProblemState {
                     tmpNext.put(new Position(y + 1, x + 1), new double[]{SQRT_OF_TWO});
             }
         }
-        nextPoints = new TreeMap<>(new Comparator<Position>() {
-            @Override
-            public int compare(Position o1, Position o2) {
-                if (o1.equals(o2)) return 0;
-                if (tmpNext.getOrDefault(o1, new double[1])[0] > tmpNext.getOrDefault(o2, new double[1])[0])
-                    return 1;
-                else return -1;
-            }
+        nextPoints = new TreeMap<>((o1, o2) -> {
+            if (o1.equals(o2)) return 0;
+            if (tmpNext.getOrDefault(o1, new double[1])[0] > tmpNext.getOrDefault(o2, new double[1])[0])
+                return 1;
+            else return -1;
         });
         nextPoints.putAll(tmpNext);
     }

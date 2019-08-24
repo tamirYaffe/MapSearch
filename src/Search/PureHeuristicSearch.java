@@ -8,8 +8,8 @@ public class PureHeuristicSearch  extends ASearch
 {
 	// Define lists here ...
 
-	PriorityQueue<ASearchNode> openList;
-	HashMap<IProblemState,ASearchNode> closedList;
+	private PriorityQueue<ASearchNode> openList;
+	private HashMap<IProblemState,ASearchNode> closedList;
 
 	@Override
 	public String getSolverName() 
@@ -20,22 +20,14 @@ public class PureHeuristicSearch  extends ASearch
 	@Override
 	public ASearchNode createSearchRoot(IProblemState problemState)
 	{
-		ASearchNode newNode = new HeuristicSearchNode(problemState);
-		return newNode;
+		return new HeuristicSearchNode(problemState);
 	}
 
 	@Override
 	public void initLists()
 	{
 		closedList=new HashMap<>();
-		openList= new PriorityQueue<>(new Comparator<ASearchNode>() {
-			@Override
-			public int compare(ASearchNode o1, ASearchNode o2) {
-				if (o1.getH() > o2.getH()) return 1;
-				if (o1.getH() == o2.getH()) return 0;
-				return -1;
-			}
-		});
+		openList= new PriorityQueue<>(Comparator.comparingDouble(ASearchNode::getH));
 	}
 
 	@Override
@@ -55,7 +47,7 @@ public class PureHeuristicSearch  extends ASearch
 	@Override
 	public boolean isClosed(ASearchNode node)
 	{
-		return closedList.containsKey(node._currentProblemState);
+		return closedList.containsKey(node.currentProblemState);
 	}
 
 	@Override
@@ -67,7 +59,7 @@ public class PureHeuristicSearch  extends ASearch
 	@Override
 	public void addToClosed(ASearchNode node)
 	{
-		closedList.put(node._currentProblemState,node);
+		closedList.put(node.currentProblemState,node);
 	}
 
 	@Override

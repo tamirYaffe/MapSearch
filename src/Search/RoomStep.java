@@ -3,9 +3,9 @@ package Search;
 public class RoomStep implements IProblemMove {
 
 
-    public enum SIMPLE_MOVE {UP, DOWN, LEFT, RIGHT, UP_RIGHT, UP_LEFT, DOWN_RIGHT, DOWN_LEFT;}
+    public enum SIMPLE_MOVE {UP, DOWN, LEFT, RIGHT, UP_RIGHT, UP_LEFT, DOWN_RIGHT, DOWN_LEFT}
 
-    SIMPLE_MOVE _move;
+    public SIMPLE_MOVE _move;
 
     public RoomStep(SIMPLE_MOVE move) {
         _move = move;

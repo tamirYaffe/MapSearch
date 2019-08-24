@@ -1,22 +1,16 @@
 package Search;
 
 
-import javafx.geometry.Pos;
-import org.jgrapht.Graph;
-import rlforj.examples.ExampleBoard;
-import rlforj.los.BresLos;
-
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.TreeMap;
 
 
 public class RoomMap implements IProblem {
-    protected Position startPosition;
-    protected IHeuristic heuristic;  //Room problem heuristic
+    private Position startPosition;
+    private IHeuristic heuristic;  //Room problem heuristic
     private RoomMapService self;
-    public static String MOVEMENT_METHOD = "4-way";
+    static String MOVEMENT_METHOD = "4-way";
 
 
     public RoomMap() {
@@ -25,13 +19,13 @@ public class RoomMap implements IProblem {
 
 
     public RoomMap(int[][] room, Position startPosition) {
-        self = new RoomMapService(this, room);
+        self = new RoomMapService(room);
         this.startPosition = new Position(startPosition);
         heuristic = new ZeroHeuristic();
     }
 
     public RoomMap(int[][] room, Position startPosition, String movement, String heuristic, String los) {
-        self = new RoomMapService(this, room, los);
+        self = new RoomMapService(room, los);
         this.startPosition = new Position(startPosition);
         switch (heuristic) {
             case "Zero":
@@ -51,16 +45,12 @@ public class RoomMap implements IProblem {
     }
 
 
-    public int[][] getRoomMap() {
+    int[][] getRoomMap() {
         return self.getRoomMap();
     }
 
     public Position getStartPosition() {
         return startPosition;
-    }
-
-    public IHeuristic getHeuristic() {
-        return heuristic;
     }
 
     @Override
@@ -86,18 +76,9 @@ public class RoomMap implements IProblem {
         return self.getVisualDictionary();
     }
 
-    public int getTotalWatches() {
-        return self.getTotalWatches();
-    }
-
     @Override
     public IHeuristic getProblemHeuristic() {
         return heuristic;
-    }
-
-    @Override
-    public boolean performMove(IProblemMove move) {
-        return true;
     }
 
     public TreeMap<Position, HashSet<Position>> getWatchedDictionary() {

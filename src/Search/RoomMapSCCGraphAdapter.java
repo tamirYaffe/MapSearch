@@ -1,31 +1,29 @@
 package Search;
 
-import com.mxgraph.layout.mxCircleLayout;
-import com.mxgraph.layout.mxIGraphLayout;
-import com.mxgraph.util.mxCellRenderer;
-import javafx.util.Pair;
-import org.jgrapht.Graph;
-import org.jgrapht.alg.tour.TwoOptHeuristicTSP;
-import org.jgrapht.ext.JGraphXAdapter;
-import org.jgrapht.graph.DefaultUndirectedWeightedGraph;
+//import com.mxgraph.layout.mxIGraphLayout;
+//import com.mxgraph.util.mxCellRenderer;
+//import org.jgrapht.ext.JGraphXAdapter;
+//import javax.imageio.ImageIO;
+//import java.awt.*;
+//import java.awt.image.BufferedImage;
+//import java.io.File;
+//import java.io.IOException;
+//import org.jgrapht.alg.tour.HeldKarpTSP;
+//import org.jgrapht.graph.DefaultUndirectedWeightedGraph;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import javafx.util.Pair;
+
 import java.util.List;
 import java.util.*;
 
 
-public class RoomMapSCCGraphAdapter {
+class RoomMapSCCGraphAdapter {
     private List<SCCSubGraph> connectedComponentsGraphs = new ArrayList<>();
 
 
     public RoomMapSCCGraphAdapter(TreeMap<Position, HashSet<Position>> watchedDictionary, HashMap<Position, HashSet<Double>> visualLineDictionary, RoomMapState s, double threshold, int maxLeavesCount) {
         addVerticesToGraph(watchedDictionary, visualLineDictionary, s, threshold, maxLeavesCount);
     }
-
 
     private void addVerticesToGraph(TreeMap<Position, HashSet<Position>> watchedDictionary, HashMap<Position, HashSet<Double>> visualLineDictionary, RoomMapState s, double threshold, int maxLeavesCount) {
         for (Map.Entry<Position, HashSet<Position>> entry : watchedDictionary.entrySet()) {
@@ -50,39 +48,6 @@ public class RoomMapSCCGraphAdapter {
                     connectedComponentsGraphs.add(subGraph);
             }
         }
-    }
-
-    public double getTSPWeight(Position startPosition) {
-        DefaultUndirectedWeightedGraph<SCCSubGraph, UndirectedWeightedEdge> graph = new DefaultUndirectedWeightedGraph<>(UndirectedWeightedEdge.class);
-        SCCSubGraph start = new SCCSubGraph(UndirectedWeightedEdge.class);
-        start.addVertex(new PositionVertex(new Position(), PositionVertex.TYPE.UNPRUNNABLE));
-        graph.addVertex(start);
-        for (SCCSubGraph sccSubGraph : connectedComponentsGraphs) {
-            graph.addVertex(sccSubGraph);
-            for (SCCSubGraph otherSccSubGraph : connectedComponentsGraphs) {
-                if (sccSubGraph.equals(otherSccSubGraph)) continue;
-                graph.addVertex(otherSccSubGraph);
-                Pair<Position, Double> ans = getMinEdge(startPosition, otherSccSubGraph);
-                UndirectedWeightedEdge edge = graph.addEdge(sccSubGraph, otherSccSubGraph);
-                if (edge != null) {
-                    graph.setEdgeWeight(edge, ans.getValue());
-                }
-                startPosition = ans.getKey();
-            }
-        }
-        for (SCCSubGraph vertex : graph.vertexSet()) {
-            UndirectedWeightedEdge edge = graph.addEdge(start, vertex);
-            graph.setEdgeWeight(edge, 0);
-        }
-        graph.removeEdge(start, start);
-        printGraph("sccGraph.png",graph);
-
-
-        TwoOptHeuristicTSP<SCCSubGraph, UndirectedWeightedEdge> twoOptHeuristicTSP = new TwoOptHeuristicTSP<>();
-        double weight = twoOptHeuristicTSP.getTour(graph).getWeight();
-        System.out.println("weight: " + weight);
-        return weight;
-
     }
 
     public double getUnseenSCCWeight(RoomMapState s) {
@@ -119,25 +84,53 @@ public class RoomMapSCCGraphAdapter {
         return new Pair<>(next, minEdgeWeight);
     }
 
-    public void printGraph(String path, Graph graph) {
-        try {
-//            File imgFile = new File("resources/graph.png");
-            File imgFile = new File(path);
-            imgFile.createNewFile();
-            JGraphXAdapter<PositionVertex, UndirectedWeightedEdge> graphAdapter =
-                    new JGraphXAdapter<PositionVertex, UndirectedWeightedEdge>(graph);
-            mxCircleLayout layout = new mxCircleLayout(graphAdapter,3.0);
-//            mxHierarchicalLayout layout = new mxHierarchicalLayout(graphAdapter);
-//            layout.setInterHierarchySpacing(layout.getInterHierarchySpacing() * 15);
-//            layout.setInterRankCellSpacing(layout.getInterRankCellSpacing() * 15);
-            layout.execute(graphAdapter.getDefaultParent());
-            BufferedImage image =
-                    mxCellRenderer.createBufferedImage(graphAdapter, null, 1, Color.WHITE, true, null);
-            imgFile = new File(path);
-            ImageIO.write(image, "PNG", imgFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        System.exit(0);
-    }
+//    public double getTSPWeight(Position startPosition) {
+//        DefaultUndirectedWeightedGraph<SCCSubGraph, UndirectedWeightedEdge> graph = new DefaultUndirectedWeightedGraph<>(UndirectedWeightedEdge.class);
+//        SCCSubGraph start = new SCCSubGraph(UndirectedWeightedEdge.class);
+//        start.addVertex(new PositionVertex(new Position(), PositionVertex.TYPE.UNPRUNNABLE));
+//        graph.addVertex(start);
+//        for (SCCSubGraph sccSubGraph : connectedComponentsGraphs) {
+//            graph.addVertex(sccSubGraph);
+//            for (SCCSubGraph otherSccSubGraph : connectedComponentsGraphs) {
+//                if (sccSubGraph.equals(otherSccSubGraph)) continue;
+//                graph.addVertex(otherSccSubGraph);
+//                Pair<Position, Double> ans = getMinEdge(startPosition, otherSccSubGraph);
+//                UndirectedWeightedEdge edge = graph.addEdge(sccSubGraph, otherSccSubGraph);
+//                if (edge != null) {
+//                    graph.setEdgeWeight(edge, ans.getValue());
+//                }
+//                startPosition = ans.getKey();
+//            }
+//        }
+//        for (SCCSubGraph vertex : graph.vertexSet()) {
+//            UndirectedWeightedEdge edge = graph.addEdge(start, vertex);
+//            graph.setEdgeWeight(edge, 0);
+//        }
+//        graph.removeEdge(start, start);
+//        HeldKarpTSP<SCCSubGraph, UndirectedWeightedEdge> heldKarpTSP = new HeldKarpTSP<>();
+//        return heldKarpTSP.getTour(graph).getWeight();
+//
+//    }
+
+//    public void printGraph(String path, Graph graph) {
+//        try {
+////            File imgFile = new File("resources/graph.png");
+//            File imgFile = new File(path);
+//            imgFile.createNewFile();
+//            JGraphXAdapter<PositionVertex, UndirectedWeightedEdge> graphAdapter =
+//                    new JGraphXAdapter<PositionVertex, UndirectedWeightedEdge>(graph);
+//            mxCircleLayout layout = new mxCircleLayout(graphAdapter,3.0);
+////            mxHierarchicalLayout layout = new mxHierarchicalLayout(graphAdapter);
+////            layout.setInterHierarchySpacing(layout.getInterHierarchySpacing() * 15);
+////            layout.setInterRankCellSpacing(layout.getInterRankCellSpacing() * 15);
+//            layout.execute(graphAdapter.getDefaultParent());
+//            BufferedImage image =
+//                    mxCellRenderer.createBufferedImage(graphAdapter, null, 1, Color.WHITE, true, null);
+//            imgFile = new File(path);
+//            ImageIO.write(image, "PNG", imgFile);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        System.exit(0);
+//    }
 }

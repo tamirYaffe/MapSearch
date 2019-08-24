@@ -1,12 +1,12 @@
 package Search;
 
 public class RoomMap8WayStep extends RoomStep implements IProblemMove {
-    public static final double SQRT_OF_TWO = Math.sqrt(2);
+    static final double SQRT_OF_TWO = Math.sqrt(2);
 
 
-    public RoomMap8WayStep(SIMPLE_MOVE move) {
-        super(move);
-    }
+//    public RoomMap8WayStep(SIMPLE_MOVE move) {
+//        super(move);
+//    }
 
     public RoomMap8WayStep(Position source, Position target) {
         super(source, target);

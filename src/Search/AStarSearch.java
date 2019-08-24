@@ -1,6 +1,5 @@
 package Search;
 
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.PriorityQueue;
 
@@ -8,9 +7,9 @@ public class AStarSearch   extends ASearch
 {
 	// Define lists here ...
 
-	PriorityQueue<ASearchNode> openList;
-	HashMap<IProblemState,ASearchNode> closedList;
-	HashMap<IProblemState,ASearchNode> openContainer;
+	private PriorityQueue<ASearchNode> openList;
+	private HashMap<IProblemState,ASearchNode> closedList;
+	private HashMap<IProblemState,ASearchNode> openContainer;
 
 	@Override
 	public String getSolverName()
@@ -21,24 +20,17 @@ public class AStarSearch   extends ASearch
 	@Override
 	public ASearchNode createSearchRoot(IProblemState problemState)
 	{
-		ASearchNode newNode = new HeuristicSearchNode(problemState);
-		return newNode;
+		return new HeuristicSearchNode(problemState);
 	}
 
 	@Override
-	public void initLists()
-	{
+	public void initLists() {
 		closedList=new HashMap<>();
 		openContainer=new HashMap<>();
-		openList= new PriorityQueue<>(new Comparator<ASearchNode>() {
-			@Override
-			public int compare(ASearchNode o1, ASearchNode o2) {
-				if (o1.getF() > o2.getF()) return 1;
-				if (o1.getF() < o2.getF()) return -1;
-				if (o1.getH() > o2.getH()) return 1;
-				if (o1.getH() < o2.getH()) return -1;
-				return 0;
-			}
+		openList= new PriorityQueue<>((o1, o2) -> {
+			if (o1.getF() > o2.getF()) return 1;
+			if (o1.getF() < o2.getF()) return -1;
+			return Double.compare(o1.getH(), o2.getH());
 		});
 	}
 
@@ -46,31 +38,31 @@ public class AStarSearch   extends ASearch
 	public ASearchNode getOpen(ASearchNode node)
 	{
 		if (isOpen(node))
-			return openContainer.get(node._currentProblemState);
+			return openContainer.get(node.currentProblemState);
 		return null;
 	}
 
 	@Override
 	public boolean isOpen(ASearchNode node)
 	{
-		return openContainer.containsKey(node._currentProblemState);
+		return openContainer.containsKey(node.currentProblemState);
 	}
 
 	@Override
 	public boolean isClosed(ASearchNode node)
 	{
-		return closedList.containsKey(node._currentProblemState);
+		return closedList.containsKey(node.currentProblemState);
 	}
 
 	@Override
 	public void addToOpen(ASearchNode node)
 	{
 		if (!isOpen(node)){
-			openContainer.put(node._currentProblemState,node);
+			openContainer.put(node.currentProblemState,node);
 			openList.add(node);
 		}
-		else if(node.getG()<openContainer.get(node._currentProblemState).getG()){
-			openContainer.replace(node._currentProblemState,node);
+		else if(node.getG()<openContainer.get(node.currentProblemState).getG()){
+			openContainer.replace(node.currentProblemState,node);
 			openList.add(node);
 		}
 	}
@@ -78,7 +70,7 @@ public class AStarSearch   extends ASearch
 	@Override
 	public void addToClosed(ASearchNode node)
 	{
-		closedList.put(node._currentProblemState,node);
+		closedList.put(node.currentProblemState,node);
 	}
 
 	@Override
@@ -91,7 +83,7 @@ public class AStarSearch   extends ASearch
 	public ASearchNode getBest()
 	{
 		ASearchNode res = openList.poll();
-		while (res!=null && openContainer.get(res._currentProblemState).getG()<res.getG()){
+		while (res!=null && openContainer.get(res.currentProblemState).getG()<res.getG()){
 			res = openList.poll();
 		}
 		return res;

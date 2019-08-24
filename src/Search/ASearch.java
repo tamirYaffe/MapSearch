@@ -17,9 +17,8 @@ abstract public class ASearch {
             ) {
         IProblemState problemState = problem.getProblemState();
         ASearchNode goal = abstractSearch(problemState);
-        List<IProblemMove> solution = goalNodeToSolutionPath(goal);
-//		System.out.println("list size: "+openSize());
-        return solution;
+        //		System.out.println("list size: "+openSize());
+        return goalNodeToSolutionPath(goal);
     }
 
     private ASearchNode abstractSearch
@@ -31,7 +30,7 @@ abstract public class ASearch {
         System.out.println(problemState);
         rootH = Vs.getH();
         System.out.println("Root.H: " + rootH);
-        ASearchNode current = null;
+        ASearchNode current;
         addToOpen(Vs);
         expanded = 0;
         generated = 0;
@@ -48,8 +47,8 @@ abstract public class ASearch {
                 return current;
             }
             List<ASearchNode> neighbors = current.getNeighbors();
-            System.out.println("\ncurrent:\nlast move: " + current.getLastMove() + "\n" + current._currentProblemState + "g: " + current.getG() + "\t\th: " + current.getH() + "\t\tf: " + (current.getF()) + "\n");
-            int genID = 0;
+            System.out.println("\ncurrent:\nlast move: " + current.getLastMove() + "\n" + current.currentProblemState + "g: " + current.getG() + "\t\th: " + current.getH() + "\t\tf: " + (current.getF()) + "\n");
+//            int genID = 0;
             for (ASearchNode Vn : neighbors) {
                 if (isClosed(Vn)) {
                     continue;
@@ -72,7 +71,7 @@ abstract public class ASearch {
 //            System.out.println(current._currentProblemState);
             expanded++;
 //            if (expanded % 1000 == 0 || (System.currentTimeMillis() - start) % 1000 < 50)
-//            if (current.getH() > 43 - current.getG()) admissible = false;
+            if (current.getH() > 1000 - current.getG()) admissible = false;
 //            System.out.print("\rexpanded: " + expanded + "\tgenerated: " + generated + "\tduplicates: " + duplicates + "\t\tg: " + current.getG() + "\t\th: " + current.getH() + "\t\tf: " + (current.getF()) + "\t\tTime: " + (System.currentTimeMillis() - start) + "ms" + (admissible ? "\t Admissible" : "\t Not Admissible!!!"));
 //            System.out.print("\rg: " + current.getG() + "\th: " + current.getH() + "\tf: " + (current.getF()) + (admissible? "\t Admissible" : "\t Not Admissible!!!"));
         }
@@ -89,9 +88,9 @@ abstract public class ASearch {
             return null;
         ASearchNode currentNode = goal;
         List<IProblemMove> solutionPath = new ArrayList<>();
-        while (currentNode._prev != null) {
+        while (currentNode.prev != null) {
             solutionPath.add(currentNode.getLastMove());
-            currentNode = currentNode._prev;
+            currentNode = currentNode.prev;
         }
         Collections.reverse(solutionPath);
         return solutionPath;

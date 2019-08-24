@@ -1,7 +1,5 @@
 package Search;
 
-import java.util.Objects;
-
 public class Position {
     private int y;
     private int x;
@@ -16,10 +14,7 @@ public class Position {
     }
 
     /**
-     * construcor
-     *
-     * @param y
-     * @param x
+     * constructor
      */
     public Position(int y, int x) {
         this.y = y;
@@ -28,8 +23,6 @@ public class Position {
 
     /**
      * copy constructor
-     *
-     * @param position
      */
     public Position(Position position) {
         if (position == null) {

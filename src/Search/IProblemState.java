@@ -4,16 +4,16 @@ import java.util.List;
 
 public interface IProblemState 
 {	
-	public List<IProblemState> 	getNeighborStates();
+	List<IProblemState> 	getNeighborStates();
 	
-	public IProblem				getProblem();
+	IProblem				getProblem();
 	
-	public boolean 				isGoalState();
+	boolean 				isGoalState();
 		
-	public IProblemMove			getStateLastMove();
+	IProblemMove			getStateLastMove();
 	
-	public double	 			getStateLastMoveCost();
+	double	 			getStateLastMoveCost();
 	
-	public IProblemState 		performMove(IProblemMove move);
+	IProblemState 		performMove(IProblemMove move);
 
 }

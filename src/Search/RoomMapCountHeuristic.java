@@ -1,6 +1,5 @@
 package Search;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.TreeMap;
@@ -13,8 +12,7 @@ public class RoomMapCountHeuristic implements IHeuristic {
         if (problemState instanceof RoomMapState) {
             RoomMapState s = (RoomMapState) problemState;
             RoomMap r = (RoomMap) s.getProblem();
-            double h = computeH2(r, s);
-            return h;
+            return computeH2(r, s);
         } else return Double.MAX_VALUE / 2;
     }
 
