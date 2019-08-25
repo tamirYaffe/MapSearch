@@ -20,7 +20,7 @@ abstract public class ASearch {
     private ASearchNode abstractSearch ( IProblemState problemState ) {
         initLists();
         ASearchNode Vs = createSearchRoot(problemState);
-        System.out.println(problemState);
+//        System.out.println(problemState);
         rootH = Vs.getH();
         System.out.println("Root.H: " + rootH);
         ASearchNode current;
@@ -40,7 +40,7 @@ abstract public class ASearch {
                 return current;
             }
             List<ASearchNode> neighbors = current.getNeighbors();
-            System.out.println("\ncurrent:\nlast move: " + current.getLastMove() + "\n" + current.currentProblemState + "g: " + current.getG() + "\t\th: " + current.getH() + "\t\tf: " + (current.getF()) + "\n");
+            System.out.println("\ncurrent:\nlast move: " + current.getLastMove() + "\n" + current.currentProblemState + "g: " + current.getG() + "\t\th: " + current.getH() + "\t\tf: " + (current.getF()) + "\n\n\n");
 //            int genID = 0;
             for (ASearchNode Vn : neighbors) {
                 if (isClosed(Vn)) {
@@ -65,7 +65,7 @@ abstract public class ASearch {
             expanded++;
 //            if (expanded % 1000 == 0 || (System.currentTimeMillis() - start) % 1000 < 50)
             if (current.getH() > 1000 - current.getG()) admissible = false;
-//            System.out.print("\rexpanded: " + expanded + "\tgenerated: " + generated + "\tduplicates: " + duplicates + "\t\tg: " + current.getG() + "\t\th: " + current.getH() + "\t\tf: " + (current.getF()) + "\t\tTime: " + (System.currentTimeMillis() - start) + "ms" + (admissible ? "\t Admissible" : "\t Not Admissible!!!"));
+            System.out.print("\rexpanded: " + expanded + "\tgenerated: " + generated + "\tduplicates: " + duplicates + "\t\tg: " + current.getG() + "\t\th: " + current.getH() + "\t\tf: " + (current.getF()) + "\t\tTime: " + (System.currentTimeMillis() - start) + "ms" + (admissible ? "\t Admissible" : "\t Not Admissible!!!"));
 //            System.out.print("\rg: " + current.getG() + "\th: " + current.getH() + "\tf: " + (current.getF()) + (admissible? "\t Admissible" : "\t Not Admissible!!!"));
         }
 

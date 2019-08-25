@@ -41,7 +41,9 @@ public class Model {
 //            x = (int) (Math.random() * map[0].length);
 //        } while (map[y][x] != 0);
 //        agent = new Position(y, x);
-        agent = new Position(13, 19);
+        agent = new Position(38,9);
+//        agent = new Position(0, 20);
+//        agent = new Position(13, 19);
 //        agent = new Position(0, 13);
         csvResults[0] = name;
         csvResults[1] = "" + map.length;
@@ -93,6 +95,7 @@ public class Model {
         if (map == null)
             generateMap();
         AStarSearch solver = new AStarSearch();
+//        UniformCostSearch solver = new UniformCostSearch();
         long totalTime = 0;
         RoomMap problem = new RoomMap(map, agent, movement, heuristic, los);
         DistanceService.setRoomMap(problem);
