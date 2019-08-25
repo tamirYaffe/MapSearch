@@ -32,7 +32,7 @@ public class Controller {
 
     void setModel(Model model) {
         String[] heuristicsArray = {"Zero", "Singleton", "MST", "TSP"};
-        String[] movementsArray = {"4-way", "8-way", "Jump"};
+        String[] movementsArray = {"4-way", "8-way", "Jump", "Expanding Border"};
         String[] losArray = {"4-way", "8-way", "Symmetric BresLos", "Asymmetric BresLos"};
         los.setItems(FXCollections.observableArrayList(losArray));
         heuristics.setItems(FXCollections.observableArrayList(heuristicsArray));
@@ -190,6 +190,12 @@ public class Controller {
             btn_solveMap.requestFocus();
             movements.setValue("Jump");
             heuristics.setValue("MST");
+            los.setValue("Symmetric BresLos");
+            btn_solveMap.fire();
+        }if (keyEvent.isControlDown() && keyEvent.getCode().getName().equals("S")) {
+            btn_solveMap.requestFocus();
+            movements.setValue("Expanding Border");
+            heuristics.setValue("Zero");
             los.setValue("Symmetric BresLos");
             btn_solveMap.fire();
         }

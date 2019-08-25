@@ -27,20 +27,24 @@ public class Model {
      * csvResults[12] = Solution Length
      * csvResults[13] = Start Position
      * csvResults[14] = Line of Sight method
-     * csvResults[15] = Root H (heuristic value)
+     * csvResults[15] = Movement method
+     * csvResults[16] = Root H (heuristic value)
      */
-    private String[] csvResults = new String[16];
+    private String[] csvResults = new String[17];
 
     public void loadMap(int[][] map, String name) {
-        csvResults = new String[16];
+        csvResults = new String[17];
         this.map = map;
-        int x, y;
-        do {
-            y = (int) (Math.random() * map.length);
-            x = (int) (Math.random() * map[0].length);
-        } while (map[y][x] != 0);
-        agent = new Position(y, x);
-//        agent = new Position(0,13);
+//        int x, y;
+//        do {
+//            y = (int) (Math.random() * map.length);
+//            x = (int) (Math.random() * map[0].length);
+//        } while (map[y][x] != 0);
+//        agent = new Position(y, x);
+        agent = new Position(38,9);
+//        agent = new Position(0, 20);
+//        agent = new Position(13, 19);
+//        agent = new Position(0, 13);
         csvResults[0] = name;
         csvResults[1] = "" + map.length;
         csvResults[2] = "" + map[0].length;
@@ -49,7 +53,7 @@ public class Model {
     public void generateMap(int rows, int columns) {
         MapGenerator mapGenerator = new MapGenerator();
         map = mapGenerator.generate(rows, columns);
-        csvResults = new String[16];
+        csvResults = new String[17];
         consoleString = "";
         csvResults[0] = "RoomMap Random map";
         csvResults[1] = "" + rows;
@@ -59,7 +63,7 @@ public class Model {
     public void generateMap(/*int rows, int columns*/) {
 //        MapGenerator mapGenerator=new MapGenerator();
 //        map=mapGenerator.generate(rows,columns);
-        csvResults = new String[16];
+        csvResults = new String[17];
         int[][] map = {
                 {0, 0, 0, 0, 0, 1, 0, 1},
                 {1, 1, 1, 1, 0, 1, 0, 0},
@@ -80,7 +84,8 @@ public class Model {
 //        agent = new Position(4,0);
         consoleString = "";
         this.map = map;
-        csvResults[0] = "RoomMap basic map";
+        csvResults[0] = "RoomMap basic mini map";
+//        csvResults[0] = "RoomMap basic map";
         csvResults[1] = "8";
         csvResults[2] = "8";
     }
@@ -90,6 +95,7 @@ public class Model {
         if (map == null)
             generateMap();
         AStarSearch solver = new AStarSearch();
+//        UniformCostSearch solver = new UniformCostSearch();
         long totalTime = 0;
         RoomMap problem = new RoomMap(map, agent, movement, heuristic, los);
         DistanceService.setRoomMap(problem);
@@ -118,7 +124,7 @@ public class Model {
             //csvResults[3] = Number of terrain positions in the map
             csvResults[4] = Integer.toString(problem.getNumberOfPositions());
             //csvResults[5] = Heuristic
-            csvResults[5] = problem.getHeuristicName();
+            csvResults[5] = heuristic;
             //csvResults[6] = Time took to finish the run
             csvResults[6] = Double.toString(totalTime);
             //csvResults[7] = Number of Generated Nodes
@@ -136,9 +142,11 @@ public class Model {
             //csvResults[13] = Start Position
             csvResults[13] = problem.getStartPosition().toString().replace(",", ";");
             // csvResults[14] = Line of Sight method
-            csvResults[14] = problem.getVisualAlgorithm();
-            // csvResults[15] = Root H (heuristic value)
-            csvResults[15] = Double.toString(ASearch.rootH);
+            csvResults[14] = los;
+            // csvResults[15] = Movement method
+            csvResults[15] = movement;
+            // csvResults[16] = Root H (heuristic value)
+            csvResults[16] = Double.toString(ASearch.rootH);
             RoomMapCSVWriter.writeToCSV("Results.csv", csvResults);
         } else {                // invalid solution
             consoleString += "\nInvalid solution.";
