@@ -15,7 +15,7 @@ public class RoomMapState implements IProblemState {
     private HashSet<Position> seen;       //seen positions
     private IProblemMove lastStep;  //last step
     private double cost = 0;
-    private TreeMap<Position, double[]> nextPoints;       //neighbor positions
+    private HashSet<Position> nextPoints;       //neighbor positions
 
 
     public RoomMapState(RoomMap roomMap, Position position, HashSet<Position> seen, IProblemMove lastStep) {
@@ -48,15 +48,27 @@ public class RoomMapState implements IProblemState {
 
     @Override
     public List<IProblemState> getNeighborStates() {
+//        if (MOVEMENT_METHOD.equals("Expanding Border")) {
+//            return getExpandingBorderNeighborStates(seen,new HashSet<Position>(), new LinkedList<>() );
+//        }
+//        else {
+//            return getSimpleNeighborStates();
+//        }
+//    }
+//
+//    private List<IProblemState> getSimpleNeighborStates() {
         List<IProblemState> neighborStates = new ArrayList<>();
         List<IProblemMove> legalMoves = getLegalMoves();
         for (IProblemMove move : legalMoves) {
             IProblemState newState = performMove(move);
-            if (newState != null)
+            if (newState != null) {
                 neighborStates.add(newState);
+            }
         }
         return neighborStates;
     }
+
+
 
     @Override
     public String toString() {
@@ -77,7 +89,7 @@ public class RoomMapState implements IProblemState {
         }
 
         if (nextPoints != null) {
-            for (Position p : nextPoints.keySet()) {
+            for (Position p : nextPoints) {
                 room[p.getY()][p.getX()] = "@@@"; //mark as seen on 'room'
             }
         }
@@ -127,22 +139,31 @@ public class RoomMapState implements IProblemState {
 
     private List<IProblemMove> getLegalMoves() {
         List<IProblemMove> moveList = new ArrayList<>();
+        HashSet<Position> toRemove = new HashSet<>();
+        for (Position newPosition : nextPoints) {
+            if (outOfBoundaries(newPosition.getY(), newPosition.getX())) {
+                toRemove.add(newPosition);
+            }
+        }
+        for (Position pos : toRemove) {
+            nextPoints.remove(pos);
+        }
         switch (MOVEMENT_METHOD) {
             case "4-way":
-                for (Position neighbor : nextPoints.keySet()) {
+                for (Position neighbor : nextPoints) {
                     RoomStep step = new RoomStep(position, neighbor);
                     moveList.add(step);
                 }
                 break;
             case "8-way":
-                for (Position neighbor : nextPoints.keySet()) {
+                for (Position neighbor : nextPoints) {
                     RoomMap8WayStep step = new RoomMap8WayStep(position, neighbor);
                     moveList.add(step);
                 }
                 break;
             case "Jump":
             case "Expanding Border":
-                for (Position neighbor : nextPoints.keySet()) {
+                for (Position neighbor : nextPoints) {
                     RoomMapJumpStep step = new RoomMapJumpStep(position, neighbor);
                     moveList.add(step);
                 }
@@ -179,14 +200,12 @@ public class RoomMapState implements IProblemState {
         RoomMap newProblem = roomMap;
         Position newPosition = move.getNewPosition(position);
         HashSet<Position> newSeen = new HashSet<>(seen);
-        if (MOVEMENT_METHOD.equals("Jump") || MOVEMENT_METHOD.equals("Expanding Border")) {
+        if (MOVEMENT_METHOD.equals("Jump") /*|| MOVEMENT_METHOD.equals("Expanding Border")*/) {
             for (Position position : ((RoomMapJumpStep) move).getPath()) {
                 newSeen.addAll(roomMap.getVisualNeighbors(position));
             }
         } else {
             // Validation
-            if (outOfBoundaries(newPosition.getY(), newPosition.getX()))
-                return null;
             newSeen.addAll(roomMap.getVisualNeighbors(newPosition));
         }
 
@@ -210,72 +229,90 @@ public class RoomMapState implements IProblemState {
     }
 
     private void updateNeighbors(Graph<PositionVertex, UndirectedWeightedEdge> g) {
-        HashMap<Position, double[]> tmpNext = new HashMap<>();
+        nextPoints = new HashSet<>();
         for (UndirectedWeightedEdge edge : g.outgoingEdgesOf(new PositionVertex(position, PositionVertex.TYPE.UNPRUNNABLE))) {
             Position s = edge.getSource().getPosition();
             Position t = edge.getTarget().getPosition();
-            tmpNext.putIfAbsent(s, new double[]{edge.getWeight()});
-            tmpNext.putIfAbsent(t, new double[]{edge.getWeight()});
+            nextPoints.add(s);
+            nextPoints.add(t);
         }
-        tmpNext.remove(position);
-        nextPoints = new TreeMap<>((o1, o2) -> {
-            if (o1.equals(o2)) return 0;
-            if (tmpNext.getOrDefault(o1, new double[1])[0] > tmpNext.getOrDefault(o2, new double[1])[0])
-                return 1;
-            else return -1;
-        });
-        nextPoints.putAll(tmpNext);
+        nextPoints.remove(position);
     }
 
     private void updateNeighbors() {
         int height = roomMap.getRoomMap().length;
         int width = roomMap.getRoomMap()[0].length;
-        HashMap<Position, double[]> tmpNext = new HashMap<>();
+        nextPoints = new HashSet<>();
         int x = position.getX();
         int y = position.getY();
         if (MOVEMENT_METHOD.endsWith("way")) {
             if (y > 0)
-                tmpNext.put(new Position(y - 1, x), new double[]{1});
+                nextPoints.add(new Position(y - 1, x));
             if (y < height - 1)
-                tmpNext.put(new Position(y + 1, x), new double[]{1});
+                nextPoints.add(new Position(y + 1, x));
             if (x > 0)
-                tmpNext.put(new Position(y, x - 1), new double[]{1});
+                nextPoints.add(new Position(y, x - 1));
             if (x < width - 1)
-                tmpNext.put(new Position(y, x + 1), new double[]{1});
+                nextPoints.add(new Position(y, x + 1));
             if (MOVEMENT_METHOD.startsWith("8")) {
                 if (y > 0 && x > 0)
-                    tmpNext.put(new Position(y - 1, x - 1), new double[]{SQRT_OF_TWO});
+                    nextPoints.add(new Position(y - 1, x - 1));
                 if (y < height - 1 && x > 0)
-                    tmpNext.put(new Position(y + 1, x - 1), new double[]{SQRT_OF_TWO});
+                    nextPoints.add(new Position(y + 1, x - 1));
                 if (y > 0 && x < width - 1)
-                    tmpNext.put(new Position(y - 1, x + 1), new double[]{SQRT_OF_TWO});
+                    nextPoints.add(new Position(y - 1, x + 1));
                 if (y < height - 1 && x < width - 1)
-                    tmpNext.put(new Position(y + 1, x + 1), new double[]{SQRT_OF_TWO});
+                    nextPoints.add(new Position(y + 1, x + 1));
             }
         } else if (MOVEMENT_METHOD.equals("Expanding Border")) {
-            HashMap<Position, HashSet<Position>> visualDictionary = roomMap.getVisualDictionary();
-            for (Position position : seen) {
-                if (!seen.containsAll(visualDictionary.get(position))) {
-                    tmpNext.put(position, new double[]{DistanceService.getWeight(this.position, position)});
+            HashSet <Position> visitedPositions = new HashSet<>();
+            visitedPositions.add(position);
+            LinkedList<Position> neighborQueue = new LinkedList<>();
+            neighborQueue.add(new Position(y - 1, x));
+            neighborQueue.add(new Position(y + 1, x));
+            neighborQueue.add(new Position(y, x - 1));
+            neighborQueue.add(new Position(y, x + 1));
+            while (!neighborQueue.isEmpty()){
+                Position nextPosition = neighborQueue.poll();
+                if (visitedPositions.contains(nextPosition)) {
+                    continue;
+                }
+                visitedPositions.add(nextPosition);
+                if (outOfBoundaries(nextPosition.getY(), nextPosition.getX())) {
+                    continue;
+                }
+                if (!seen.containsAll(roomMap.getVisualNeighbors(nextPosition))) {
+                    nextPoints.add(nextPosition);
+                } else {
+                    neighborQueue.add(new Position(nextPosition.getY() - 1, nextPosition.getX()));
+                    neighborQueue.add(new Position(nextPosition.getY() + 1, nextPosition.getX()));
+                    neighborQueue.add(new Position(nextPosition.getY(), nextPosition.getX() - 1));
+                    neighborQueue.add(new Position(nextPosition.getY(), nextPosition.getX() + 1));
                 }
             }
-            HashSet<Position> toRemove = new HashSet<>();
-            for (Position position : tmpNext.keySet()) {
-                GraphPath<Position, UndirectedWeightedEdge> path = DistanceService.getPath(this.position, position);
-                if (!Collections.disjoint(tmpNext.keySet(), path.getVertexList().subList(1, path.getLength())))
-                    toRemove.add(position);
-            }
-            for (Position position : toRemove) {
-                tmpNext.remove(position);
+        }
+    }
+
+    private List<IProblemState> getExpandingBorderNeighborStates(HashSet<Position> seen, HashSet<Position> visitedPositions, LinkedList<IProblemState> neighborQueue) {
+        visitedPositions.add(position);
+        List<IProblemState> neighborStates = new ArrayList<>();
+        neighborQueue.addAll(getNeighborStates());
+        while (!neighborQueue.isEmpty()){
+            RoomMapState nextState = (RoomMapState) neighborQueue.poll();
+            if (visitedPositions.contains(nextState.position)) continue;
+            else visitedPositions.add(nextState.position);
+            if (!seen.equals(nextState.seen)) {
+                neighborStates.add(nextState);
+            } else {
+                neighborQueue.addAll(nextState.getNeighborStates());
             }
         }
-        nextPoints = new TreeMap<>((o1, o2) -> {
-            if (o1.equals(o2)) return 0;
-            if (tmpNext.getOrDefault(o1, new double[1])[0] > tmpNext.getOrDefault(o2, new double[1])[0])
-                return 1;
-            else return -1;
-        });
-        nextPoints.putAll(tmpNext);
+        nextPoints = new HashSet<>();
+        for (IProblemState neighborState : neighborStates) {
+            RoomMapState nextState = (RoomMapState) neighborState;
+            nextPoints.add(nextState.position);
+        }
+        return neighborStates;
     }
 
     public ArrayList<Position> asPartOfSolution() {
