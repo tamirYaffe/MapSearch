@@ -11,6 +11,7 @@ public class RoomMap implements IProblem {
     private IHeuristic heuristic;  //Room problem heuristic
     private RoomMapService self;
     static String MOVEMENT_METHOD = "4-way";
+    static String HEURISTIC_GRAPH_METHOD = "All";
 
 
     public RoomMap() {
@@ -24,7 +25,7 @@ public class RoomMap implements IProblem {
         heuristic = new ZeroHeuristic();
     }
 
-    public RoomMap(int[][] room, Position startPosition, String movement, String heuristic, String los) {
+    public RoomMap(int[][] room, Position startPosition, String movement, String heuristic, String los, String heuristicGraph) {
         self = new RoomMapService(room, los);
         this.startPosition = new Position(startPosition);
         switch (heuristic) {
@@ -37,13 +38,20 @@ public class RoomMap implements IProblem {
             case "MST":
                 this.heuristic = new RoomMapMSTHeuristic();
                 break;
+            case "MSP":
+                this.heuristic = new RoomMapMSPHeuristic();
+                break;
             case "TSP":
                 this.heuristic = new RoomMapTSPHeuristic();
                 break;
         }
         MOVEMENT_METHOD = movement;
+        HEURISTIC_GRAPH_METHOD = heuristicGraph;
     }
 
+    public static String getHeuristicGraphMethod() {
+        return HEURISTIC_GRAPH_METHOD;
+    }
 
     int[][] getRoomMap() {
         return self.getRoomMap();

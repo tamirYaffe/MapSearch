@@ -29,14 +29,17 @@ public class Controller {
     public ChoiceBox<String> los;
     public ChoiceBox<String> heuristics;
     public ChoiceBox<String> movements;
+    public ChoiceBox<String> heuristicGraph;
 
     void setModel(Model model) {
-        String[] heuristicsArray = {"Zero", "Singleton", "MST", "TSP"};
+        String[] heuristicsArray = {"Zero", "Singleton", "MST", "MSP", "TSP"};
+        String[] heuristicGraphArray = {"All", "Frontiers", "Front Frontiers"};
         String[] movementsArray = {"4-way", "8-way", "Jump", "Expanding Border"};
         String[] losArray = {"4-way", "8-way", "Symmetric BresLos", "Asymmetric BresLos"};
         los.setItems(FXCollections.observableArrayList(losArray));
         heuristics.setItems(FXCollections.observableArrayList(heuristicsArray));
         movements.setItems(FXCollections.observableArrayList(movementsArray));
+        heuristicGraph.setItems(FXCollections.observableArrayList(heuristicGraphArray));
         this.model = model;
         solution.setWrapText(true);
         solution.setEditable(false);
@@ -124,8 +127,14 @@ public class Controller {
             alert.setHeaderText("Movement Selection");
             alert.setContentText("Please insert Movement method");
             alert.show();
+        } else if (heuristicGraph.getValue() == null) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("input alert");
+            alert.setHeaderText("Heuristic Graph Selection");
+            alert.setContentText("Please insert Heuristic Graph method");
+            alert.show();
         } else {
-            model.solveMap(movements.getValue(), heuristics.getValue(), los.getValue());
+            model.solveMap(movements.getValue(), heuristics.getValue(), los.getValue(), heuristicGraph.getValue());
             mapGrid.setMap(model.map, model.agent);
             solution.setText(model.consoleString);
         }
@@ -189,13 +198,22 @@ public class Controller {
         if (keyEvent.isControlDown() && keyEvent.getCode().getName().equals("A")) {
             btn_solveMap.requestFocus();
             movements.setValue("Jump");
-            heuristics.setValue("MST");
+            heuristics.setValue("Zero");
+            heuristicGraph.setValue("All");
             los.setValue("Symmetric BresLos");
             btn_solveMap.fire();
         }if (keyEvent.isControlDown() && keyEvent.getCode().getName().equals("S")) {
             btn_solveMap.requestFocus();
             movements.setValue("Expanding Border");
             heuristics.setValue("Zero");
+            heuristicGraph.setValue("All");
+            los.setValue("4-way");
+            btn_solveMap.fire();
+        }if (keyEvent.isControlDown() && keyEvent.getCode().getName().equals("D")) {
+            btn_solveMap.requestFocus();
+            movements.setValue("4-way");
+            heuristics.setValue("MST");
+            heuristicGraph.setValue("Front Frontiers");
             los.setValue("Symmetric BresLos");
             btn_solveMap.fire();
         }

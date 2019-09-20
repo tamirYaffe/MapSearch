@@ -19,6 +19,6 @@ public class UndirectedWeightedEdge extends DefaultWeightedEdge {
 
     @Override
     public String toString() {
-        return super.toString() + "\nweight: " + super.getWeight();
+        return super.toString() + " weight: " + super.getWeight();
     }
 }
