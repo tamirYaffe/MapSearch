@@ -24,7 +24,7 @@ public class RoomMapState implements IProblemState {
         this.seen = seen;
         this.lastStep = lastStep;
         if (MOVEMENT_METHOD.equals("Jump")) {
-            RoomMapGraphAdapter g = new RoomMapGraphAdapter(roomMap.getWatchedDictionary(), roomMap.getVisualDictionary(), this, 1000);
+            RoomMapGraphAdapter g = new RoomMapGraphAdapter(roomMap.getWatchedDictionary(),  this,false);
             updateNeighbors(g.getGraph());
         } else updateNeighbors();
     }
@@ -36,7 +36,7 @@ public class RoomMapState implements IProblemState {
         this.lastStep = lastStep;
         this.cost = cost + getStateLastMoveCost();
         if (MOVEMENT_METHOD.equals("Jump")) {
-            RoomMapGraphAdapter g = new RoomMapGraphAdapter(roomMap.getWatchedDictionary(), roomMap.getVisualDictionary(), this, 1000);
+            RoomMapGraphAdapter g = new RoomMapGraphAdapter(roomMap.getWatchedDictionary(),  this,false);
             updateNeighbors(g.getGraph());
         } else updateNeighbors();
     }

@@ -4,7 +4,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.TreeMap;
 
-public class RoomMapTSPHeuristic implements IHeuristic {
+public class RoomMapMSPHeuristic implements IHeuristic {
+//    MSP = Minimal Simple Path
     @Override
     public double getHeuristic(IProblemState problemState) {
         if (problemState instanceof RoomMapState) {
@@ -13,8 +14,8 @@ public class RoomMapTSPHeuristic implements IHeuristic {
             TreeMap<Position, HashSet<Position>> watchedDictionary = r.getWatchedDictionary();
             HashMap<Position, HashSet<Double>> visualLineDictionary = r.getVisualLineDictionary();
             RoomMapGraphAdapter g = new RoomMapGraphAdapter(watchedDictionary,  s,true);
-            g.pruneGraph();
-            return g.getTSPWeight(s.getPosition());
+//            System.out.println(s.toString());
+            return g.getSimplePathWeight(s);
         } else return Double.MAX_VALUE / 2;
     }
 }

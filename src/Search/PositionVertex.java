@@ -1,7 +1,7 @@
 package Search;
 
 public class PositionVertex {
-    public enum TYPE {PRUNEABLE, UNPRUNNABLE}
+    public enum TYPE {PRUNNABLE, UNPRUNNABLE}
 
     private Position position;
     private TYPE type;

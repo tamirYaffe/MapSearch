@@ -76,12 +76,20 @@ public class Model {
         agent = new Position(7, 6);
 
 //        int map[][] = {
+//                {0, 0, 0, 0, 0, 0},
+//                {0, 1, 0, 0, 1, 0},
+//                {0, 1, 0, 0, 1, 0},
+//                {0, 1, 1, 1, 1, 0},
+//                {0, 0, 0, 0, 0, 0},
+//                {0, 0, 0, 0, 0, 0}};
+//        agent = new Position(5, 2);
+//        int map[][] = {
 //                {0, 0, 0, 0, 0},
 //                {1, 1, 0, 1, 1},
 //                {0, 0, 0, 0, 0},
 //                {0, 1, 1, 1, 0},
 //                {0, 1, 0, 0, 0}};
-//        agent = new Position(4,0);
+//        agent = new Position(4, 0);
         consoleString = "";
         this.map = map;
         csvResults[0] = "RoomMap basic mini map";
@@ -90,18 +98,20 @@ public class Model {
         csvResults[2] = "8";
     }
 
-    public void solveMap(String movement, String heuristic, String los) {
+    public void solveMap(String movement, String heuristic, String los, String heuristicGraph) {
         consoleString = "";
         if (map == null)
             generateMap();
         AStarSearch solver = new AStarSearch();
 //        UniformCostSearch solver = new UniformCostSearch();
+//        PureHeuristicSearch solver = new PureHeuristicSearch();
         long totalTime = 0;
-        RoomMap problem = new RoomMap(map, agent, movement, heuristic, los);
+        RoomMap problem = new RoomMap(map, agent, movement, heuristic, los, heuristicGraph);
         DistanceService.setRoomMap(problem);
         consoleString += "\nSolver: " + solver.getSolverName();
         consoleString += "\nH alg: " + heuristic;
         consoleString += "\nLOS: " + los;
+        consoleString += "\nGraph: " + heuristicGraph;
         long startTime = System.nanoTime();
         List<IProblemMove> solution = solver.solve(problem);
         long finishTime = System.nanoTime();

@@ -39,7 +39,7 @@ class RoomMapSCCGraphAdapter {
                 subGraph.setRarePoint(watchedVertex.getPosition());
                 for (Position position : value) {
                     if (position.equals(key)) continue;
-                    PositionVertex vertex = new PositionVertex(position, PositionVertex.TYPE.PRUNEABLE);
+                    PositionVertex vertex = new PositionVertex(position, PositionVertex.TYPE.PRUNNABLE);
                     subGraph.addVertex(vertex);
                     UndirectedWeightedEdge edge = subGraph.addEdge(vertex, watchedVertex);
                     subGraph.setEdgeWeight(edge, 0);
