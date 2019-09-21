@@ -10,6 +10,8 @@ public class Model {
     private int solutionIndex = 0;
     public Position agent;
 
+    private static int mapChooser = 0;
+
     /**
      * csvResults is an array that represents the current run's record for the csv
      * csvResults[0] = Map's Name
@@ -39,7 +41,7 @@ public class Model {
         agent = new Position(0, 1);
         //It_ruinedhouse_n
         if (agent.getY() >= map.length || agent.getX() >= map[0].length || map[agent.getY()][agent.getX()] != 0)
-        agent = new Position(0, 2);
+            agent = new Position(0, 2);
         //den101d
         if (agent.getY() >= map.length || agent.getX() >= map[0].length || map[agent.getY()][agent.getX()] != 0)
             agent = new Position(38, 10);
@@ -79,33 +81,41 @@ public class Model {
     public void generateMap(/*int rows, int columns*/) {
 //        MapGenerator mapGenerator=new MapGenerator();
 //        map=mapGenerator.generate(rows,columns);
+        mapChooser++;
         csvResults = new String[17];
-        int[][] map = {
-                {0, 0, 0, 0, 0, 1, 0, 1},
-                {1, 1, 1, 1, 0, 1, 0, 0},
-                {0, 0, 0, 0, 0, 1, 0, 1},
-                {0, 1, 0, 1, 0, 1, 0, 0},
-                {0, 1, 0, 0, 0, 1, 1, 0},
-                {1, 1, 0, 0, 0, 1, 0, 0},
-                {0, 1, 0, 0, 1, 1, 0, 1},
-                {0, 0, 0, 0, 0, 0, 0, 0}};
-        agent = new Position(7, 6);
-
-//        int map[][] = {
-//                {0, 0, 0, 0, 0, 0},
-//                {0, 1, 0, 0, 1, 0},
-//                {0, 1, 0, 0, 1, 0},
-//                {0, 1, 1, 1, 1, 0},
-//                {0, 0, 0, 0, 0, 0},
-//                {0, 0, 0, 0, 0, 0}};
-//        agent = new Position(5, 2);
-//        int map[][] = {
-//                {0, 0, 0, 0, 0},
-//                {1, 1, 0, 1, 1},
-//                {0, 0, 0, 0, 0},
-//                {0, 1, 1, 1, 0},
-//                {0, 1, 0, 0, 0}};
-//        agent = new Position(4, 0);
+        int[][] map = null;
+        switch (mapChooser % 3) {
+            case 1:
+                map = new int[][]{
+                        {0, 0, 0, 0, 0, 1, 0, 1},
+                        {1, 1, 1, 1, 0, 1, 0, 0},
+                        {0, 0, 0, 0, 0, 1, 0, 1},
+                        {0, 1, 0, 1, 0, 1, 0, 0},
+                        {0, 1, 0, 0, 0, 1, 1, 0},
+                        {1, 1, 0, 0, 0, 1, 0, 0},
+                        {0, 1, 0, 0, 1, 1, 0, 1},
+                        {0, 0, 0, 0, 0, 0, 0, 0}};
+                agent = new Position(7, 6);
+                break;
+            case 2:
+                map = new int[][]{
+                        {0, 0, 0, 0, 0, 0},
+                        {0, 1, 0, 0, 1, 0},
+                        {0, 1, 0, 0, 1, 0},
+                        {0, 1, 1, 1, 1, 0},
+                        {0, 0, 0, 0, 0, 0},
+                        {0, 0, 0, 0, 0, 0}};
+                agent = new Position(5, 2);
+                break;
+            case 0:
+                map = new int[][]{
+                        {0, 0, 0, 0, 0},
+                        {1, 1, 0, 1, 1},
+                        {0, 0, 0, 0, 0},
+                        {0, 1, 1, 1, 0},
+                        {0, 1, 0, 0, 0}};
+                agent = new Position(4, 0);
+        }
         consoleString = "";
         this.map = map;
         csvResults[0] = "RoomMap basic mini map";
