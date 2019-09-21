@@ -33,7 +33,7 @@ public class Controller {
 
     void setModel(Model model) {
         String[] heuristicsArray = {"Zero", "Singleton", "MST", "MSP", "TSP"};
-        String[] heuristicGraphArray = {"All", "Frontiers", "Front Frontiers"};
+        String[] heuristicGraphArray = {"All", "Frontiers", "Front Frontiers","Farther Frontiers"};
         String[] movementsArray = {"4-way", "8-way", "Jump", "Expanding Border"};
         String[] losArray = {"4-way", "8-way", "Symmetric BresLos", "Asymmetric BresLos"};
         los.setItems(FXCollections.observableArrayList(losArray));
@@ -58,7 +58,7 @@ public class Controller {
         if (isInteger(rowSize) && isInteger(columnSize) && Integer.parseInt(rowSize) > 4 && Integer.parseInt(columnSize) > 4) {
             int rows = Integer.parseInt(rowSize);
             int columns = Integer.parseInt(columnSize);
-            model.generateMap(rows, columns);
+//            model.generateMap(rows, columns);
             model.generateMap();
             mapGrid.setMap(model.map, model.agent);
         } else {
@@ -198,10 +198,10 @@ public class Controller {
         if (keyEvent.isControlDown() && keyEvent.getCode().getName().equals("A")) {
             btn_solveMap.requestFocus();
             movements.setValue("Jump");
-            heuristics.setValue("Zero");
-            heuristicGraph.setValue("All");
+            heuristics.setValue("MST");
+            heuristicGraph.setValue("Farther Frontiers");
             los.setValue("Symmetric BresLos");
-            btn_solveMap.fire();
+//            btn_solveMap.fire();
         }if (keyEvent.isControlDown() && keyEvent.getCode().getName().equals("S")) {
             btn_solveMap.requestFocus();
             movements.setValue("Expanding Border");
@@ -213,7 +213,7 @@ public class Controller {
             btn_solveMap.requestFocus();
             movements.setValue("4-way");
             heuristics.setValue("MST");
-            heuristicGraph.setValue("Front Frontiers");
+            heuristicGraph.setValue("All");
             los.setValue("Symmetric BresLos");
             btn_solveMap.fire();
         }

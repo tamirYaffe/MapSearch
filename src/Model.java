@@ -35,16 +35,32 @@ public class Model {
     public void loadMap(int[][] map, String name) {
         csvResults = new String[17];
         this.map = map;
-//        int x, y;
-//        do {
-//            y = (int) (Math.random() * map.length);
-//            x = (int) (Math.random() * map[0].length);
-//        } while (map[y][x] != 0);
-//        agent = new Position(y, x);
-        agent = new Position(38,9);
-//        agent = new Position(0, 20);
-//        agent = new Position(13, 19);
-//        agent = new Position(0, 13);
+        //lt_shop
+        agent = new Position(0, 1);
+        //It_ruinedhouse_n
+        if (agent.getY() >= map.length || agent.getX() >= map[0].length || map[agent.getY()][agent.getX()] != 0)
+        agent = new Position(0, 2);
+        //den101d
+        if (agent.getY() >= map.length || agent.getX() >= map[0].length || map[agent.getY()][agent.getX()] != 0)
+            agent = new Position(38, 10);
+        //den020d
+        if (agent.getY() >= map.length || agent.getX() >= map[0].length || map[agent.getY()][agent.getX()] != 0)
+            agent = new Position(0, 20);
+        //map1_22X28
+        if (agent.getY() >= map.length || agent.getX() >= map[0].length || map[agent.getY()][agent.getX()] != 0)
+            agent = new Position(13, 19);
+        //orz106d
+        if (agent.getY() >= map.length || agent.getX() >= map[0].length || map[agent.getY()][agent.getX()] != 0)
+            agent = new Position(0, 13);
+        //random
+        if (agent.getY() >= map.length || agent.getX() >= map[0].length || map[agent.getY()][agent.getX()] != 0) {
+            int x, y;
+            do {
+                y = (int) (Math.random() * map.length);
+                x = (int) (Math.random() * map[0].length);
+            } while (map[y][x] != 0);
+            agent = new Position(y, x);
+        }
         csvResults[0] = name;
         csvResults[1] = "" + map.length;
         csvResults[2] = "" + map[0].length;

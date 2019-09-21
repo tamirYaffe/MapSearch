@@ -10,6 +10,7 @@ package Search;
 //import java.io.IOException;
 //import org.jgrapht.ext.JGraphXAdapter;
 
+import javafx.geometry.Pos;
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.Graphs;
@@ -35,7 +36,7 @@ public class RoomMapGraphAdapter {
         prunnableVertices = new HashMap<>();
         unPrunnableVertices = new HashMap<>();
         addVerticesToGraph(watchedDictionary, roomMapJumpState, isForHeuristic);
-        addAgentToGraph(roomMapJumpState, RoomMap.HEURISTIC_GRAPH_METHOD.equals("Front Frontiers") & !isForHeuristic);
+        addAgentToGraph(roomMapJumpState, (RoomMap.HEURISTIC_GRAPH_METHOD.equals("Front Frontiers") || RoomMap.HEURISTIC_GRAPH_METHOD.equals("Farther Frontiers")) & !isForHeuristic);
     }
 
     private void addAgentToGraph(RoomMapState roomMapJumpState, boolean isFrontFrontiers) {
@@ -109,6 +110,63 @@ public class RoomMapGraphAdapter {
         }
     }
 
+    private void addVerticesToGraph(TreeMap<Position, HashSet<Position>> watchedDictionary, RoomMapState roomMapJumpState, boolean addUnprunnables) {
+        HashSet<Position> toRemove = new HashSet<>();
+        HashSet<Position> pathsSet = new HashSet<>();
+        HashSet<Position> visualSet = new HashSet<>(watchedDictionary.keySet());
+        HashMap<Position, HashSet<Position>> gettableWatchedDictionary = new HashMap<>(watchedDictionary);
+        Position agentPosition = roomMapJumpState.getPosition();
+        PositionVertex agentVertex = new PositionVertex(agentPosition, PositionVertex.TYPE.UNPRUNNABLE);
+
+        for (Map.Entry<Position, HashSet<Position>> entry : watchedDictionary.entrySet()) {
+            Position watchedPosition = entry.getKey();
+            if (roomMapJumpState.getSeen().contains(watchedPosition)) continue;
+            HashSet<Position> watchersSet = entry.getValue();
+            if (!Collections.disjoint(watchersSet, prunnableVertices.keySet()) || prunnableVertices.containsKey(watchedPosition)
+                    || (RoomMap.HEURISTIC_GRAPH_METHOD.equals("Farther Frontiers") && checkIfIsntFarther(pathsSet, agentPosition, watchedPosition, watchersSet)))
+                continue;
+            PositionVertex watchedVertex = new PositionVertex(watchedPosition, PositionVertex.TYPE.UNPRUNNABLE);
+            unPrunnableVertices.put(watchedPosition, watchedVertex);
+            if (addUnprunnables)
+                graph.addVertex(watchedVertex);
+            addPrunabbleVeticesToSingleUnprunnable(watchedVertex, watchersSet, visualSet, toRemove, addUnprunnables);
+        }
+        for (Position position : toRemove) {
+            prunnableVertices.remove(position);
+        }
+        if (RoomMap.HEURISTIC_GRAPH_METHOD.equals("Farther Frontiers") && !Collections.disjoint(pathsSet,prunnableVertices.keySet())){
+            HashSet<PositionVertex> removedVertices = new HashSet<>();
+            for (Position position : unPrunnableVertices.keySet()) {
+                if (!Collections.disjoint(pathsSet,gettableWatchedDictionary.get(position))){
+                    removedVertices.add(unPrunnableVertices.get(position));
+                    for (Position position1 : gettableWatchedDictionary.get(position)) {
+                        //consider adding try and catch
+                        graph.removeVertex(prunnableVertices.remove(position1));
+                    }
+                }
+            }
+            graph.removeAllVertices(removedVertices);
+            for (PositionVertex removedVertex : removedVertices) {
+                unPrunnableVertices.remove(removedVertex.getPosition());
+            }
+        }
+        if (addUnprunnables)
+            connectPrunnableVerticesInGraph();
+    }
+
+    private boolean checkIfIsntFarther(HashSet<Position> pathsSet, Position agentPosition, Position watchedPosition, HashSet<Position> watchersSet) {
+        // if already passing in a cell that sees that pivot, continue.
+        if (!Collections.disjoint(pathsSet, watchersSet))
+            return true;
+        // else, it a farther (for now), add the path to it's shortest path watcher to the paths set
+        GraphPath<Position, UndirectedWeightedEdge> newPath = DistanceService.getPath(agentPosition, watchedPosition);
+        List<Position> newPathList = newPath.getVertexList();
+        newPathList.removeAll(watchersSet);
+        //add the new path to the Paths set
+        pathsSet.addAll(newPathList);
+        return false;
+    }
+
     private void connectPrunnableVerticesInGraph() {
         for (Map.Entry<Position, PositionVertex> entry1 : prunnableVertices.entrySet()) {
             Position key1 = entry1.getKey();
@@ -121,28 +179,6 @@ public class RoomMapGraphAdapter {
                 graph.setEdgeWeight(edge, DistanceService.getWeight(key1, key2));
             }
         }
-    }
-
-    private void addVerticesToGraph(TreeMap<Position, HashSet<Position>> watchedDictionary, RoomMapState roomMapJumpState, boolean addUnprunnables) {
-        HashSet<Position> toRemove = new HashSet<>();
-        HashSet<Position> visualSet = new HashSet<>(watchedDictionary.keySet());
-        for (Map.Entry<Position, HashSet<Position>> entry : watchedDictionary.entrySet()) {
-            Position key = entry.getKey();
-            if (roomMapJumpState.getSeen().contains(key)) continue;
-            HashSet<Position> value = entry.getValue();
-            if (!Collections.disjoint(value, prunnableVertices.keySet()) || prunnableVertices.containsKey(key))
-                continue;
-            PositionVertex watchedVertex = new PositionVertex(key, PositionVertex.TYPE.UNPRUNNABLE);
-            unPrunnableVertices.put(key, watchedVertex);
-            if (addUnprunnables)
-                graph.addVertex(watchedVertex);
-            addPrunabbleVeticesToSingleUnprunnable(watchedVertex, value, visualSet, toRemove, addUnprunnables);
-        }
-        for (Position position : toRemove) {
-            prunnableVertices.remove(position);
-        }
-        if (addUnprunnables)
-            connectPrunnableVerticesInGraph();
     }
 
     private void addPrunabbleVeticesToSingleUnprunnable(PositionVertex unprunnableVertex, HashSet<Position> prunnableSet, HashSet<Position> visualSet, HashSet<Position> toRemove, boolean addEdgeToUnprunnableVertex) {
