@@ -30,6 +30,7 @@ public class RoomMapGraphAdapter {
     private HashMap<Position, PositionVertex> prunnableVertices;
     private HashMap<Position, PositionVertex> unPrunnableVertices;
     private static final int HUGE_DOUBLE_VALUE = 0x7fffff00;
+    static double distanceFactor = 2;
 
     public RoomMapGraphAdapter(TreeMap<Position, HashSet<Position>> watchedDictionary, RoomMapState roomMapJumpState, boolean isForHeuristic) {
         graph = new DefaultUndirectedWeightedGraph<>(UndirectedWeightedEdge.class);
@@ -134,10 +135,10 @@ public class RoomMapGraphAdapter {
         for (Position position : toRemove) {
             prunnableVertices.remove(position);
         }
-        if (RoomMap.HEURISTIC_GRAPH_METHOD.equals("Farther Frontiers") && !Collections.disjoint(pathsSet,prunnableVertices.keySet())){
+        if (RoomMap.HEURISTIC_GRAPH_METHOD.equals("Farther Frontiers") && !Collections.disjoint(pathsSet, prunnableVertices.keySet())) {
             HashSet<PositionVertex> removedVertices = new HashSet<>();
             for (Position position : unPrunnableVertices.keySet()) {
-                if (!Collections.disjoint(pathsSet,gettableWatchedDictionary.get(position))){
+                if (!Collections.disjoint(pathsSet, gettableWatchedDictionary.get(position))) {
                     removedVertices.add(unPrunnableVertices.get(position));
                     for (Position position1 : gettableWatchedDictionary.get(position)) {
                         //consider adding try and catch
@@ -152,6 +153,38 @@ public class RoomMapGraphAdapter {
         }
         if (addUnprunnables)
             connectPrunnableVerticesInGraph();
+            // for "Jump (Bounded)"
+        else if (RoomMap.MOVEMENT_METHOD.endsWith(")")) {
+            toRemove.clear();
+//            distanceFactor = (Math.log(unPrunnableVertices.size()) / Math.log(2)) + 1;
+            double closerDistance = HUGE_DOUBLE_VALUE;
+            // check distance to each pivot and cutoff all the far pivots
+            for (Position pivot : unPrunnableVertices.keySet()) {
+                double dist = DistanceService.getWeight(agentPosition, pivot);
+                closerDistance = Math.min(dist, closerDistance);
+                if (dist > distanceFactor * closerDistance) {
+                    toRemove.add(pivot);
+                    for (Position watcher : gettableWatchedDictionary.get(pivot)) {
+                        if (prunnableVertices.containsKey(watcher))
+                            graph.removeVertex(prunnableVertices.remove(watcher));
+                    }
+                }
+            }
+            for (Position position : toRemove) {
+                unPrunnableVertices.remove(position);
+            }
+            for (Position pivot : unPrunnableVertices.keySet()) {
+                double dist = DistanceService.getWeight(agentPosition, pivot);
+                if (dist > distanceFactor * closerDistance) {
+                    toRemove.add(pivot);
+                    for (Position watcher : gettableWatchedDictionary.get(pivot)) {
+                        if (prunnableVertices.containsKey(watcher))
+                            graph.removeVertex(prunnableVertices.remove(watcher));
+                    }
+                }
+            }
+
+        }
     }
 
     private boolean checkIfIsntFarther(HashSet<Position> pathsSet, Position agentPosition, Position watchedPosition, HashSet<Position> watchersSet) {

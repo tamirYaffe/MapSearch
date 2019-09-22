@@ -37,8 +37,14 @@ public class Model {
     public void loadMap(int[][] map, String name) {
         csvResults = new String[17];
         this.map = map;
+        //Map1
+        agent = new Position(400, 120);
+        //w_encounter1
+        if (agent.getY() >= map.length || agent.getX() >= map[0].length || map[agent.getY()][agent.getX()] != 0)
+            agent = new Position(212, 93);
         //lt_shop
-        agent = new Position(0, 1);
+        if (agent.getY() >= map.length || agent.getX() >= map[0].length || map[agent.getY()][agent.getX()] != 0)
+            agent = new Position(0, 1);
         //It_ruinedhouse_n
         if (agent.getY() >= map.length || agent.getX() >= map[0].length || map[agent.getY()][agent.getX()] != 0)
             agent = new Position(0, 2);
@@ -124,7 +130,7 @@ public class Model {
         csvResults[2] = "8";
     }
 
-    public void solveMap(String movement, String heuristic, String los, String heuristicGraph) {
+    public void solveMap(String movement, String heuristic, String los, String heuristicGraph, double distFactor) {
         consoleString = "";
         if (map == null)
             generateMap();
@@ -132,7 +138,7 @@ public class Model {
 //        UniformCostSearch solver = new UniformCostSearch();
 //        PureHeuristicSearch solver = new PureHeuristicSearch();
         long totalTime = 0;
-        RoomMap problem = new RoomMap(map, agent, movement, heuristic, los, heuristicGraph);
+        RoomMap problem = new RoomMap(map, agent, movement, heuristic, los, heuristicGraph,distFactor);
         DistanceService.setRoomMap(problem);
         consoleString += "\nSolver: " + solver.getSolverName();
         consoleString += "\nH alg: " + heuristic;
@@ -152,9 +158,10 @@ public class Model {
             consoleString += "\nExpanded: " + ASearch.expanded;
             consoleString += "\nCost:  " + cost;
             consoleString += "\nMoves: " + solution.size();
-            consoleString += "\nTime:  " + (finishTime - startTime) / 1000000.0 + " ms\n\n";
-            consoleString += solution;
             totalTime += (finishTime - startTime) / 1000000.0;
+            int timeMinuts = (int) ((totalTime / 1000) % 60);
+            consoleString += "\nTime:  " + (totalTime > 60000 ? (totalTime / 60000) + ":" + (timeMinuts > 9 ? timeMinuts : "0" + timeMinuts) + " min " : ((finishTime - startTime) / 1000000.0) + "ms") + "\n\n";
+            consoleString += solution;
             //csvResults[3] = Solver's Name
             csvResults[3] = solver.getSolverName();
             //csvResults[3] = Number of terrain positions in the map

@@ -21,6 +21,7 @@ public class Controller {
     public Label yIndex;
     public TextField textField_rowSize;
     public TextField textField_columnSize;
+    public TextField textField_distanceFactor;
     public Button btn_generateMap;
     public Button btn_solveMap;
     public Button btn_loadMap;
@@ -34,7 +35,7 @@ public class Controller {
     void setModel(Model model) {
         String[] heuristicsArray = {"Zero", "Singleton", "MST", "MSP", "TSP"};
         String[] heuristicGraphArray = {"All", "Frontiers", "Front Frontiers","Farther Frontiers"};
-        String[] movementsArray = {"4-way", "8-way", "Jump", "Expanding Border"};
+        String[] movementsArray = {"4-way", "8-way", "Jump", "Jump (Bounded)", "Expanding Border"};
         String[] losArray = {"4-way", "8-way", "Symmetric BresLos", "Asymmetric BresLos"};
         los.setItems(FXCollections.observableArrayList(losArray));
         heuristics.setItems(FXCollections.observableArrayList(heuristicsArray));
@@ -109,7 +110,13 @@ public class Controller {
 
 
     public void solveMap() {
-        if (los.getValue() == null) {
+        if (textField_distanceFactor.getText() == null) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("input alert");
+            alert.setHeaderText("LOS Selection");
+            alert.setContentText("Please insert Line of Sight method.");
+            alert.show();
+        } else if (los.getValue() == null) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("input alert");
             alert.setHeaderText("LOS Selection");
@@ -134,7 +141,7 @@ public class Controller {
             alert.setContentText("Please insert Heuristic Graph method");
             alert.show();
         } else {
-            model.solveMap(movements.getValue(), heuristics.getValue(), los.getValue(), heuristicGraph.getValue());
+            model.solveMap(movements.getValue(), heuristics.getValue(), los.getValue(), heuristicGraph.getValue(),Double.parseDouble(textField_distanceFactor.getText()));
             mapGrid.setMap(model.map, model.agent);
             solution.setText(model.consoleString);
         }
@@ -197,7 +204,7 @@ public class Controller {
             mapGrid.setMap(model.map, model.agent);
         if (keyEvent.isControlDown() && keyEvent.getCode().getName().equals("A")) {
             btn_solveMap.requestFocus();
-            movements.setValue("Jump");
+            movements.setValue("Jump (Bounded)");
             heuristics.setValue("MST");
             heuristicGraph.setValue("Farther Frontiers");
             los.setValue("Symmetric BresLos");
