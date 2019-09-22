@@ -32,18 +32,20 @@ public class RoomMapGraphAdapter {
     private static final int HUGE_DOUBLE_VALUE = 0x7fffff00;
     static double distanceFactor = 2;
 
-    public RoomMapGraphAdapter(TreeMap<Position, HashSet<Position>> watchedDictionary, RoomMapState roomMapJumpState, boolean isForHeuristic) {
+    public RoomMapGraphAdapter(TreeMap<Position, HashSet<Position>> watchedDictionary, RoomMapState roomMapState, boolean isForHeuristic) {
         graph = new DefaultUndirectedWeightedGraph<>(UndirectedWeightedEdge.class);
         prunnableVertices = new HashMap<>();
         unPrunnableVertices = new HashMap<>();
-        addVerticesToGraph(watchedDictionary, roomMapJumpState, isForHeuristic);
-        addAgentToGraph(roomMapJumpState, (RoomMap.HEURISTIC_GRAPH_METHOD.equals("Front Frontiers") || RoomMap.HEURISTIC_GRAPH_METHOD.equals("Farther Frontiers")) & !isForHeuristic);
+        addVerticesToGraph(watchedDictionary, roomMapState, isForHeuristic);
+        if (RoomMap.HEURISTIC_GRAPH_METHOD.equals("Farther Frontiers") & !isForHeuristic)
+            addVerticesToGraph(watchedDictionary, roomMapState, false);
+        addAgentToGraph(roomMapState, (RoomMap.HEURISTIC_GRAPH_METHOD.equals("Front Frontiers") || RoomMap.HEURISTIC_GRAPH_METHOD.equals("Farther Frontiers")) & !isForHeuristic);
     }
 
-    private void addAgentToGraph(RoomMapState roomMapJumpState, boolean isFrontFrontiers) {
+    private void addAgentToGraph(RoomMapState roomMapState, boolean isFrontFrontiers) {
         if (isFrontFrontiers) {
-            HashMap<Position, HashSet<Position>> gettableWatchedDictionary = new HashMap<>(((RoomMap) roomMapJumpState.getProblem()).getWatchedDictionary());
-            Position agentPosition = roomMapJumpState.getPosition();
+            HashMap<Position, HashSet<Position>> gettableWatchedDictionary = new HashMap<>(((RoomMap) roomMapState.getProblem()).getWatchedDictionary());
+            Position agentPosition = roomMapState.getPosition();
             PositionVertex agentVertex = new PositionVertex(agentPosition, PositionVertex.TYPE.UNPRUNNABLE);
             graph.addVertex(agentVertex);
             unPrunnableVertices.put(agentPosition, agentVertex);
@@ -64,7 +66,7 @@ public class RoomMapGraphAdapter {
                     }
                 }
             }
-        } else addAgentToGraph(roomMapJumpState);
+        } else addAgentToGraph(roomMapState);
     }
 
     public void pruneGraph() {
@@ -111,17 +113,15 @@ public class RoomMapGraphAdapter {
         }
     }
 
-    private void addVerticesToGraph(TreeMap<Position, HashSet<Position>> watchedDictionary, RoomMapState roomMapJumpState, boolean addUnprunnables) {
+    private void addVerticesToGraph(TreeMap<Position, HashSet<Position>> watchedDictionary, RoomMapState roomMapState, boolean addUnprunnables) {
         HashSet<Position> toRemove = new HashSet<>();
         HashSet<Position> pathsSet = new HashSet<>();
         HashSet<Position> visualSet = new HashSet<>(watchedDictionary.keySet());
         HashMap<Position, HashSet<Position>> gettableWatchedDictionary = new HashMap<>(watchedDictionary);
-        Position agentPosition = roomMapJumpState.getPosition();
-        PositionVertex agentVertex = new PositionVertex(agentPosition, PositionVertex.TYPE.UNPRUNNABLE);
-
+        Position agentPosition = roomMapState.getPosition();
         for (Map.Entry<Position, HashSet<Position>> entry : watchedDictionary.entrySet()) {
             Position watchedPosition = entry.getKey();
-            if (roomMapJumpState.getSeen().contains(watchedPosition)) continue;
+            if (roomMapState.getSeen().contains(watchedPosition)) continue;
             HashSet<Position> watchersSet = entry.getValue();
             if (!Collections.disjoint(watchersSet, prunnableVertices.keySet()) || prunnableVertices.containsKey(watchedPosition)
                     || (RoomMap.HEURISTIC_GRAPH_METHOD.equals("Farther Frontiers") && checkIfIsntFarther(pathsSet, agentPosition, watchedPosition, watchersSet)))

@@ -205,7 +205,7 @@ public class Controller {
         if (keyEvent.isControlDown() && keyEvent.getCode().getName().equals("A")) {
             btn_solveMap.requestFocus();
             movements.setValue("Jump (Bounded)");
-            heuristics.setValue("MST");
+            heuristics.setValue("TSP");
             heuristicGraph.setValue("Farther Frontiers");
             los.setValue("Symmetric BresLos");
 //            btn_solveMap.fire();
