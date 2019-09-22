@@ -21,6 +21,7 @@ public class Controller {
     public Label yIndex;
     public TextField textField_rowSize;
     public TextField textField_columnSize;
+    public TextField textField_distanceFactor;
     public Button btn_generateMap;
     public Button btn_solveMap;
     public Button btn_loadMap;
@@ -33,8 +34,8 @@ public class Controller {
 
     void setModel(Model model) {
         String[] heuristicsArray = {"Zero", "Singleton", "MST", "MSP", "TSP"};
-        String[] heuristicGraphArray = {"All", "Frontiers", "Front Frontiers"};
-        String[] movementsArray = {"4-way", "8-way", "Jump", "Expanding Border"};
+        String[] heuristicGraphArray = {"All", "Frontiers", "Front Frontiers","Farther Frontiers"};
+        String[] movementsArray = {"4-way", "8-way", "Jump", "Jump (Bounded)", "Expanding Border"};
         String[] losArray = {"4-way", "8-way", "Symmetric BresLos", "Asymmetric BresLos"};
         los.setItems(FXCollections.observableArrayList(losArray));
         heuristics.setItems(FXCollections.observableArrayList(heuristicsArray));
@@ -58,7 +59,7 @@ public class Controller {
         if (isInteger(rowSize) && isInteger(columnSize) && Integer.parseInt(rowSize) > 4 && Integer.parseInt(columnSize) > 4) {
             int rows = Integer.parseInt(rowSize);
             int columns = Integer.parseInt(columnSize);
-            model.generateMap(rows, columns);
+//            model.generateMap(rows, columns);
             model.generateMap();
             mapGrid.setMap(model.map, model.agent);
         } else {
@@ -109,7 +110,13 @@ public class Controller {
 
 
     public void solveMap() {
-        if (los.getValue() == null) {
+        if (textField_distanceFactor.getText() == null) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("input alert");
+            alert.setHeaderText("LOS Selection");
+            alert.setContentText("Please insert Line of Sight method.");
+            alert.show();
+        } else if (los.getValue() == null) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("input alert");
             alert.setHeaderText("LOS Selection");
@@ -134,7 +141,7 @@ public class Controller {
             alert.setContentText("Please insert Heuristic Graph method");
             alert.show();
         } else {
-            model.solveMap(movements.getValue(), heuristics.getValue(), los.getValue(), heuristicGraph.getValue());
+            model.solveMap(movements.getValue(), heuristics.getValue(), los.getValue(), heuristicGraph.getValue(),Double.parseDouble(textField_distanceFactor.getText()));
             mapGrid.setMap(model.map, model.agent);
             solution.setText(model.consoleString);
         }
@@ -197,11 +204,11 @@ public class Controller {
             mapGrid.setMap(model.map, model.agent);
         if (keyEvent.isControlDown() && keyEvent.getCode().getName().equals("A")) {
             btn_solveMap.requestFocus();
-            movements.setValue("Jump");
-            heuristics.setValue("Zero");
-            heuristicGraph.setValue("All");
+            movements.setValue("Jump (Bounded)");
+            heuristics.setValue("MST");
+            heuristicGraph.setValue("Farther Frontiers");
             los.setValue("Symmetric BresLos");
-            btn_solveMap.fire();
+//            btn_solveMap.fire();
         }if (keyEvent.isControlDown() && keyEvent.getCode().getName().equals("S")) {
             btn_solveMap.requestFocus();
             movements.setValue("Expanding Border");
@@ -213,7 +220,7 @@ public class Controller {
             btn_solveMap.requestFocus();
             movements.setValue("4-way");
             heuristics.setValue("MST");
-            heuristicGraph.setValue("Front Frontiers");
+            heuristicGraph.setValue("All");
             los.setValue("Symmetric BresLos");
             btn_solveMap.fire();
         }

@@ -25,7 +25,7 @@ import java.util.Set;
 
 public class DistanceService {
     private static DijkstraShortestPath<Position, UndirectedWeightedEdge> dijkstraShortestPath;
-        private static Graph<Position, UndirectedWeightedEdge> pathsGraph = new DefaultUndirectedWeightedGraph<>(UndirectedWeightedEdge.class);
+    private static Graph<Position, UndirectedWeightedEdge> pathsGraph = new DefaultUndirectedWeightedGraph<>(UndirectedWeightedEdge.class);
     private static Graph<Position, UndirectedWeightedEdge> graph = new DefaultUndirectedWeightedGraph<>(UndirectedWeightedEdge.class);
 
 
@@ -50,6 +50,8 @@ public class DistanceService {
 
     public static void setRoomMap(RoomMap roomMap) {
         Set<Position> verticesPositions = roomMap.getVisualDictionary().keySet();
+        pathsGraph = new DefaultUndirectedWeightedGraph<>(UndirectedWeightedEdge.class);
+        graph = new DefaultUndirectedWeightedGraph<>(UndirectedWeightedEdge.class);
         for (Position vertexPosition : verticesPositions) {
             graph.addVertex(vertexPosition);
             pathsGraph.addVertex(vertexPosition);
@@ -102,8 +104,8 @@ public class DistanceService {
 //            addEdgesToPathsGraphWithUpdates(getPositionPaths(current), current);
 //            addEdgesToPathsGraph(getPositionPaths(current), current);
 //            edge = pathsGraph.getEdge(current, other);
-            edge = pathsGraph.addEdge(current,other);
-            pathsGraph.setEdgeWeight(edge,getPathWeight(current,other));
+            edge = pathsGraph.addEdge(current, other);
+            pathsGraph.setEdgeWeight(edge, getPathWeight(current, other));
         }
         return pathsGraph.getEdgeWeight(edge);
     }
@@ -125,27 +127,27 @@ public class DistanceService {
             Position key1 = entry1.getKey();
             if (key1.equals(current)) continue;
             Pair<Double, UndirectedWeightedEdge> value1 = entry1.getValue();
-            if (!pathsGraph.containsEdge(current,key1))
-                addPrevEdgesToGraph(distsMap, current,key1);
-                addSingleEdgeToGraph(positionPaths, key1, value1.getFirst());
+            if (!pathsGraph.containsEdge(current, key1))
+                addPrevEdgesToGraph(distsMap, current, key1);
+            addSingleEdgeToGraph(positionPaths, key1, value1.getFirst());
         }
     }
 
     private static double addPrevEdgesToGraph(Map<Position, Pair<Double, UndirectedWeightedEdge>> map, Position prev, Position current) {
-        if (map.get(current).getFirst()==0) return 0;
+        if (map.get(current).getFirst() == 0) return 0;
         else {
             UndirectedWeightedEdge edge = pathsGraph.addEdge(prev, current);
-            if (edge==null)
-                return pathsGraph.getEdge(prev,current).getWeight();
+            if (edge == null)
+                return pathsGraph.getEdge(prev, current).getWeight();
             else {
                 Pair<Double, UndirectedWeightedEdge> predVal = map.get(current);
-                Position pred = Graphs.getOppositeVertex(graph,predVal.getSecond(),current);
+                Position pred = Graphs.getOppositeVertex(graph, predVal.getSecond(), current);
                 UndirectedWeightedEdge stepEdge = pathsGraph.addEdge(pred, current);
-                if (stepEdge!=null){
-                    pathsGraph.setEdgeWeight(stepEdge,1);
+                if (stepEdge != null) {
+                    pathsGraph.setEdgeWeight(stepEdge, 1);
                 }
-                double weight = addPrevEdgesToGraph(map,prev,pred)+1;
-                pathsGraph.setEdgeWeight(edge,weight);
+                double weight = addPrevEdgesToGraph(map, prev, pred) + 1;
+                pathsGraph.setEdgeWeight(edge, weight);
                 return weight;
             }
 
@@ -187,10 +189,10 @@ public class DistanceService {
         System.exit(0);
     }
 
-    public static GraphPath<Position,UndirectedWeightedEdge> getPath(Position source, Position target) {
+    public static GraphPath<Position, UndirectedWeightedEdge> getPath(Position source, Position target) {
         GraphPath<Position, UndirectedWeightedEdge> path = dijkstraShortestPath.getPath(source, target);
         if (!pathsGraph.containsEdge(source, target))
-            pathsGraph.setEdgeWeight(pathsGraph.addEdge(source,target),path.getWeight());
+            pathsGraph.setEdgeWeight(pathsGraph.addEdge(source, target), path.getWeight());
         return path;
     }
 }

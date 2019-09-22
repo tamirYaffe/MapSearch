@@ -10,6 +10,8 @@ public class Model {
     private int solutionIndex = 0;
     public Position agent;
 
+    private static int mapChooser = 0;
+
     /**
      * csvResults is an array that represents the current run's record for the csv
      * csvResults[0] = Map's Name
@@ -35,16 +37,38 @@ public class Model {
     public void loadMap(int[][] map, String name) {
         csvResults = new String[17];
         this.map = map;
-//        int x, y;
-//        do {
-//            y = (int) (Math.random() * map.length);
-//            x = (int) (Math.random() * map[0].length);
-//        } while (map[y][x] != 0);
-//        agent = new Position(y, x);
-        agent = new Position(38,9);
-//        agent = new Position(0, 20);
-//        agent = new Position(13, 19);
-//        agent = new Position(0, 13);
+        //Map1
+        agent = new Position(400, 120);
+        //w_encounter1
+        if (agent.getY() >= map.length || agent.getX() >= map[0].length || map[agent.getY()][agent.getX()] != 0)
+            agent = new Position(212, 93);
+        //lt_shop
+        if (agent.getY() >= map.length || agent.getX() >= map[0].length || map[agent.getY()][agent.getX()] != 0)
+            agent = new Position(0, 1);
+        //It_ruinedhouse_n
+        if (agent.getY() >= map.length || agent.getX() >= map[0].length || map[agent.getY()][agent.getX()] != 0)
+            agent = new Position(0, 2);
+        //den101d
+        if (agent.getY() >= map.length || agent.getX() >= map[0].length || map[agent.getY()][agent.getX()] != 0)
+            agent = new Position(38, 10);
+        //den020d
+        if (agent.getY() >= map.length || agent.getX() >= map[0].length || map[agent.getY()][agent.getX()] != 0)
+            agent = new Position(0, 20);
+        //map1_22X28
+        if (agent.getY() >= map.length || agent.getX() >= map[0].length || map[agent.getY()][agent.getX()] != 0)
+            agent = new Position(13, 19);
+        //orz106d
+        if (agent.getY() >= map.length || agent.getX() >= map[0].length || map[agent.getY()][agent.getX()] != 0)
+            agent = new Position(0, 13);
+        //random
+        if (agent.getY() >= map.length || agent.getX() >= map[0].length || map[agent.getY()][agent.getX()] != 0) {
+            int x, y;
+            do {
+                y = (int) (Math.random() * map.length);
+                x = (int) (Math.random() * map[0].length);
+            } while (map[y][x] != 0);
+            agent = new Position(y, x);
+        }
         csvResults[0] = name;
         csvResults[1] = "" + map.length;
         csvResults[2] = "" + map[0].length;
@@ -63,33 +87,41 @@ public class Model {
     public void generateMap(/*int rows, int columns*/) {
 //        MapGenerator mapGenerator=new MapGenerator();
 //        map=mapGenerator.generate(rows,columns);
+        mapChooser++;
         csvResults = new String[17];
-        int[][] map = {
-                {0, 0, 0, 0, 0, 1, 0, 1},
-                {1, 1, 1, 1, 0, 1, 0, 0},
-                {0, 0, 0, 0, 0, 1, 0, 1},
-                {0, 1, 0, 1, 0, 1, 0, 0},
-                {0, 1, 0, 0, 0, 1, 1, 0},
-                {1, 1, 0, 0, 0, 1, 0, 0},
-                {0, 1, 0, 0, 1, 1, 0, 1},
-                {0, 0, 0, 0, 0, 0, 0, 0}};
-        agent = new Position(7, 6);
-
-//        int map[][] = {
-//                {0, 0, 0, 0, 0, 0},
-//                {0, 1, 0, 0, 1, 0},
-//                {0, 1, 0, 0, 1, 0},
-//                {0, 1, 1, 1, 1, 0},
-//                {0, 0, 0, 0, 0, 0},
-//                {0, 0, 0, 0, 0, 0}};
-//        agent = new Position(5, 2);
-//        int map[][] = {
-//                {0, 0, 0, 0, 0},
-//                {1, 1, 0, 1, 1},
-//                {0, 0, 0, 0, 0},
-//                {0, 1, 1, 1, 0},
-//                {0, 1, 0, 0, 0}};
-//        agent = new Position(4, 0);
+        int[][] map = null;
+        switch (mapChooser % 3) {
+            case 1:
+                map = new int[][]{
+                        {0, 0, 0, 0, 0, 1, 0, 1},
+                        {1, 1, 1, 1, 0, 1, 0, 0},
+                        {0, 0, 0, 0, 0, 1, 0, 1},
+                        {0, 1, 0, 1, 0, 1, 0, 0},
+                        {0, 1, 0, 0, 0, 1, 1, 0},
+                        {1, 1, 0, 0, 0, 1, 0, 0},
+                        {0, 1, 0, 0, 1, 1, 0, 1},
+                        {0, 0, 0, 0, 0, 0, 0, 0}};
+                agent = new Position(7, 6);
+                break;
+            case 2:
+                map = new int[][]{
+                        {0, 0, 0, 0, 0, 0},
+                        {0, 1, 0, 0, 1, 0},
+                        {0, 1, 0, 0, 1, 0},
+                        {0, 1, 1, 1, 1, 0},
+                        {0, 0, 0, 0, 0, 0},
+                        {0, 0, 0, 0, 0, 0}};
+                agent = new Position(5, 2);
+                break;
+            case 0:
+                map = new int[][]{
+                        {0, 0, 0, 0, 0},
+                        {1, 1, 0, 1, 1},
+                        {0, 0, 0, 0, 0},
+                        {0, 1, 1, 1, 0},
+                        {0, 1, 0, 0, 0}};
+                agent = new Position(4, 0);
+        }
         consoleString = "";
         this.map = map;
         csvResults[0] = "RoomMap basic mini map";
@@ -98,7 +130,7 @@ public class Model {
         csvResults[2] = "8";
     }
 
-    public void solveMap(String movement, String heuristic, String los, String heuristicGraph) {
+    public void solveMap(String movement, String heuristic, String los, String heuristicGraph, double distFactor) {
         consoleString = "";
         if (map == null)
             generateMap();
@@ -106,7 +138,7 @@ public class Model {
 //        UniformCostSearch solver = new UniformCostSearch();
 //        PureHeuristicSearch solver = new PureHeuristicSearch();
         long totalTime = 0;
-        RoomMap problem = new RoomMap(map, agent, movement, heuristic, los, heuristicGraph);
+        RoomMap problem = new RoomMap(map, agent, movement, heuristic, los, heuristicGraph,distFactor);
         DistanceService.setRoomMap(problem);
         consoleString += "\nSolver: " + solver.getSolverName();
         consoleString += "\nH alg: " + heuristic;
@@ -126,9 +158,10 @@ public class Model {
             consoleString += "\nExpanded: " + ASearch.expanded;
             consoleString += "\nCost:  " + cost;
             consoleString += "\nMoves: " + solution.size();
-            consoleString += "\nTime:  " + (finishTime - startTime) / 1000000.0 + " ms\n\n";
-            consoleString += solution;
             totalTime += (finishTime - startTime) / 1000000.0;
+            int timeMinuts = (int) ((totalTime / 1000) % 60);
+            consoleString += "\nTime:  " + (totalTime > 60000 ? (totalTime / 60000) + ":" + (timeMinuts > 9 ? timeMinuts : "0" + timeMinuts) + " min " : ((finishTime - startTime) / 1000000.0) + "ms") + "\n\n";
+            consoleString += solution;
             //csvResults[3] = Solver's Name
             csvResults[3] = solver.getSolverName();
             //csvResults[3] = Number of terrain positions in the map
