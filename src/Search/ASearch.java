@@ -9,6 +9,7 @@ abstract public class ASearch {
     public static int expanded;
     public static int generated;
     public static int duplicates;
+    public static int immediacies;
     public static double rootH = 0.0;
 
     public List<IProblemMove> solve ( IProblem problem ) {
@@ -28,6 +29,7 @@ abstract public class ASearch {
         expanded = 0;
         generated = 0;
         duplicates = 0;
+        immediacies = 0;
         boolean admissible = true;
         double start = System.currentTimeMillis();
 
@@ -40,7 +42,7 @@ abstract public class ASearch {
                 return current;
             }
             List<ASearchNode> neighbors = current.getNeighbors();
-            System.out.println("\ncurrent:\nlast move: " + current.getLastMove() + "\n" + current.currentProblemState + "g: " + current.getG() + "\t\th: " + current.getH() + "\t\tf: " + (current.getF()) + "\n\n\n");
+//            System.out.println("\ncurrent:\nlast move: " + current.getLastMove() + "\n" + current.currentProblemState + "g: " + current.getG() + "\t\th: " + current.getH() + "\t\tf: " + (current.getF()) + "\n\n\n");
 //            int genID = 0;
             for (ASearchNode Vn : neighbors) {
                 if (isClosed(Vn)) {

@@ -3,13 +3,13 @@ package Search;
 public class BlindSearchNode extends ASearchNode {
     double g;
 
-	public BlindSearchNode(IProblemState currentProblemState) {
+    public BlindSearchNode(IProblemState currentProblemState) {
         prev = null;
         this.currentProblemState = currentProblemState;
         g = 0;
     }
 
-	public BlindSearchNode(ASearchNode prev, IProblemState currentProblemState, double g) {
+    public BlindSearchNode(ASearchNode prev, IProblemState currentProblemState, double g) {
         this.prev = prev;
         this.currentProblemState = currentProblemState;
         this.g = g;
@@ -37,6 +37,11 @@ public class BlindSearchNode extends ASearchNode {
             ) {
         double g = this.g + currentProblemState.getStateLastMoveCost();
         return new BlindSearchNode(this, currentProblemState, g);
+    }
+
+    @Override
+    public void setG(double g) {
+        this.g = g;
     }
 
     @Override

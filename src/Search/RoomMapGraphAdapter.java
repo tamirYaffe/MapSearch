@@ -37,8 +37,8 @@ public class RoomMapGraphAdapter {
         prunnableVertices = new HashMap<>();
         unPrunnableVertices = new HashMap<>();
         addVerticesToGraph(watchedDictionary, roomMapState, isForHeuristic);
-        if (RoomMap.HEURISTIC_GRAPH_METHOD.equals("Farther Frontiers") & !isForHeuristic)
-            addVerticesToGraph(watchedDictionary, roomMapState, false);
+//        if (RoomMap.HEURISTIC_GRAPH_METHOD.equals("Farther Frontiers") & !isForHeuristic)
+//            addVerticesToGraph(watchedDictionary, roomMapState, false);
         addAgentToGraph(roomMapState, (RoomMap.HEURISTIC_GRAPH_METHOD.equals("Front Frontiers") || RoomMap.HEURISTIC_GRAPH_METHOD.equals("Farther Frontiers")) & !isForHeuristic);
     }
 
@@ -119,6 +119,9 @@ public class RoomMapGraphAdapter {
         HashSet<Position> visualSet = new HashSet<>(watchedDictionary.keySet());
         HashMap<Position, HashSet<Position>> gettableWatchedDictionary = new HashMap<>(watchedDictionary);
         Position agentPosition = roomMapState.getPosition();
+
+        boolean isTSP = roomMapState.getProblem().getProblemHeuristic().toString().contains("TSP");
+
         for (Map.Entry<Position, HashSet<Position>> entry : watchedDictionary.entrySet()) {
             Position watchedPosition = entry.getKey();
             if (roomMapState.getSeen().contains(watchedPosition)) continue;
@@ -131,6 +134,8 @@ public class RoomMapGraphAdapter {
             if (addUnprunnables)
                 graph.addVertex(watchedVertex);
             addPrunabbleVeticesToSingleUnprunnable(watchedVertex, watchersSet, visualSet, toRemove, addUnprunnables);
+            if (isTSP && unPrunnableVertices.size()>10)
+                break;
         }
         for (Position position : toRemove) {
             prunnableVertices.remove(position);

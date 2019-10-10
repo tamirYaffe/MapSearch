@@ -34,4 +34,5 @@ abstract public class ASearchNode {
 
     abstract public ASearchNode createSearchNode(IProblemState currentProblemState);
 
+   public abstract void setG(double g);
 }

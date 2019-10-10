@@ -98,9 +98,9 @@
                 <Label text="Distance Factor:"/>
                 <TextField fx:id="textField_distanceFactor" text="2" GridPane.columnIndex="1"/>
                 <Label text="map rows:" GridPane.rowIndex="1"/>
-                <TextField fx:id="textField_rowSize" text="10" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <TextField fx:id="textField_rowSize" text="0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
                 <Label text="map columns:" GridPane.rowIndex="2"/>
-                <TextField fx:id="textField_columnSize" text="10" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                <TextField fx:id="textField_columnSize" text="0" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
                 <Button id="button_loadMap" fx:id="btn_loadMap" mnemonicParsing="false" onAction="#loadMap"
                         prefHeight="27.0" prefWidth="156.0" text="Load Map" GridPane.columnSpan="2"
                         GridPane.rowIndex="5"/>

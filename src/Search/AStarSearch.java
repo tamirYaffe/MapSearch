@@ -37,9 +37,10 @@ public class AStarSearch   extends ASearch
 	@Override
 	public ASearchNode getOpen(ASearchNode node)
 	{
-		if (isOpen(node))
-			return openContainer.get(node.currentProblemState);
-		return null;
+//		if (isOpen(node))
+//			return openContainer.get(node.currentProblemState);
+//		return null;
+		return openContainer.getOrDefault(node.currentProblemState,null);
 	}
 
 	@Override
@@ -57,12 +58,14 @@ public class AStarSearch   extends ASearch
 	@Override
 	public void addToOpen(ASearchNode node)
 	{
-		if (!isOpen(node)){
+		ASearchNode prevNode = openContainer.getOrDefault(node.currentProblemState,null);
+		if (prevNode==null){
 			openContainer.put(node.currentProblemState,node);
 			openList.add(node);
 		}
-		else if(node.getG()<openContainer.get(node.currentProblemState).getG()){
-			openContainer.replace(node.currentProblemState,node);
+		else if(node.getG()<prevNode.getG()){
+			prevNode.setG(node.getG());
+//			openContainer.replace(node.currentProblemState,node);
 			openList.add(node);
 		}
 	}
@@ -83,7 +86,8 @@ public class AStarSearch   extends ASearch
 	public ASearchNode getBest()
 	{
 		ASearchNode res = openList.poll();
-		while (res!=null && openContainer.get(res.currentProblemState).getG()<res.getG()){
+		double currG = openContainer.get(res.currentProblemState).getG();
+		while (res!=null && currG<res.getG()){
 			res = openList.poll();
 		}
 		return res;
