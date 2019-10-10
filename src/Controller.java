@@ -13,6 +13,9 @@ import java.io.File;
 public class Controller {
     private Model model;
 
+    private int densMapIndex = 0;
+    private File densMapDir = null;
+
     @FXML
     public BorderPane borderPane;
     public MenuItem fileSaveButton;
@@ -34,7 +37,7 @@ public class Controller {
 
     void setModel(Model model) {
         String[] heuristicsArray = {"Zero", "Singleton", "MST", "MSP", "TSP"};
-        String[] heuristicGraphArray = {"All", "Frontiers", "Front Frontiers","Farther Frontiers"};
+        String[] heuristicGraphArray = {"All", "Frontiers", "Front Frontiers", "Farther Frontiers"};
         String[] movementsArray = {"4-way", "8-way", "Jump", "Jump (Bounded)", "Expanding Border"};
         String[] losArray = {"4-way", "8-way", "Symmetric BresLos", "Asymmetric BresLos"};
         los.setItems(FXCollections.observableArrayList(losArray));
@@ -56,17 +59,22 @@ public class Controller {
         String rowSize = textField_rowSize.getText();
         String columnSize = textField_columnSize.getText();
 
-        if (isInteger(rowSize) && isInteger(columnSize) && Integer.parseInt(rowSize) > 4 && Integer.parseInt(columnSize) > 4) {
+        if (isInteger(rowSize) && isInteger(columnSize)) {
+//        if (isInteger(rowSize) && isInteger(columnSize) && Integer.parseInt(rowSize) > 4 && Integer.parseInt(columnSize) > 4) {
             int rows = Integer.parseInt(rowSize);
             int columns = Integer.parseInt(columnSize);
-//            model.generateMap(rows, columns);
-            model.generateMap();
+            if (rows < 4 && columns < 4) {
+                model.generateMap();
+            } else {
+
+                model.generateMap(rows, columns);
+            }
             mapGrid.setMap(model.map, model.agent);
         } else {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("input alert");
             alert.setHeaderText("Generate Maze");
-            alert.setContentText("insert only numbers greater then 4");
+            alert.setContentText("insert only numbers!");
             alert.show();
         }
 
@@ -91,6 +99,31 @@ public class Controller {
             mapGrid.setMap(model.map, model.agent);
         }
         event.consume();
+    }
+
+    private File showMaps(String location) {
+        if (densMapDir==null || densMapIndex==0) {
+            FileChooser fc = new FileChooser();
+            fc.setTitle("Load Map");
+            File dir = new File(System.getProperty("user.dir") + "/Maps/DensMaps/" + location);
+            fc.setInitialDirectory(dir);
+            //showing the file chooser
+            densMapDir = fc.showOpenDialog(null).getParentFile();
+            if (densMapDir != null && densMapDir.isDirectory()) {
+                densMapIndex = densMapDir.listFiles().length;
+            }
+        }
+        if (densMapIndex>0 && densMapDir!=null){
+            File file = new File(densMapDir.getPath()  + "/Density Graph Map "+ (densMapIndex--) +" obstacles.map");
+            while (file==null && densMapIndex>0){
+                file = new File(densMapDir.getPath()  + "/Density Graph Map "+ (densMapIndex--) +" obstacles.map");
+            }
+            if (file!=null){
+                model.loadMap(new StringMapGenerator().generate(file), file.getName());
+                mapGrid.setMap(model.map, model.agent);
+            }
+        }
+        return null;
     }
 
     private File checkIfExists(String location) {
@@ -141,7 +174,7 @@ public class Controller {
             alert.setContentText("Please insert Heuristic Graph method");
             alert.show();
         } else {
-            model.solveMap(movements.getValue(), heuristics.getValue(), los.getValue(), heuristicGraph.getValue(),Double.parseDouble(textField_distanceFactor.getText()));
+            model.solveMap(movements.getValue(), heuristics.getValue(), los.getValue(), heuristicGraph.getValue(), Double.parseDouble(textField_distanceFactor.getText()));
             mapGrid.setMap(model.map, model.agent);
             solution.setText(model.consoleString);
         }
@@ -209,20 +242,37 @@ public class Controller {
             heuristicGraph.setValue("Farther Frontiers");
             los.setValue("Symmetric BresLos");
 //            btn_solveMap.fire();
-        }if (keyEvent.isControlDown() && keyEvent.getCode().getName().equals("S")) {
+        }
+        if (keyEvent.isControlDown() && keyEvent.getCode().getName().equals("S")) {
             btn_solveMap.requestFocus();
             movements.setValue("Expanding Border");
             heuristics.setValue("Zero");
             heuristicGraph.setValue("All");
             los.setValue("4-way");
             btn_solveMap.fire();
-        }if (keyEvent.isControlDown() && keyEvent.getCode().getName().equals("D")) {
+        }
+        if (keyEvent.isControlDown() && keyEvent.getCode().getName().equals("D")) {
             btn_solveMap.requestFocus();
             movements.setValue("4-way");
-            heuristics.setValue("MST");
+            heuristics.setValue("TSP");
             heuristicGraph.setValue("All");
             los.setValue("Symmetric BresLos");
-            btn_solveMap.fire();
+            textField_rowSize.setText("15");
+            textField_columnSize.setText("15");
+            btn_generateMap.fire();
+//            btn_solveMap.fire();
+        }
+        if (keyEvent.isControlDown() && keyEvent.getCode().getName().equals("F")) {
+            movements.setValue("4-way");
+            heuristics.setValue("MST");
+            heuristicGraph.setValue("Frontiers");
+            los.setValue("Symmetric BresLos");
+            textField_rowSize.setText("11");
+            textField_columnSize.setText("11");
+            model.densityGraphBuilder(11,11);
+        }
+        if (keyEvent.isControlDown() && keyEvent.getCode().getName().equals("M")) {
+            showMaps("");
         }
         keyEvent.consume();
     }

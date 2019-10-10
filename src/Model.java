@@ -1,4 +1,5 @@
 import Search.*;
+import javafx.geometry.Pos;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +10,7 @@ public class Model {
     private ArrayList<Position> solutionList = new ArrayList<>();
     private int solutionIndex = 0;
     public Position agent;
+    private String resultsFileName = "Results/Results.csv";
 
     private static int mapChooser = 0;
 
@@ -24,8 +26,8 @@ public class Model {
      * csvResults[7] = Number of Generated Nodes
      * csvResults[8] = Number of Duplicate Nodes
      * csvResults[9] = Number of Expanded Nodes
-     * csvResults[10] = threshold (if available)
-     * csvResults[11] = Max leaves count (if available)
+     * csvResults[10] = Graph Type
+     * csvResults[11] = Distance Factor (for bounded jump)
      * csvResults[12] = Solution Length
      * csvResults[13] = Start Position
      * csvResults[14] = Line of Sight method
@@ -38,10 +40,14 @@ public class Model {
         csvResults = new String[17];
         this.map = map;
         //Map1
-        agent = new Position(400, 120);
+        agent = new Position(58, 54);
+//        agent = new Position(400, 120);
         //w_encounter1
         if (agent.getY() >= map.length || agent.getX() >= map[0].length || map[agent.getY()][agent.getX()] != 0)
             agent = new Position(212, 93);
+        //mazes
+        if (agent.getY() >= map.length || agent.getX() >= map[0].length || map[agent.getY()][agent.getX()] != 0)
+            agent = new Position(0, 0);
         //lt_shop
         if (agent.getY() >= map.length || agent.getX() >= map[0].length || map[agent.getY()][agent.getX()] != 0)
             agent = new Position(0, 1);
@@ -75,8 +81,9 @@ public class Model {
     }
 
     public void generateMap(int rows, int columns) {
-        MapGenerator mapGenerator = new MapGenerator();
-        map = mapGenerator.generate(rows, columns);
+        MazeGenerator mapGenerator = new MazeGenerator();
+        this.map = mapGenerator.generate(rows, columns);
+        agent = mapGenerator.getStartPosition();
         csvResults = new String[17];
         consoleString = "";
         csvResults[0] = "RoomMap Random map";
@@ -126,19 +133,203 @@ public class Model {
         this.map = map;
         csvResults[0] = "RoomMap basic mini map";
 //        csvResults[0] = "RoomMap basic map";
-        csvResults[1] = "8";
-        csvResults[2] = "8";
+        csvResults[1] = String.valueOf(map.length);
+        csvResults[2] = String.valueOf(map[0].length);
+    }
+
+    public void densityGraphBuilder(int rows, int columns) {
+        if (map == null)
+            generateMap(rows, columns);
+        rows = map.length;
+        columns = map[0].length;
+        ArrayList<Position> blankList = new ArrayList<>();
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                if (map[i][j] == 1) {
+                    blankList.add(new Position(i, j));
+                }
+            }
+        }
+        MapWriter mapWriter = new MapWriter();
+        resultsFileName = csvResults[0] + " " + map.length +"x"+map[0].length;
+        String path = "DensMaps/" + resultsFileName;
+        resultsFileName="Results/"+resultsFileName + ".csv";
+        do {
+            csvResults[0] = "Density Graph Map " + blankList.size() + " obstacles";
+            mapWriter.createFiles(this, path, csvResults[0]);
+            Runtime.getRuntime().gc();
+            try {
+                solveMap("4-way", "Zero", "Symmetric BresLos", "All", 2);
+            } catch (Exception e) {
+                System.out.println(consoleString + "\ncouldn't finish the BRFS!\n\n");
+            }
+            try {
+                solveMap("4-way", "Singleton", "Symmetric BresLos", "All", 2);
+            } catch (Exception e) {
+                System.out.println(consoleString + "\ncouldn't finish the Singleton!\n\n");
+            }
+            try {
+                solveMap("4-way", "MST", "Symmetric BresLos", "All", 2);
+            } catch (Exception e) {
+                System.out.println(consoleString + "\ncouldn't finish the MST!\n\n");
+            }
+            try {
+                solveMap("4-way", "TSP", "Symmetric BresLos", "Frontiers", 2);
+            } catch (Exception e) {
+                System.out.println(consoleString + "\ncouldn't finish the TSP!\n\n");
+            }
+            try {
+                solveMap("4-way", "Zero", "8-way", "All", 2);
+            } catch (Exception e) {
+                System.out.println(consoleString + "\ncouldn't finish the BRFS!\n\n");
+            }
+            try {
+                solveMap("4-way", "Singleton", "8-way", "All", 2);
+            } catch (Exception e) {
+                System.out.println(consoleString + "\ncouldn't finish the Singleton!\n\n");
+            }
+            try {
+                solveMap("4-way", "MST", "8-way", "All", 2);
+            } catch (Exception e) {
+                System.out.println(consoleString + "\ncouldn't finish the MST!\n\n");
+            }
+            try {
+                solveMap("4-way", "TSP", "8-way", "Frontiers", 2);
+            } catch (Exception e) {
+                System.out.println(consoleString + "\ncouldn't finish the TSP!\n\n");
+            }
+            try {
+                solveMap("4-way", "Zero", "4-way", "All", 2);
+            } catch (Exception e) {
+                System.out.println(consoleString + "\ncouldn't finish the BRFS!\n\n");
+            }
+            try {
+                solveMap("4-way", "Singleton", "4-way", "All", 2);
+            } catch (Exception e) {
+                System.out.println(consoleString + "\ncouldn't finish the Singleton!\n\n");
+            }
+            try {
+                solveMap("4-way", "MST", "4-way", "All", 2);
+            } catch (Exception e) {
+                System.out.println(consoleString + "\ncouldn't finish the MST!\n\n");
+            }
+            try {
+                solveMap("4-way", "TSP", "4-way", "Frontiers", 2);
+            } catch (Exception e) {
+                System.out.println(consoleString + "\ncouldn't finish the TSP!\n\n");
+            }
+            try {
+                solveMap("Expanding Border", "Zero", "Symmetric BresLos", "All", 2);
+            } catch (Exception e) {
+                System.out.println(consoleString + "\ncouldn't finish the BRFS EB!\n\n");
+            }
+            try {
+                solveMap("Expanding Border", "Singleton", "Symmetric BresLos", "All", 2);
+            } catch (Exception e) {
+                System.out.println(consoleString + "\ncouldn't finish the Singleton EB!\n\n");
+            }
+            try {
+                solveMap("Expanding Border", "MST", "Symmetric BresLos", "All", 2);
+            } catch (Exception e) {
+                System.out.println(consoleString + "\ncouldn't finish the MST EB!\n\n");
+            }
+            try {
+                solveMap("Expanding Border", "TSP", "Symmetric BresLos", "Frontiers", 2);
+            } catch (Exception e) {
+                System.out.println(consoleString + "\ncouldn't finish the TSP EB!\n\n");
+            }
+            try {
+                solveMap("Expanding Border", "Zero", "8-way", "All", 2);
+            } catch (Exception e) {
+                System.out.println(consoleString + "\ncouldn't finish the BRFS EB!\n\n");
+            }
+            try {
+                solveMap("Expanding Border", "Singleton", "8-way", "All", 2);
+            } catch (Exception e) {
+                System.out.println(consoleString + "\ncouldn't finish the Singleton EB!\n\n");
+            }
+            try {
+                solveMap("Expanding Border", "MST", "8-way", "All", 2);
+            } catch (Exception e) {
+                System.out.println(consoleString + "\ncouldn't finish the MST EB!\n\n");
+            }
+            try {
+                solveMap("Expanding Border", "TSP", "8-way", "Frontiers", 2);
+            } catch (Exception e) {
+                System.out.println(consoleString + "\ncouldn't finish the TSP EB!\n\n");
+            }
+            try {
+                solveMap("Expanding Border", "Zero", "4-way", "All", 2);
+            } catch (Exception e) {
+                System.out.println(consoleString + "\ncouldn't finish the BRFS EB!\n\n");
+            }
+            try {
+                solveMap("Expanding Border", "Singleton", "4-way", "All", 2);
+            } catch (Exception e) {
+                System.out.println(consoleString + "\ncouldn't finish the Singleton EB!\n\n");
+            }
+            try {
+                solveMap("Expanding Border", "MST", "4-way", "All", 2);
+            } catch (Exception e) {
+                System.out.println(consoleString + "\ncouldn't finish the MST EB!\n\n");
+            }
+            try {
+                solveMap("Expanding Border", "TSP", "4-way", "Frontiers", 2);
+            } catch (Exception e) {
+                System.out.println(consoleString + "\ncouldn't finish the TSP EB!\n\n");
+            }
+//            mapWriter.createFiles(this, "DensMaps", csvResults[0]);
+            for (int i = 0; i < 1 && !blankList.isEmpty(); i++) {
+                boolean removed = false;
+                while (!removed) {
+                    int randI = (int) (blankList.size() * Math.random());
+                    Position p = blankList.remove(randI);
+                    int neighbors = 0;
+                    int x = p.getX(), y = p.getY();
+                    int xm=0;//x minus 1
+                    int xp=0;//x plus 1
+                    int ym=0;//y minus 1
+                    int yp=0;//y plus 1
+                    if (x < map[0].length - 1 && map[y][x + 1] == 1) {
+                        neighbors++;
+                        xp++;
+                    }
+                    if (x > 0 && map[y][x - 1] == 1) {
+                        neighbors++;
+                        xm++;
+                    }
+                    if (y < map.length - 1 && map[y + 1][x] == 1) {
+                        neighbors++;
+                        yp++;
+                    }
+                    if (y > 0 && map[y - 1][x] == 1) {
+                        neighbors++;
+                        ym++;
+                    }
+                    if (neighbors <= 1 || (neighbors==2 && xp==xm && ym==yp)) {
+                        removed = true;
+                        map[y][x] = 0;
+                    } else {
+                        blankList.add(p);
+                    }
+
+                }
+
+            }
+        } while (!blankList.isEmpty());
     }
 
     public void solveMap(String movement, String heuristic, String los, String heuristicGraph, double distFactor) {
         consoleString = "";
         if (map == null)
             generateMap();
-        AStarSearch solver = new AStarSearch();
+        ASearch solver = new AStarSearch();
+        if (!movement.startsWith("Jump") && !movement.startsWith("Exp") && heuristic.equals("Zero"))
+            solver = new BreadthFirstSearch();
 //        UniformCostSearch solver = new UniformCostSearch();
 //        PureHeuristicSearch solver = new PureHeuristicSearch();
         long totalTime = 0;
-        RoomMap problem = new RoomMap(map, agent, movement, heuristic, los, heuristicGraph,distFactor);
+        RoomMap problem = new RoomMap(map, agent, movement, heuristic, los, heuristicGraph, distFactor);
         DistanceService.setRoomMap(problem);
         consoleString += "\nSolver: " + solver.getSolverName();
         consoleString += "\nH alg: " + heuristic;
@@ -176,10 +367,11 @@ public class Model {
             csvResults[8] = Integer.toString(ASearch.duplicates);
             //csvResults[9] = Number of Expanded Nodes
             csvResults[9] = Integer.toString(ASearch.expanded);
-            //csvResults[10] = threshold( if available)
-            csvResults[10] = "0";
-            //csvResults[11] = Max leaves count ( if available)
-            csvResults[11] = "5";
+
+            // csvResults[10] = Graph Type
+            csvResults[10] = heuristicGraph;
+            // csvResults[11] = Distance Factor (for bounded jump)
+            csvResults[11] = "" + distFactor;
             //csvResults[12] = Solution Length
             csvResults[12] = Integer.toString((int) cost);
             //csvResults[13] = Start Position
@@ -190,7 +382,7 @@ public class Model {
             csvResults[15] = movement;
             // csvResults[16] = Root H (heuristic value)
             csvResults[16] = Double.toString(ASearch.rootH);
-            RoomMapCSVWriter.writeToCSV("Results.csv", csvResults);
+            RoomMapCSVWriter.writeToCSV(resultsFileName, csvResults);
         } else {                // invalid solution
             consoleString += "\nInvalid solution.";
         }
