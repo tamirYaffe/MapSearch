@@ -1,8 +1,8 @@
 package Search;
 
 public class Position {
-    private int y;
-    private int x;
+    private short y;
+    private short x;
 
     /**
      * Default constructor
@@ -17,8 +17,8 @@ public class Position {
      * constructor
      */
     public Position(int y, int x) {
-        this.y = y;
-        this.x = x;
+        this.y = (short) y;
+        this.x = (short) x;
     }
 
     /**
@@ -56,7 +56,7 @@ public class Position {
      * @param y - the new y value
      */
     public void setY(int y) {
-        this.y = y;
+        this.y = (short) y;
     }
 
     /**
@@ -65,7 +65,7 @@ public class Position {
      * @param x - the new x value
      */
     public void setX(int x) {
-        this.x = x;
+        this.x = (short) x;
     }
 
 

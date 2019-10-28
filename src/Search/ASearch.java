@@ -65,6 +65,7 @@ abstract public class ASearch {
             addToClosed(current);
 //            System.out.println(current._currentProblemState);
             expanded++;
+            immediacies+=current.getImmediate();
 //            if (expanded % 1000 == 0 || (System.currentTimeMillis() - start) % 1000 < 50)
             if (current.getH() > 1000 - current.getG()) admissible = false;
             System.out.print("\rexpanded: " + expanded + "\tgenerated: " + generated + "\tduplicates: " + duplicates + "\t\tg: " + current.getG() + "\t\th: " + current.getH() + "\t\tf: " + (current.getF()) + "\t\tTime: " + (System.currentTimeMillis() - start) + "ms" + (admissible ? "\t Admissible" : "\t Not Admissible!!!"));

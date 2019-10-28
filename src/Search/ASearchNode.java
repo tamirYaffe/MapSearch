@@ -35,4 +35,10 @@ abstract public class ASearchNode {
     abstract public ASearchNode createSearchNode(IProblemState currentProblemState);
 
    public abstract void setG(double g);
+
+   public short getImmediate(){
+       if(currentProblemState instanceof RoomMapState)
+           return ((RoomMapState)currentProblemState).getImmediate();
+       return 0;
+   }
 }
