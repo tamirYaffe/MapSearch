@@ -29,10 +29,12 @@ public class RoomMapGraphAdapter {
     private Graph<PositionVertex, UndirectedWeightedEdge> graph;
     private HashMap<Position, PositionVertex> prunnableVertices;
     private HashMap<Position, PositionVertex> unPrunnableVertices;
+    private Map<PositionVertex,PositionVertex> watchingDictionary;
     private static final int HUGE_DOUBLE_VALUE = 0x7fffff00;
     static double distanceFactor = 2;
 
     public RoomMapGraphAdapter(TreeMap<Position, HashSet<Position>> watchedDictionary, RoomMapState roomMapState, boolean isForHeuristic) {
+        watchingDictionary=new HashMap<>();
         graph = new DefaultUndirectedWeightedGraph<>(UndirectedWeightedEdge.class);
         prunnableVertices = new HashMap<>();
         unPrunnableVertices = new HashMap<>();
@@ -212,11 +214,21 @@ public class RoomMapGraphAdapter {
             for (Map.Entry<Position, PositionVertex> entry2 : prunnableVertices.entrySet()) {
                 Position key2 = entry2.getKey();
                 PositionVertex value2 = entry2.getValue();
-                if (key1.equals(key2) || graph.containsEdge(value2, value1)) continue;
+                if (key1.equals(key2) || graph.containsEdge(value2, value1) || isSameComponent(value1,value2)) continue;
                 UndirectedWeightedEdge edge = graph.addEdge(value1, value2);
                 graph.setEdgeWeight(edge, DistanceService.getWeight(key1, key2));
             }
         }
+    }
+
+    private boolean isSameComponent(PositionVertex v1, PositionVertex v2) {
+        if(watchingDictionary.get(v1).equals(watchingDictionary.get(v2)))
+            return true;
+        return false;
+    }
+
+    private void addInvertedIndex(PositionVertex unprunnableVertex, PositionVertex prunnableVertex) {
+        watchingDictionary.put(prunnableVertex,unprunnableVertex);
     }
 
     private void addPrunabbleVeticesToSingleUnprunnable(PositionVertex unprunnableVertex, HashSet<Position> prunnableSet, HashSet<Position> visualSet, HashSet<Position> toRemove, boolean addEdgeToUnprunnableVertex) {
@@ -229,6 +241,7 @@ public class RoomMapGraphAdapter {
                     UndirectedWeightedEdge edge = graph.addEdge(prunnableVertex, unprunnableVertex);
                     graph.setEdgeWeight(edge, 0);
                 }
+                addInvertedIndex(unprunnableVertex,prunnableVertex);
             } else toRemove.add(position);
         }
     }

@@ -30,17 +30,20 @@ public class AStarSearch   extends ASearch
 		openList= new PriorityQueue<>((o1, o2) -> {
 			if (o1.getF() > o2.getF()) return 1;
 			if (o1.getF() < o2.getF()) return -1;
-			return Double.compare(o1.getH(), o2.getH());
+			if (o1.getG() > o2.getG()) return -1;
+			if (o1.getG() < o2.getG()) return 1;
+			return 0;
+//			return Double.compare(o1.getH(), o2.getH());
 		});
 	}
 
 	@Override
 	public ASearchNode getOpen(ASearchNode node)
 	{
-//		if (isOpen(node))
-//			return openContainer.get(node.currentProblemState);
-//		return null;
-		return openContainer.getOrDefault(node.currentProblemState,null);
+		if (isOpen(node))
+			return openContainer.get(node.currentProblemState);
+		return null;
+//		return openContainer.getOrDefault(node.currentProblemState,null);
 	}
 
 	@Override
@@ -63,11 +66,12 @@ public class AStarSearch   extends ASearch
 			openContainer.put(node.currentProblemState,node);
 			openList.add(node);
 		}
-		else if(node.getG()<prevNode.getG()){
-			prevNode.setG(node.getG());
+		openList.add(node);
+//		else if(node.getG()<prevNode.getG()){
+//			prevNode.setG(node.getG());
 //			openContainer.replace(node.currentProblemState,node);
-			openList.add(node);
-		}
+//			openList.add(node);
+//		}
 	}
 
 	@Override
@@ -86,10 +90,13 @@ public class AStarSearch   extends ASearch
 	public ASearchNode getBest()
 	{
 		ASearchNode res = openList.poll();
-		double currG = openContainer.get(res.currentProblemState).getG();
-		while (res!=null && currG<res.getG()){
-			res = openList.poll();
-		}
+//		double currG = openContainer.get(res.currentProblemState).getG();
+//		int ctr=0;
+//		while (res!=null && currG<res.getG()){
+//			res = openList.poll();
+//			ctr++;
+//		}
+//		System.out.println("**getBest removed "+ctr+ " nodes from open list**");
 		return res;
 	}
 

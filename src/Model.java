@@ -34,10 +34,10 @@ public class Model {
      * csvResults[15] = Movement method
      * csvResults[16] = Root H (heuristic value)
      */
-    private String[] csvResults = new String[17];
+    private String[] csvResults = new String[18];
 
     public void loadMap(int[][] map, String name) {
-        csvResults = new String[17];
+        csvResults = new String[18];
         this.map = map;
         //Map1
         agent = new Position(58, 54);
@@ -84,7 +84,7 @@ public class Model {
         MazeGenerator mapGenerator = new MazeGenerator();
         this.map = mapGenerator.generate(rows, columns);
         agent = mapGenerator.getStartPosition();
-        csvResults = new String[17];
+        csvResults = new String[18];
         consoleString = "";
         csvResults[0] = "RoomMap Random map";
         csvResults[1] = "" + rows;
@@ -95,7 +95,7 @@ public class Model {
 //        MapGenerator mapGenerator=new MapGenerator();
 //        map=mapGenerator.generate(rows,columns);
         mapChooser++;
-        csvResults = new String[17];
+        csvResults = new String[18];
         int[][] map = null;
         switch (mapChooser % 3) {
             case 1:
@@ -382,6 +382,7 @@ public class Model {
             csvResults[15] = movement;
             // csvResults[16] = Root H (heuristic value)
             csvResults[16] = Double.toString(ASearch.rootH);
+            csvResults[17] = Integer.toString(ASearch.immediacies);
             RoomMapCSVWriter.writeToCSV(resultsFileName, csvResults);
         } else {                // invalid solution
             consoleString += "\nInvalid solution.";

@@ -16,6 +16,7 @@ public class RoomMapState implements IProblemState {
     private IProblemMove lastStep;  //last step
     private double cost = 0;
     private HashSet<Position> nextPoints;       //neighbor positions
+    private short immediate;
 
 
     public RoomMapState(RoomMap roomMap, Position position, HashSet<Position> seen, IProblemMove lastStep) {
@@ -312,6 +313,9 @@ public class RoomMapState implements IProblemState {
                 if (!seen.containsAll(roomMap.getVisualNeighbors(nextPosition))) {
                     nextPoints.add(nextPosition);
                 } else {
+                    //immediate expand nodes++
+                    immediate++;
+
                     neighborQueue.add(new Position(nextPosition.getY() - 1, nextPosition.getX()));
                     neighborQueue.add(new Position(nextPosition.getY() + 1, nextPosition.getX()));
                     neighborQueue.add(new Position(nextPosition.getY(), nextPosition.getX() - 1));
@@ -350,5 +354,9 @@ public class RoomMapState implements IProblemState {
         ArrayList<Position> pos = new ArrayList<>();
         pos.add(position);
         return pos;
+    }
+
+    public short getImmediate() {
+        return immediate;
     }
 }
