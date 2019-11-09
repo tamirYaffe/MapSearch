@@ -195,4 +195,9 @@ public class DistanceService {
             pathsGraph.setEdgeWeight(pathsGraph.addEdge(source, target), path.getWeight());
         return path;
     }
+
+    public static double getPathWeight(Graph<PositionVertex, UndirectedWeightedEdge> externalGraph,PositionVertex source, PositionVertex sink) {
+        DijkstraShortestPath<PositionVertex, UndirectedWeightedEdge> dijkstraExternalGraphShortestPath=new DijkstraShortestPath<>(externalGraph);
+        return dijkstraExternalGraphShortestPath.getPathWeight(source,sink);
+    }
 }
