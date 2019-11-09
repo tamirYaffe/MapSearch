@@ -17,6 +17,7 @@ public class RoomMapState implements IProblemState {
     private double cost = 0;
     private HashSet<Position> nextPoints;       //neighbor positions
     private short immediate;
+    private RoomMapGraphAdapter graphAdapter;
 
 
     public RoomMapState(RoomMap roomMap, Position position, HashSet<Position> seen, IProblemMove lastStep) {
@@ -25,8 +26,8 @@ public class RoomMapState implements IProblemState {
         this.seen = seen;
         this.lastStep = lastStep;
         if (MOVEMENT_METHOD.startsWith("Jump")) {
-            RoomMapGraphAdapter g = new RoomMapGraphAdapter(roomMap.getWatchedDictionary(), this, false);
-            updateNeighbors(g.getGraph());
+            graphAdapter = new RoomMapGraphAdapter(roomMap.getWatchedDictionary(), this, true);
+            updateNeighbors(graphAdapter.getGraph());
         } else updateNeighbors();
     }
 
@@ -37,8 +38,8 @@ public class RoomMapState implements IProblemState {
         this.lastStep = lastStep;
         this.cost = cost + getStateLastMoveCost();
         if (MOVEMENT_METHOD.startsWith("Jump")) {
-            RoomMapGraphAdapter g = new RoomMapGraphAdapter(roomMap.getWatchedDictionary(), this, false);
-            updateNeighbors(g.getGraph());
+            graphAdapter = new RoomMapGraphAdapter(roomMap.getWatchedDictionary(), this, true);
+            updateNeighbors(graphAdapter.getGraph());
         } else updateNeighbors();
     }
 //
@@ -358,5 +359,9 @@ public class RoomMapState implements IProblemState {
 
     public short getImmediate() {
         return immediate;
+    }
+
+    public RoomMapGraphAdapter getGraphAdapter() {
+        return graphAdapter;
     }
 }
