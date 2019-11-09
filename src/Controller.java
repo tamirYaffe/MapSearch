@@ -274,7 +274,34 @@ public class Controller {
         if (keyEvent.isControlDown() && keyEvent.getCode().getName().equals("M")) {
             showMaps("");
         }
-        keyEvent.consume();
-    }
+        if (keyEvent.isControlDown() && keyEvent.getCode().getName().equals("W")) {
+            if (movements.getValue().equals("Jump")){
+                movements.setValue("4-way");
+            } else {
+                movements.setValue("Jump");
+            }
+        }
+        if (keyEvent.isControlDown() && keyEvent.getCode().getName().equals("Q")) {
+            if (los.getValue().equals("4-way")){
+                los.setValue("8-way");
+            } else if (los.getValue().equals("8-way")){
+                los.setValue("Symmetric BresLos");
+            } else {
+                los.setValue("4-way");
+            }
+        }
+
+        if (keyEvent.isControlDown() && keyEvent.getCode().getName().equals("E")) {
+            if (heuristics.getValue().equals("Zero")){
+                heuristics.setValue("Singleton");
+            } else if (heuristics.getValue().equals("Singleton")){
+                heuristics.setValue("MST");
+            } else if (heuristics.getValue().equals("MST")){
+                heuristics.setValue("TSP");
+            } else {
+                heuristics.setValue("Zero");
+            }
+        }
+        keyEvent.consume();    }
 
 }
