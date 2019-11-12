@@ -40,11 +40,15 @@ public class RoomMapGraphAdapter {
         graph = new DefaultUndirectedWeightedGraph<>(UndirectedWeightedEdge.class);
         prunnableVertices = new HashMap<>();
         unPrunnableVertices = new HashMap<>();
+        reachablePrunnableVertices = new HashSet<>();
         addVerticesToGraph(watchedDictionary, roomMapState, isForHeuristic);
 //        if (RoomMap.HEURISTIC_GRAPH_METHOD.equals("Farther Frontiers") & !isForHeuristic)
 //            addVerticesToGraph(watchedDictionary, roomMapState, false);
-//        addAgentToGraph(roomMapState);
-        addAgentToGraph(roomMapState, watchedDictionary);
+        if (isForHeuristic)
+            addAgentToGraph(roomMapState, watchedDictionary);
+        else
+            addAgentToGraph(roomMapState);
+
     }
 
     private void addAgentToGraph(RoomMapState roomMapState, boolean isFrontFrontiers) {
@@ -94,10 +98,10 @@ public class RoomMapGraphAdapter {
         //for every node in g check its connecred to all others, if not find the shortest path between them and add edge
         for (PositionVertex unprunedVertex1 : unPrunnableVertices.values()) {
             for (PositionVertex unprunedVertex2 : unPrunnableVertices.values()) {
-                if (!unprunedVertex1.equals(unprunedVertex2) && !graph.containsEdge(unprunedVertex1,unprunedVertex2)){
-                    double weight=getPathWeight(graph,unprunedVertex1,unprunedVertex2);
+                if (!unprunedVertex1.equals(unprunedVertex2) && !graph.containsEdge(unprunedVertex1, unprunedVertex2)) {
+                    double weight = getPathWeight(graph, unprunedVertex1, unprunedVertex2);
                     UndirectedWeightedEdge newEdge = graph.addEdge(unprunedVertex1, unprunedVertex2);
-                    graph.setEdgeWeight(newEdge,weight);
+                    graph.setEdgeWeight(newEdge, weight);
                 }
             }
         }
@@ -132,6 +136,7 @@ public class RoomMapGraphAdapter {
                 UndirectedWeightedEdge edge = graph.addEdge(agentVertex, value1);
                 double w = path.size() - 1;
                 graph.setEdgeWeight(edge, w);
+                reachablePrunnableVertices.add(key1);
             }
 //            UndirectedWeightedEdge edge = graph.addEdge(agentVertex, value1);
 //            graph.setEdgeWeight(edge, DistanceService.getWeight(agentPosition, key1));
@@ -141,7 +146,6 @@ public class RoomMapGraphAdapter {
     private void addAgentToGraph(RoomMapState s, TreeMap<Position, HashSet<Position>> watchedDictionary) {
         HashMap<Position, HashSet<Position>> gettableWatchedDictionary = new HashMap<>(watchedDictionary);
         HashSet<PositionVertex> reachableUnPrunnableVertices = new HashSet<>();
-        reachablePrunnableVertices=new HashSet<>();
         HashMap<PositionVertex, HashSet<PositionVertex>> unReachableUnPrunnableVertices = new HashMap<>();
         Position agentPosition = s.getPosition();
         PositionVertex agentVertex = new PositionVertex(agentPosition, PositionVertex.TYPE.UNPRUNNABLE);
@@ -161,7 +165,7 @@ public class RoomMapGraphAdapter {
                 double w = path.size() - 1;
                 graph.setEdgeWeight(edge, w);
                 reachableUnPrunnableVertices.add(watchingDictionary.get(value));
-                if(Collections.disjoint(path.subList(1, path.size() - 1), prunnableVertices.keySet()))
+                if (Collections.disjoint(path.subList(1, path.size() - 1), prunnableVertices.keySet()))
                     reachablePrunnableVertices.add(key);
             } else {
                 //keep only prunnableVertices of the path
