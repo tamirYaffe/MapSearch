@@ -64,7 +64,6 @@ public class AStarSearch   extends ASearch
 		ASearchNode prevNode = openContainer.getOrDefault(node.currentProblemState,null);
 		if (prevNode==null){
 			openContainer.put(node.currentProblemState,node);
-			openList.add(node);
 		}
 		openList.add(node);
 //		else if(node.getG()<prevNode.getG()){

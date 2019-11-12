@@ -27,7 +27,8 @@ public class RoomMapState implements IProblemState {
         this.lastStep = lastStep;
         if (MOVEMENT_METHOD.startsWith("Jump")) {
             graphAdapter = new RoomMapGraphAdapter(roomMap.getWatchedDictionary(), this, true);
-            updateNeighbors(graphAdapter.getGraph());
+//            updateNeighbors(graphAdapter.getGraph());
+            updateNeighbors(graphAdapter.getReachablePrunnableVertices());
         } else updateNeighbors();
     }
 
@@ -39,7 +40,8 @@ public class RoomMapState implements IProblemState {
         this.cost = cost + getStateLastMoveCost();
         if (MOVEMENT_METHOD.startsWith("Jump")) {
             graphAdapter = new RoomMapGraphAdapter(roomMap.getWatchedDictionary(), this, true);
-            updateNeighbors(graphAdapter.getGraph());
+//            updateNeighbors(graphAdapter.getGraph());
+            updateNeighbors(graphAdapter.getReachablePrunnableVertices());
         } else updateNeighbors();
     }
 //
@@ -266,6 +268,13 @@ public class RoomMapState implements IProblemState {
                 nextPoints.add(t);
             }
             nextPoints.remove(position);
+        }
+    }
+
+    private void updateNeighbors(HashSet<Position> reachableUnPrunnableVertices) {
+        nextPoints = new HashSet<>();
+        for(Position reachableUnPrunnableVertex: reachableUnPrunnableVertices){
+            nextPoints.add(reachableUnPrunnableVertex);
         }
     }
 

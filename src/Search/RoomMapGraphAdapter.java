@@ -28,6 +28,7 @@ import static Search.DistanceService.getPathWeight;
 
 public class RoomMapGraphAdapter {
     private Graph<PositionVertex, UndirectedWeightedEdge> graph;
+    HashSet<Position> reachablePrunnableVertices;
     private HashMap<Position, PositionVertex> prunnableVertices;
     private HashMap<Position, PositionVertex> unPrunnableVertices;
     private Map<PositionVertex, PositionVertex> watchingDictionary;
@@ -140,6 +141,7 @@ public class RoomMapGraphAdapter {
     private void addAgentToGraph(RoomMapState s, TreeMap<Position, HashSet<Position>> watchedDictionary) {
         HashMap<Position, HashSet<Position>> gettableWatchedDictionary = new HashMap<>(watchedDictionary);
         HashSet<PositionVertex> reachableUnPrunnableVertices = new HashSet<>();
+        reachablePrunnableVertices=new HashSet<>();
         HashMap<PositionVertex, HashSet<PositionVertex>> unReachableUnPrunnableVertices = new HashMap<>();
         Position agentPosition = s.getPosition();
         PositionVertex agentVertex = new PositionVertex(agentPosition, PositionVertex.TYPE.UNPRUNNABLE);
@@ -159,6 +161,8 @@ public class RoomMapGraphAdapter {
                 double w = path.size() - 1;
                 graph.setEdgeWeight(edge, w);
                 reachableUnPrunnableVertices.add(watchingDictionary.get(value));
+                if(Collections.disjoint(path.subList(1, path.size() - 1), prunnableVertices.keySet()))
+                    reachablePrunnableVertices.add(key);
             } else {
                 //keep only prunnableVertices of the path
                 List<Position> intermediatesPrunnables = pathSet;
@@ -355,7 +359,10 @@ public class RoomMapGraphAdapter {
                     graph.setEdgeWeight(edge, 0);
                 }
                 addInvertedIndex(unprunnableVertex, prunnableVertex);
-            } else toRemove.add(position);
+            } else {
+                toRemove.add(position);
+//                prunnableVertices.remove(position);
+            }
         }
     }
 
@@ -556,4 +563,7 @@ public class RoomMapGraphAdapter {
 //        System.exit(0);
 //    }
 
+    public HashSet<Position> getReachablePrunnableVertices() {
+        return reachablePrunnableVertices;
+    }
 }
