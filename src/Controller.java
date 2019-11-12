@@ -102,7 +102,7 @@ public class Controller {
     }
 
     private File showMaps(String location) {
-        if (densMapDir==null || densMapIndex==0) {
+        if (densMapDir == null || densMapIndex == 0) {
             FileChooser fc = new FileChooser();
             fc.setTitle("Load Map");
             File dir = new File(System.getProperty("user.dir") + "/Maps/DensMaps/" + location);
@@ -113,12 +113,12 @@ public class Controller {
                 densMapIndex = densMapDir.listFiles().length;
             }
         }
-        if (densMapIndex>0 && densMapDir!=null){
-            File file = new File(densMapDir.getPath()  + "/Density Graph Map "+ (densMapIndex--) +" obstacles.map");
-            while (file==null && densMapIndex>0){
-                file = new File(densMapDir.getPath()  + "/Density Graph Map "+ (densMapIndex--) +" obstacles.map");
+        if (densMapIndex > 0 && densMapDir != null) {
+            File file = new File(densMapDir.getPath() + "/Density Graph Map " + (densMapIndex--) + " obstacles.map");
+            while (file == null && densMapIndex > 0) {
+                file = new File(densMapDir.getPath() + "/Density Graph Map " + (densMapIndex--) + " obstacles.map");
             }
-            if (file!=null){
+            if (file != null) {
                 model.loadMap(new StringMapGenerator().generate(file), file.getName());
                 mapGrid.setMap(model.map, model.agent);
             }
@@ -199,7 +199,10 @@ public class Controller {
             double y = mouseEvent.getY() / sizeY;
             xIndex.setText("X: " + (int) x);
             yIndex.setText("Y: " + (int) y);
-            if (solution.getText() != null && !solution.getText().equals("")) {
+            if (mouseEvent.isShiftDown()) {
+                mapGrid.showWatchers(model.getWatchedDictionary(), (int) x, (int) y);
+            }
+            else if (solution.getText() != null && !solution.getText().equals("")) {
                 if (mouseEvent.isShiftDown()) {
                     model.showBeforeMove();
                 } else {
@@ -245,11 +248,11 @@ public class Controller {
         }
         if (keyEvent.isControlDown() && keyEvent.getCode().getName().equals("S")) {
             btn_solveMap.requestFocus();
-            movements.setValue("Expanding Border");
+            movements.setValue("Jump");
             heuristics.setValue("Zero");
             heuristicGraph.setValue("All");
             los.setValue("4-way");
-            btn_solveMap.fire();
+//            btn_solveMap.fire();
         }
         if (keyEvent.isControlDown() && keyEvent.getCode().getName().equals("D")) {
             btn_solveMap.requestFocus();
@@ -267,12 +270,40 @@ public class Controller {
             heuristics.setValue("MST");
             heuristicGraph.setValue("Frontiers");
             los.setValue("Symmetric BresLos");
-            textField_rowSize.setText("11");
-            textField_columnSize.setText("11");
-            model.densityGraphBuilder(11,11);
+            textField_rowSize.setText("17");
+            textField_columnSize.setText("17");
+            model.densityGraphBuilder(17, 17);
         }
         if (keyEvent.isControlDown() && keyEvent.getCode().getName().equals("M")) {
             showMaps("");
+        }
+        if (keyEvent.isControlDown() && keyEvent.getCode().getName().equals("W")) {
+            if (movements.getValue().equals("Jump")) {
+                movements.setValue("4-way");
+            } else {
+                movements.setValue("Jump");
+            }
+        }
+        if (keyEvent.isControlDown() && keyEvent.getCode().getName().equals("Q")) {
+            if (los.getValue().equals("4-way")) {
+                los.setValue("8-way");
+            } else if (los.getValue().equals("8-way")) {
+                los.setValue("Symmetric BresLos");
+            } else {
+                los.setValue("4-way");
+            }
+        }
+
+        if (keyEvent.isControlDown() && keyEvent.getCode().getName().equals("E")) {
+            if (heuristics.getValue().equals("Zero")) {
+                heuristics.setValue("Singleton");
+            } else if (heuristics.getValue().equals("Singleton")) {
+                heuristics.setValue("MST");
+            } else if (heuristics.getValue().equals("MST")) {
+                heuristics.setValue("TSP");
+            } else {
+                heuristics.setValue("Zero");
+            }
         }
         keyEvent.consume();
     }

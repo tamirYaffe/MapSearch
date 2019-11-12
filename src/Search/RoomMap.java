@@ -12,6 +12,7 @@ public class RoomMap implements IProblem {
     private RoomMapService self;
     static String MOVEMENT_METHOD = "4-way";
     static String HEURISTIC_GRAPH_METHOD = "All";
+    static String HEURISTIC_METHOD = "MST";
 
 
     public RoomMap() {
@@ -45,6 +46,7 @@ public class RoomMap implements IProblem {
                 this.heuristic = new RoomMapTSPHeuristic();
                 break;
         }
+        HEURISTIC_METHOD = heuristic;
         MOVEMENT_METHOD = movement;
         HEURISTIC_GRAPH_METHOD = heuristicGraph;
         if (distFactor>=1){

@@ -6,6 +6,7 @@ import org.jgrapht.GraphPath;
 
 import java.util.*;
 
+import static Search.RoomMap.HEURISTIC_METHOD;
 import static Search.RoomMap.MOVEMENT_METHOD;
 import static Search.RoomMap8WayStep.SQRT_OF_TWO;
 
@@ -25,9 +26,10 @@ public class RoomMapState implements IProblemState {
         this.position = position;
         this.seen = seen;
         this.lastStep = lastStep;
+        graphAdapter = new RoomMapGraphAdapter(roomMap.getWatchedDictionary(), this, HEURISTIC_METHOD.equals("MST") || HEURISTIC_METHOD.equals("TSP"));
         if (MOVEMENT_METHOD.startsWith("Jump")) {
-            graphAdapter = new RoomMapGraphAdapter(roomMap.getWatchedDictionary(), this, true);
-            updateNeighbors(graphAdapter.getGraph());
+//            updateNeighbors(graphAdapter.getGraph());
+            updateNeighbors(graphAdapter.getReachablePrunnableVertices());
         } else updateNeighbors();
     }
 
@@ -37,9 +39,10 @@ public class RoomMapState implements IProblemState {
         this.seen = seen;
         this.lastStep = lastStep;
         this.cost = cost + getStateLastMoveCost();
+        graphAdapter = new RoomMapGraphAdapter(roomMap.getWatchedDictionary(), this, HEURISTIC_METHOD.equals("MST") || HEURISTIC_METHOD.equals("TSP"));
         if (MOVEMENT_METHOD.startsWith("Jump")) {
-            graphAdapter = new RoomMapGraphAdapter(roomMap.getWatchedDictionary(), this, true);
-            updateNeighbors(graphAdapter.getGraph());
+//            updateNeighbors(graphAdapter.getGraph());
+            updateNeighbors(graphAdapter.getReachablePrunnableVertices());
         } else updateNeighbors();
     }
 //
@@ -266,6 +269,13 @@ public class RoomMapState implements IProblemState {
                 nextPoints.add(t);
             }
             nextPoints.remove(position);
+        }
+    }
+
+    private void updateNeighbors(HashSet<Position> reachableUnPrunnableVertices) {
+        nextPoints = new HashSet<>();
+        for(Position reachableUnPrunnableVertex: reachableUnPrunnableVertices){
+            nextPoints.add(reachableUnPrunnableVertex);
         }
     }
 
