@@ -1,7 +1,10 @@
 import Search.*;
 import javafx.geometry.Pos;
+import javafx.scene.control.Label;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 public class Model {
@@ -11,6 +14,7 @@ public class Model {
     private int solutionIndex = 0;
     public Position agent;
     private String resultsFileName = "Results/Results.csv";
+    private HashMap<Position, HashSet<Position>> watchedDictionary;
 
     private static int mapChooser = 0;
 
@@ -158,126 +162,146 @@ public class Model {
             csvResults[0] = "Density Graph Map " + blankList.size() + " obstacles";
             mapWriter.createFiles(this, path, csvResults[0]);
             Runtime.getRuntime().gc();
+//            try {
+//                solveMap("4-way", "Zero", "Symmetric BresLos", "Farther Frontiers", 2);
+//            } catch (Exception e) {
+//                System.out.println(consoleString + "\ncouldn't finish the BRFS!\n\n");
+//            }
+//            try {
+//                solveMap("4-way", "Singleton", "Symmetric BresLos", "Farther Frontiers", 2);
+//            } catch (Exception e) {
+//                System.out.println(consoleString + "\ncouldn't finish the Singleton!\n\n");
+//            }
+//            try {
+//                solveMap("4-way", "MST", "Symmetric BresLos", "Farther Frontiers", 2);
+//            } catch (Exception e) {
+//                System.out.println(consoleString + "\ncouldn't finish the MST!\n\n");
+//            }
+//            try {
+//                solveMap("4-way", "TSP", "Symmetric BresLos", "Farther Frontiers", 2);
+//            } catch (Exception e) {
+//                System.out.println(consoleString + "\ncouldn't finish the TSP!\n\n");
+//            }
             try {
-                solveMap("4-way", "Zero", "Symmetric BresLos", "All", 2);
+                solveMap("Jump", "Zero", "Symmetric BresLos", "Farther Frontiers", 2);
             } catch (Exception e) {
                 System.out.println(consoleString + "\ncouldn't finish the BRFS!\n\n");
             }
             try {
-                solveMap("4-way", "Singleton", "Symmetric BresLos", "All", 2);
+                solveMap("Jump", "Singleton", "Symmetric BresLos", "Farther Frontiers", 2);
             } catch (Exception e) {
                 System.out.println(consoleString + "\ncouldn't finish the Singleton!\n\n");
             }
             try {
-                solveMap("4-way", "MST", "Symmetric BresLos", "All", 2);
+                solveMap("Jump", "MST", "Symmetric BresLos", "Farther Frontiers", 2);
             } catch (Exception e) {
                 System.out.println(consoleString + "\ncouldn't finish the MST!\n\n");
             }
             try {
-                solveMap("4-way", "TSP", "Symmetric BresLos", "Frontiers", 2);
+                solveMap("Jump", "TSP", "Symmetric BresLos", "Farther Frontiers", 2);
             } catch (Exception e) {
                 System.out.println(consoleString + "\ncouldn't finish the TSP!\n\n");
             }
-            try {
-                solveMap("4-way", "Zero", "8-way", "All", 2);
-            } catch (Exception e) {
-                System.out.println(consoleString + "\ncouldn't finish the BRFS!\n\n");
-            }
-            try {
-                solveMap("4-way", "Singleton", "8-way", "All", 2);
-            } catch (Exception e) {
-                System.out.println(consoleString + "\ncouldn't finish the Singleton!\n\n");
-            }
-            try {
-                solveMap("4-way", "MST", "8-way", "All", 2);
-            } catch (Exception e) {
-                System.out.println(consoleString + "\ncouldn't finish the MST!\n\n");
-            }
-            try {
-                solveMap("4-way", "TSP", "8-way", "Frontiers", 2);
-            } catch (Exception e) {
-                System.out.println(consoleString + "\ncouldn't finish the TSP!\n\n");
-            }
-            try {
-                solveMap("4-way", "Zero", "4-way", "All", 2);
-            } catch (Exception e) {
-                System.out.println(consoleString + "\ncouldn't finish the BRFS!\n\n");
-            }
-            try {
-                solveMap("4-way", "Singleton", "4-way", "All", 2);
-            } catch (Exception e) {
-                System.out.println(consoleString + "\ncouldn't finish the Singleton!\n\n");
-            }
-            try {
-                solveMap("4-way", "MST", "4-way", "All", 2);
-            } catch (Exception e) {
-                System.out.println(consoleString + "\ncouldn't finish the MST!\n\n");
-            }
-            try {
-                solveMap("4-way", "TSP", "4-way", "Frontiers", 2);
-            } catch (Exception e) {
-                System.out.println(consoleString + "\ncouldn't finish the TSP!\n\n");
-            }
-            try {
-                solveMap("Expanding Border", "Zero", "Symmetric BresLos", "All", 2);
-            } catch (Exception e) {
-                System.out.println(consoleString + "\ncouldn't finish the BRFS EB!\n\n");
-            }
-            try {
-                solveMap("Expanding Border", "Singleton", "Symmetric BresLos", "All", 2);
-            } catch (Exception e) {
-                System.out.println(consoleString + "\ncouldn't finish the Singleton EB!\n\n");
-            }
-            try {
-                solveMap("Expanding Border", "MST", "Symmetric BresLos", "All", 2);
-            } catch (Exception e) {
-                System.out.println(consoleString + "\ncouldn't finish the MST EB!\n\n");
-            }
-            try {
-                solveMap("Expanding Border", "TSP", "Symmetric BresLos", "Frontiers", 2);
-            } catch (Exception e) {
-                System.out.println(consoleString + "\ncouldn't finish the TSP EB!\n\n");
-            }
-            try {
-                solveMap("Expanding Border", "Zero", "8-way", "All", 2);
-            } catch (Exception e) {
-                System.out.println(consoleString + "\ncouldn't finish the BRFS EB!\n\n");
-            }
-            try {
-                solveMap("Expanding Border", "Singleton", "8-way", "All", 2);
-            } catch (Exception e) {
-                System.out.println(consoleString + "\ncouldn't finish the Singleton EB!\n\n");
-            }
-            try {
-                solveMap("Expanding Border", "MST", "8-way", "All", 2);
-            } catch (Exception e) {
-                System.out.println(consoleString + "\ncouldn't finish the MST EB!\n\n");
-            }
-            try {
-                solveMap("Expanding Border", "TSP", "8-way", "Frontiers", 2);
-            } catch (Exception e) {
-                System.out.println(consoleString + "\ncouldn't finish the TSP EB!\n\n");
-            }
-            try {
-                solveMap("Expanding Border", "Zero", "4-way", "All", 2);
-            } catch (Exception e) {
-                System.out.println(consoleString + "\ncouldn't finish the BRFS EB!\n\n");
-            }
-            try {
-                solveMap("Expanding Border", "Singleton", "4-way", "All", 2);
-            } catch (Exception e) {
-                System.out.println(consoleString + "\ncouldn't finish the Singleton EB!\n\n");
-            }
-            try {
-                solveMap("Expanding Border", "MST", "4-way", "All", 2);
-            } catch (Exception e) {
-                System.out.println(consoleString + "\ncouldn't finish the MST EB!\n\n");
-            }
-            try {
-                solveMap("Expanding Border", "TSP", "4-way", "Frontiers", 2);
-            } catch (Exception e) {
-                System.out.println(consoleString + "\ncouldn't finish the TSP EB!\n\n");
-            }
+//            try {
+//                solveMap("4-way", "Zero", "8-way", "All", 2);
+//            } catch (Exception e) {
+//                System.out.println(consoleString + "\ncouldn't finish the BRFS!\n\n");
+//            }
+//            try {
+//                solveMap("4-way", "Singleton", "8-way", "All", 2);
+//            } catch (Exception e) {
+//                System.out.println(consoleString + "\ncouldn't finish the Singleton!\n\n");
+//            }
+//            try {
+//                solveMap("4-way", "MST", "8-way", "All", 2);
+//            } catch (Exception e) {
+//                System.out.println(consoleString + "\ncouldn't finish the MST!\n\n");
+//            }
+//            try {
+//                solveMap("4-way", "TSP", "8-way", "Frontiers", 2);
+//            } catch (Exception e) {
+//                System.out.println(consoleString + "\ncouldn't finish the TSP!\n\n");
+//            }
+//            try {
+//                solveMap("4-way", "Zero", "4-way", "All", 2);
+//            } catch (Exception e) {
+//                System.out.println(consoleString + "\ncouldn't finish the BRFS!\n\n");
+//            }
+//            try {
+//                solveMap("4-way", "Singleton", "4-way", "All", 2);
+//            } catch (Exception e) {
+//                System.out.println(consoleString + "\ncouldn't finish the Singleton!\n\n");
+//            }
+//            try {
+//                solveMap("4-way", "MST", "4-way", "All", 2);
+//            } catch (Exception e) {
+//                System.out.println(consoleString + "\ncouldn't finish the MST!\n\n");
+//            }
+//            try {
+//                solveMap("4-way", "TSP", "4-way", "Frontiers", 2);
+//            } catch (Exception e) {
+//                System.out.println(consoleString + "\ncouldn't finish the TSP!\n\n");
+//            }
+//            try {
+//                solveMap("Expanding Border", "Zero", "Symmetric BresLos", "All", 2);
+//            } catch (Exception e) {
+//                System.out.println(consoleString + "\ncouldn't finish the BRFS EB!\n\n");
+//            }
+//            try {
+//                solveMap("Expanding Border", "Singleton", "Symmetric BresLos", "All", 2);
+//            } catch (Exception e) {
+//                System.out.println(consoleString + "\ncouldn't finish the Singleton EB!\n\n");
+//            }
+//            try {
+//                solveMap("Expanding Border", "MST", "Symmetric BresLos", "All", 2);
+//            } catch (Exception e) {
+//                System.out.println(consoleString + "\ncouldn't finish the MST EB!\n\n");
+//            }
+//            try {
+//                solveMap("Expanding Border", "TSP", "Symmetric BresLos", "Frontiers", 2);
+//            } catch (Exception e) {
+//                System.out.println(consoleString + "\ncouldn't finish the TSP EB!\n\n");
+//            }
+//            try {
+//                solveMap("Expanding Border", "Zero", "8-way", "All", 2);
+//            } catch (Exception e) {
+//                System.out.println(consoleString + "\ncouldn't finish the BRFS EB!\n\n");
+//            }
+//            try {
+//                solveMap("Expanding Border", "Singleton", "8-way", "All", 2);
+//            } catch (Exception e) {
+//                System.out.println(consoleString + "\ncouldn't finish the Singleton EB!\n\n");
+//            }
+//            try {
+//                solveMap("Expanding Border", "MST", "8-way", "All", 2);
+//            } catch (Exception e) {
+//                System.out.println(consoleString + "\ncouldn't finish the MST EB!\n\n");
+//            }
+//            try {
+//                solveMap("Expanding Border", "TSP", "8-way", "Frontiers", 2);
+//            } catch (Exception e) {
+//                System.out.println(consoleString + "\ncouldn't finish the TSP EB!\n\n");
+//            }
+//            try {
+//                solveMap("Expanding Border", "Zero", "4-way", "All", 2);
+//            } catch (Exception e) {
+//                System.out.println(consoleString + "\ncouldn't finish the BRFS EB!\n\n");
+//            }
+//            try {
+//                solveMap("Expanding Border", "Singleton", "4-way", "All", 2);
+//            } catch (Exception e) {
+//                System.out.println(consoleString + "\ncouldn't finish the Singleton EB!\n\n");
+//            }
+//            try {
+//                solveMap("Expanding Border", "MST", "4-way", "All", 2);
+//            } catch (Exception e) {
+//                System.out.println(consoleString + "\ncouldn't finish the MST EB!\n\n");
+//            }
+//            try {
+//                solveMap("Expanding Border", "TSP", "4-way", "Frontiers", 2);
+//            } catch (Exception e) {
+//                System.out.println(consoleString + "\ncouldn't finish the TSP EB!\n\n");
+//            }
 //            mapWriter.createFiles(this, "DensMaps", csvResults[0]);
             for (int i = 0; i < 1 && !blankList.isEmpty(); i++) {
                 boolean removed = false;
@@ -331,6 +355,7 @@ public class Model {
         long totalTime = 0;
         RoomMap problem = new RoomMap(map, agent, movement, heuristic, los, heuristicGraph, distFactor);
         DistanceService.setRoomMap(problem);
+        watchedDictionary = problem.getVisualDictionary();
         consoleString += "\nSolver: " + solver.getSolverName();
         consoleString += "\nH alg: " + heuristic;
         consoleString += "\nLOS: " + los;
@@ -448,5 +473,9 @@ public class Model {
         for (Position position : solutionList) {
             map[position.getY()][position.getX()] = 2;
         }
+    }
+
+    public HashMap<Position, HashSet<Position>> getWatchedDictionary() {
+        return watchedDictionary;
     }
 }

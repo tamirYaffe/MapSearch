@@ -6,6 +6,7 @@ import org.jgrapht.GraphPath;
 
 import java.util.*;
 
+import static Search.RoomMap.HEURISTIC_METHOD;
 import static Search.RoomMap.MOVEMENT_METHOD;
 import static Search.RoomMap8WayStep.SQRT_OF_TWO;
 
@@ -25,7 +26,7 @@ public class RoomMapState implements IProblemState {
         this.position = position;
         this.seen = seen;
         this.lastStep = lastStep;
-        graphAdapter = new RoomMapGraphAdapter(roomMap.getWatchedDictionary(), this, true);
+        graphAdapter = new RoomMapGraphAdapter(roomMap.getWatchedDictionary(), this, HEURISTIC_METHOD.equals("MST") || HEURISTIC_METHOD.equals("TSP"));
         if (MOVEMENT_METHOD.startsWith("Jump")) {
 //            updateNeighbors(graphAdapter.getGraph());
             updateNeighbors(graphAdapter.getReachablePrunnableVertices());
@@ -38,7 +39,7 @@ public class RoomMapState implements IProblemState {
         this.seen = seen;
         this.lastStep = lastStep;
         this.cost = cost + getStateLastMoveCost();
-        graphAdapter = new RoomMapGraphAdapter(roomMap.getWatchedDictionary(), this, true);
+        graphAdapter = new RoomMapGraphAdapter(roomMap.getWatchedDictionary(), this, HEURISTIC_METHOD.equals("MST") || HEURISTIC_METHOD.equals("TSP"));
         if (MOVEMENT_METHOD.startsWith("Jump")) {
 //            updateNeighbors(graphAdapter.getGraph());
             updateNeighbors(graphAdapter.getReachablePrunnableVertices());

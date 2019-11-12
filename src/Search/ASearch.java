@@ -42,7 +42,7 @@ abstract public class ASearch {
                 return current;
             }
             List<ASearchNode> neighbors = current.getNeighbors();
-//            System.out.println("\ncurrent:\nlast move: " + current.getLastMove() + "\n" + current.currentProblemState + "g: " + current.getG() + "\t\th: " + current.getH() + "\t\tf: " + (current.getF()) + "\n\n\n");
+            System.out.println("\ncurrent:\nlast move: " + current.getLastMove() + "\n" + current.currentProblemState + "g: " + current.getG() + "\t\th: " + current.getH() + "\t\tf: " + (current.getF()) + "\n\n\n");
 //            int genID = 0;
             for (ASearchNode Vn : neighbors) {
                 if (isClosed(Vn)) {

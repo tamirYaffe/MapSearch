@@ -1,6 +1,7 @@
 package View;
 
 import Search.Position;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 //import javafx.scene.canvas.Canvas;
 //import javafx.scene.canvas.GraphicsContext;
@@ -8,6 +9,10 @@ import javafx.scene.Node;
 //import java.util.ArrayList;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.TreeMap;
 
 
 public class MapGrid extends GridPane {
@@ -108,5 +113,22 @@ public class MapGrid extends GridPane {
 
     public boolean isSet() {
         return map!=null;
+    }
+
+    public void showWatchers(HashMap<Position, HashSet<Position>> watchedDictionary, int x, int y) {
+        if (watchedDictionary!=null){
+            Position pivot = new Position(y,x);
+            HashSet<Position> watchers = watchedDictionary.get(pivot);
+            for (Position watcher : watchers) {
+                if (map[watcher.getY()][watcher.getX()]!=2 && map[watcher.getY()][watcher.getX()]!=1 && map[watcher.getY()][watcher.getX()]!=4 && map[watcher.getY()][watcher.getX()]!=3) {
+                    Region watcherCell = setRegion();
+                    watcherCell.setStyle("-fx-border-color: black; -fx-background-image: url('/images/grey.png');-fx-background-repeat: no-repeat; -fx-background-size: cover,auto");
+                    add(watcherCell, watcher.getX(), watcher.getY());
+                }
+            }
+            Region pivotCell = setRegion();
+            pivotCell.setStyle("-fx-border-color: black; -fx-background-image: url('/images/blue.png');-fx-background-repeat: no-repeat; -fx-background-size: cover,auto");
+            add(pivotCell,pivot.getX(),pivot.getY());
+        }
     }
 }
