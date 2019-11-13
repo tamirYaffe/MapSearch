@@ -193,17 +193,19 @@ public class DistanceService {
             if (pathsMap.get(source).containsKey(target)) {
                 return pathsMap.get(source).get(target);
             }
-        }
-        if (pathsMap.containsKey(target)) {
-            if (pathsMap.get(target).containsKey(source)) {
-                return pathsMap.get(target).get(source);
+            else {
+                GraphPath<Position, UndirectedWeightedEdge> path = dijkstraShortestPath.getPath(source, target);
+                pathsMap.get(source).put(target,path);
             }
-        }
-        if (!pathsMap.containsKey(source))
-            pathsMap.put(source,new HashMap<>());
+        } else {
         GraphPath<Position, UndirectedWeightedEdge> path = dijkstraShortestPath.getPath(source, target);
+            pathsMap.put(source,new HashMap<>());
         pathsMap.get(source).put(target, path);
+            return path;
+        }
         return pathsMap.get(source).get(target);
+//        if (!pathsGraph.containsEdge(source, target))
+//            pathsGraph.setEdgeWeight(pathsGraph.addEdge(source, target), path.getWeight());
     }
 
     public static double getPathWeight(Graph<PositionVertex, UndirectedWeightedEdge> externalGraph,PositionVertex source, PositionVertex sink) {

@@ -69,7 +69,7 @@ public class MapGrid extends GridPane {
             cell.setStyle("-fx-border-color: black; -fx-background-image: url('/images/blue.png');-fx-background-repeat: no-repeat; -fx-background-size: cover,auto");
 //            cell.setStyle("-fx-background-image: url('/images/wall2.jpg');-fx-background-repeat: no-repeat; -fx-background-size: cover,auto");
         else if (map[cellPositionRow][cellPositionColumn] == 2)
-            cell.setStyle("-fx-opacity: 0.5; -fx-border-color: black; -fx-background-image: url('/images/blue.png');-fx-background-repeat: no-repeat; -fx-background-size: cover,auto");
+            cell.setStyle(" -fx-border-color: black; -fx-background-color: red;-fx-background-repeat: no-repeat; -fx-background-size: cover,auto");
 //            cell.setStyle("-fx-background-image: url('/images/wall2.jpg');-fx-background-repeat: no-repeat; -fx-background-size: cover,auto");
         else
             cell.setStyle("-fx-border-color: black; -fx-background-image: url('/images/white.png');-fx-background-repeat: no-repeat; -fx-background-size: cover,auto");
