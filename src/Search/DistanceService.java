@@ -27,7 +27,6 @@ public class DistanceService {
     private static HashMap<Position,HashMap<Position, GraphPath<Position,UndirectedWeightedEdge>>> pathsMap = new HashMap<>();
 
 
-
     public static double minDistance(HashSet<Position> positions, Position currPosition) {
         Position distantPosition = null;
         double minDistance = Double.MAX_VALUE;
