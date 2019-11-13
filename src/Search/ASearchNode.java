@@ -13,7 +13,7 @@ abstract public class ASearchNode {
 
         for (IProblemState state : neighborStates) {
             ASearchNode newNode = createSearchNode(state);
-            neighbors.add(newNode);
+                neighbors.add(newNode);
         }
         return neighbors;
     }

@@ -24,7 +24,7 @@ public class DistanceService {
     private static DijkstraShortestPath<Position, UndirectedWeightedEdge> dijkstraShortestPath;
     private static Graph<Position, UndirectedWeightedEdge> pathsGraph = new DefaultUndirectedWeightedGraph<>(UndirectedWeightedEdge.class);
     private static Graph<Position, UndirectedWeightedEdge> graph = new DefaultUndirectedWeightedGraph<>(UndirectedWeightedEdge.class);
-    private static HashMap<Position, HashMap<Position, GraphPath<Position, UndirectedWeightedEdge>>> pathsMap = new HashMap<>();
+    private static HashMap<Position,HashMap<Position, GraphPath<Position,UndirectedWeightedEdge>>> pathsMap = new HashMap<>();
 
 
     public static double minDistance(HashSet<Position> positions, Position currPosition) {

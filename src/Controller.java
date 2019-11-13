@@ -270,9 +270,9 @@ public class Controller {
             heuristics.setValue("MST");
             heuristicGraph.setValue("Frontiers");
             los.setValue("Symmetric BresLos");
-            textField_rowSize.setText("17");
-            textField_columnSize.setText("17");
-            model.densityGraphBuilder(17, 17);
+            textField_rowSize.setText("15");
+            textField_columnSize.setText("15");
+            model.densityGraphBuilder(15, 15);
         }
         if (keyEvent.isControlDown() && keyEvent.getCode().getName().equals("M")) {
             showMaps("");
