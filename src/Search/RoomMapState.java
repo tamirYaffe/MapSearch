@@ -26,11 +26,7 @@ public class RoomMapState implements IProblemState {
         this.position = position;
         this.seen = seen;
         this.lastStep = lastStep;
-        graphAdapter = new RoomMapGraphAdapter(roomMap.getWatchedDictionary(), this, HEURISTIC_METHOD.equals("MST") || HEURISTIC_METHOD.equals("TSP"));
-        if (MOVEMENT_METHOD.startsWith("Jump")) {
-//            updateNeighbors(graphAdapter.getGraph());
-            updateNeighbors(graphAdapter.getReachablePrunnableVertices());
-        } else updateNeighbors();
+        createGraphAdapter();
     }
 
     public RoomMapState(RoomMap roomMap, Position position, HashSet<Position> seen, IProblemMove lastStep, double cost) {
@@ -39,11 +35,15 @@ public class RoomMapState implements IProblemState {
         this.seen = seen;
         this.lastStep = lastStep;
         this.cost = cost + getStateLastMoveCost();
-        graphAdapter = new RoomMapGraphAdapter(roomMap.getWatchedDictionary(), this, HEURISTIC_METHOD.equals("MST") || HEURISTIC_METHOD.equals("TSP"));
-        if (MOVEMENT_METHOD.startsWith("Jump")) {
-//            updateNeighbors(graphAdapter.getGraph());
+    }
+
+    public void createGraphAdapter() {
+        if(HEURISTIC_METHOD.equals("MST") || HEURISTIC_METHOD.equals("TSP") || MOVEMENT_METHOD.startsWith("Jump"))
+            graphAdapter = new RoomMapGraphAdapter(roomMap.getWatchedDictionary(), this, HEURISTIC_METHOD.equals("MST") || HEURISTIC_METHOD.equals("TSP"));
+        if (MOVEMENT_METHOD.startsWith("Jump"))
             updateNeighbors(graphAdapter.getReachablePrunnableVertices());
-        } else updateNeighbors();
+        else
+            updateNeighbors();
     }
 //
 //    public RoomMapState(RoomMap roomMap, Position vertexPosition) {
@@ -202,6 +202,7 @@ public class RoomMapState implements IProblemState {
 
     @Override
     public IProblemState performMove(IProblemMove move) {
+        double start = System.currentTimeMillis();
         RoomMap newProblem = roomMap;
         Position newPosition = move.getNewPosition(position);
         HashSet<Position> newSeen = new HashSet<>(seen);
@@ -215,7 +216,10 @@ public class RoomMapState implements IProblemState {
         }
 
         // Create new state
-        return new RoomMapState(newProblem, newPosition, newSeen, move, cost);
+        RoomMapState newRoomMapState=new RoomMapState(newProblem, newPosition, newSeen, move, cost);
+        double end = System.currentTimeMillis();
+        TestTime.performMoveSumOfTime+=end-start;
+        return newRoomMapState;
     }
 
     private boolean outOfBoundaries(int y, int x) {

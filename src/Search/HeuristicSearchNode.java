@@ -7,14 +7,14 @@ public class HeuristicSearchNode extends BlindSearchNode {
 	public HeuristicSearchNode(IProblemState currentProblemState) {
         super(currentProblemState);
         heuristic = currentProblemState.getProblem().getProblemHeuristic();
-        h = heuristic.getHeuristic(currentProblemState);
+//        h = heuristic.getHeuristic(currentProblemState);
     }
 
 
     private HeuristicSearchNode(ASearchNode prev, IProblemState currentProblemState, double g, IHeuristic heuristic) {
         super(prev, currentProblemState, g);
         this.heuristic = heuristic;
-        h = this.heuristic.getHeuristic(currentProblemState);
+//        h = this.heuristic.getHeuristic(currentProblemState);
     }
 
     @Override
@@ -33,5 +33,8 @@ public class HeuristicSearchNode extends BlindSearchNode {
     public ASearchNode createSearchNode(IProblemState currentProblemState) {
         double g = this.g + currentProblemState.getStateLastMoveCost();
         return new HeuristicSearchNode(this, currentProblemState, g, heuristic);
+    }
+    public void calculateH(IProblemState problemState){
+        h = this.heuristic.getHeuristic(problemState);
     }
 }
