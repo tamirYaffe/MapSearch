@@ -18,15 +18,14 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class DistanceService {
     private static DijkstraShortestPath<Position, UndirectedWeightedEdge> dijkstraShortestPath;
     private static Graph<Position, UndirectedWeightedEdge> pathsGraph = new DefaultUndirectedWeightedGraph<>(UndirectedWeightedEdge.class);
     private static Graph<Position, UndirectedWeightedEdge> graph = new DefaultUndirectedWeightedGraph<>(UndirectedWeightedEdge.class);
+    private static HashMap<Position,HashMap<Position, GraphPath<Position,UndirectedWeightedEdge>>> pathsMap = new HashMap<>();
+
 
 
     public static double minDistance(HashSet<Position> positions, Position currPosition) {
@@ -190,10 +189,21 @@ public class DistanceService {
     }
 
     public static GraphPath<Position, UndirectedWeightedEdge> getPath(Position source, Position target) {
+        if (pathsMap.containsKey(source)) {
+            if (pathsMap.get(source).containsKey(target)) {
+                return pathsMap.get(source).get(target);
+            }
+        }
+        if (pathsMap.containsKey(target)) {
+            if (pathsMap.get(target).containsKey(source)) {
+                return pathsMap.get(target).get(source);
+            }
+        }
+        if (!pathsMap.containsKey(source))
+            pathsMap.put(source,new HashMap<>());
         GraphPath<Position, UndirectedWeightedEdge> path = dijkstraShortestPath.getPath(source, target);
-        if (!pathsGraph.containsEdge(source, target))
-            pathsGraph.setEdgeWeight(pathsGraph.addEdge(source, target), path.getWeight());
-        return path;
+        pathsMap.get(source).put(target, path);
+        return pathsMap.get(source).get(target);
     }
 
     public static double getPathWeight(Graph<PositionVertex, UndirectedWeightedEdge> externalGraph,PositionVertex source, PositionVertex sink) {
