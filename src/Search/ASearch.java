@@ -22,10 +22,10 @@ abstract public class ASearch {
         initLists();
         ASearchNode Vs = createSearchRoot(problemState);
 //        System.out.println(problemState);
-        rootH = Vs.getH();
-        System.out.println("Root.H: " + rootH);
         ASearchNode current;
         addToOpen(Vs);
+        rootH = Vs.getH();
+        System.out.println("Root.H: " + rootH);
         expanded = 0;
         generated = 0;
         duplicates = 0;
@@ -39,6 +39,7 @@ abstract public class ASearch {
 //            System.out.println(((RoomMapState)current._currentProblemState).getPosition() + "," + current.getH());
             if (current.isGoal()) {
                 System.out.println("\rexpanded: " + expanded + "\tgenerated: " + generated + "\tduplicates: " + duplicates + "\t\tg: " + current.getG() + "\t\th: " + current.getH() + "\t\tf: " + (current.getF()) + "\t\tTime: " + (System.currentTimeMillis() - start) + "ms" + (admissible ? "\t Admissible\n" : "\t Not Admissible!!!\n"));
+                System.out.println("calculated Average PerformMove Time: "+TestTime.calculateAveragePerformMoveTime()+" calculated Average Graph Creation Time: "+TestTime.calculateAverageGraphCreationTime()+" calculated Average H Time: "+TestTime.calculateAverageHTime());
                 return current;
             }
             List<ASearchNode> neighbors = current.getNeighbors();
@@ -48,7 +49,6 @@ abstract public class ASearch {
                 if (isClosed(Vn)) {
                     continue;
                 }
-
                 if (!isOpen(Vn)) {
 //                    System.out.println("gen"+(++genID)+"\nlast move: " + Vn._currentProblemState.getStateLastMove() + "\n" + Vn._currentProblemState + "g: " + Vn.getG() + "\t\th: " + Vn.getH() + "\t\tf: " + (Vn.getF()) + "\n");
                     addToOpen(Vn);
