@@ -24,7 +24,7 @@ public class DistanceService {
     private static DijkstraShortestPath<Position, UndirectedWeightedEdge> dijkstraShortestPath;
     private static Graph<Position, UndirectedWeightedEdge> pathsGraph = new DefaultUndirectedWeightedGraph<>(UndirectedWeightedEdge.class);
     private static Graph<Position, UndirectedWeightedEdge> graph = new DefaultUndirectedWeightedGraph<>(UndirectedWeightedEdge.class);
-    private static HashMap<Position,HashMap<Position, GraphPath<Position,UndirectedWeightedEdge>>> pathsMap = new HashMap<>();
+    private static HashMap<Position, HashMap<Position, GraphPath<Position, UndirectedWeightedEdge>>> pathsMap = new HashMap<>();
 
 
     public static double minDistance(HashSet<Position> positions, Position currPosition) {
@@ -191,15 +191,14 @@ public class DistanceService {
         if (pathsMap.containsKey(source)) {
             if (pathsMap.get(source).containsKey(target)) {
                 return pathsMap.get(source).get(target);
-            }
-            else {
+            } else {
                 GraphPath<Position, UndirectedWeightedEdge> path = dijkstraShortestPath.getPath(source, target);
-                pathsMap.get(source).put(target,path);
+                pathsMap.get(source).put(target, path);
             }
         } else {
-        GraphPath<Position, UndirectedWeightedEdge> path = dijkstraShortestPath.getPath(source, target);
-            pathsMap.put(source,new HashMap<>());
-        pathsMap.get(source).put(target, path);
+            GraphPath<Position, UndirectedWeightedEdge> path = dijkstraShortestPath.getPath(source, target);
+            pathsMap.put(source, new HashMap<>());
+            pathsMap.get(source).put(target, path);
             return path;
         }
         return pathsMap.get(source).get(target);
@@ -207,8 +206,8 @@ public class DistanceService {
 //            pathsGraph.setEdgeWeight(pathsGraph.addEdge(source, target), path.getWeight());
     }
 
-    public static double getPathWeight(Graph<PositionVertex, UndirectedWeightedEdge> externalGraph,PositionVertex source, PositionVertex sink) {
-        DijkstraShortestPath<PositionVertex, UndirectedWeightedEdge> dijkstraExternalGraphShortestPath=new DijkstraShortestPath<>(externalGraph);
-        return dijkstraExternalGraphShortestPath.getPathWeight(source,sink);
+    public static double getPathWeight(Graph<PositionVertex, UndirectedWeightedEdge> externalGraph, PositionVertex source, PositionVertex sink) {
+        DijkstraShortestPath<PositionVertex, UndirectedWeightedEdge> dijkstraExternalGraphShortestPath = new DijkstraShortestPath<>(externalGraph);
+        return dijkstraExternalGraphShortestPath.getPathWeight(source, sink);
     }
 }
