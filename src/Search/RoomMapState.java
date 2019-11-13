@@ -35,6 +35,9 @@ public class RoomMapState implements IProblemState {
         this.seen = seen;
         this.lastStep = lastStep;
         this.cost = cost + getStateLastMoveCost();
+        if(!(HEURISTIC_METHOD.equals("MST") || HEURISTIC_METHOD.equals("TSP"))){
+            updateNeighbors();
+        }
     }
 
     public void createGraphAdapter() {
