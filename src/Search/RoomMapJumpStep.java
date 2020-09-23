@@ -17,7 +17,7 @@ public class RoomMapJumpStep implements IProblemMove {
     public RoomMapJumpStep(Position source, Position target) {
         this.source = source;
         this.target = target;
-        GraphPath<Position, Search.UndirectedWeightedEdge> path = DistanceService.minPath(source, target);
+        GraphPath<Position, Search.UndirectedWeightedEdge> path = DistanceService.getPath(source, target);
         this.path = new ArrayList<>(path.getVertexList());
     }
 
