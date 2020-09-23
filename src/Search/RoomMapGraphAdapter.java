@@ -33,22 +33,52 @@ public class RoomMapGraphAdapter {
     private HashMap<Position, PositionVertex> unPrunnableVertices;
     private Map<PositionVertex, PositionVertex> watchingDictionary;
     private static final int HUGE_DOUBLE_VALUE = 0x7fffff00;
-    static double distanceFactor = 2;
+    static double distanceFactor = HUGE_DOUBLE_VALUE;
+    HashSet<Position> whiteCells = new HashSet<>();
+    // Flags
+    boolean includeWhiteCells;
+    boolean withFarthest;
+    boolean withDistanceFactor;
 
-    public RoomMapGraphAdapter(TreeMap<Position, HashSet<Position>> watchedDictionary, RoomMapState roomMapState, boolean isForHeuristic) {
+    public RoomMapGraphAdapter(TreeMap<Position,
+            HashSet<Position>> watchedDictionary,
+                               RoomMapState roomMapState,
+                               boolean isForHeuristic,
+                               boolean includeWhiteCells,
+                               boolean withFarthest,
+                               boolean withDistanceFactor) {
+        this.includeWhiteCells = includeWhiteCells;
+        this.withFarthest = withFarthest;
+        this.withDistanceFactor = withDistanceFactor;
         watchingDictionary = new HashMap<>();
         graph = new DefaultUndirectedWeightedGraph<>(UndirectedWeightedEdge.class);
         prunnableVertices = new HashMap<>();
         unPrunnableVertices = new HashMap<>();
         reachablePrunnableVertices = new HashSet<>();
         addVerticesToGraph(watchedDictionary, roomMapState, isForHeuristic);
-//        if (RoomMap.HEURISTIC_GRAPH_METHOD.equals("Farther Frontiers") & !isForHeuristic)
-//            addVerticesToGraph(watchedDictionary, roomMapState, false);
-        if (isForHeuristic)
-            addAgentToGraph(roomMapState, watchedDictionary);
-        else
-            addAgentToGraph(roomMapState);
-
+        addAgentToGraph(roomMapState);
+        if(includeWhiteCells)
+            reachablePrunnableVertices.addAll(whiteCells);
+        // for "Jump (Bounded)"
+        if (RoomMap.MOVEMENT_METHOD.endsWith(")")) {
+            HashSet<Position> toRemove = new HashSet<>();
+            Position agentPosition = roomMapState.getPosition();
+            double closerDistance = HUGE_DOUBLE_VALUE;
+            // check distance to each prunnable vertice and cutoff all the far ones
+            for (Position watcher : reachablePrunnableVertices) {
+                double dist = DistanceService.getWeight(agentPosition, watcher);
+                closerDistance = Math.min(dist, closerDistance);
+            }
+            for (Position watcher : reachablePrunnableVertices) {
+                double dist = DistanceService.getWeight(agentPosition, watcher);
+                if (dist > distanceFactor * closerDistance) {
+                    toRemove.add(watcher);
+                }
+            }
+            for (Position position : toRemove) {
+                reachablePrunnableVertices.remove(position);
+            }
+        }
     }
 
     private void addAgentToGraph(RoomMapState roomMapState, boolean isFrontFrontiers) {
@@ -232,81 +262,66 @@ public class RoomMapGraphAdapter {
     private void addVerticesToGraph(TreeMap<Position, HashSet<Position>> watchedDictionary, RoomMapState roomMapState, boolean addUnprunnables) {
         HashSet<Position> toRemove = new HashSet<>();
         HashSet<Position> pathsSet = new HashSet<>();
+        HashSet<Position> allWatchers = new HashSet<>();
         HashSet<Position> visualSet = new HashSet<>(watchedDictionary.keySet());
         HashMap<Position, HashSet<Position>> gettableWatchedDictionary = new HashMap<>(watchedDictionary);
         Position agentPosition = roomMapState.getPosition();
+        List<Position> whiteCellsPivots = new ArrayList<>();
 
-        boolean isTSP = roomMapState.getProblem().getProblemHeuristic().toString().contains("TSP");
+//        boolean isTSP = roomMapState.getProblem().getProblemHeuristic().toString().contains("TSP");
 
         for (Map.Entry<Position, HashSet<Position>> entry : watchedDictionary.entrySet()) {
             Position watchedPosition = entry.getKey();
-            if (roomMapState.getSeen().contains(watchedPosition)) continue;
-            HashSet<Position> watchersSet = entry.getValue();
-//            if (!Collections.disjoint(watchersSet, prunnableVertices.keySet()) || prunnableVertices.containsKey(watchedPosition)
-//                    || (RoomMap.HEURISTIC_GRAPH_METHOD.equals("Farther Frontiers") && checkIfIsntFarther(pathsSet, agentPosition, watchedPosition, watchersSet)))
-//                continue;
-            if (!Collections.disjoint(watchersSet, prunnableVertices.keySet()) || prunnableVertices.containsKey(watchedPosition))
+            if (roomMapState.getSeen().contains(watchedPosition))
                 continue;
+            if(prunnableVertices.containsKey(watchedPosition) || unPrunnableVertices.containsKey(watchedPosition))
+                continue;
+            HashSet<Position> watchersSet = entry.getValue();
+            if (!Collections.disjoint(watchersSet, prunnableVertices.keySet())){
+                if(includeWhiteCells)
+                    whiteCellsPivots.add(watchedPosition);
+                continue;
+            }
+            if(withFarthest){
+                if (RoomMap.HEURISTIC_GRAPH_METHOD.equals("Farther Frontiers") && checkIfIsntFarther(pathsSet, agentPosition, watchedPosition, watchersSet)){
+                    if(includeWhiteCells)
+                        whiteCellsPivots.add(watchedPosition);
+                    continue;
+                }
+            }
+            if(includeWhiteCells)
+                allWatchers.addAll(watchersSet);
             PositionVertex watchedVertex = new PositionVertex(watchedPosition, PositionVertex.TYPE.UNPRUNNABLE);
             unPrunnableVertices.put(watchedPosition, watchedVertex);
             if (addUnprunnables)
                 graph.addVertex(watchedVertex);
             addPrunabbleVeticesToSingleUnprunnable(watchedVertex, watchersSet, visualSet, toRemove, addUnprunnables);
-            if (isTSP && unPrunnableVertices.size() > 10)
-                break;
+//            if (isTSP && unPrunnableVertices.size() > 10)
+//                break;
         }
         for (Position position : toRemove) {
             prunnableVertices.remove(position);
         }
-//        if (RoomMap.HEURISTIC_GRAPH_METHOD.equals("Farther Frontiers") && !Collections.disjoint(pathsSet, prunnableVertices.keySet())) {
-//            HashSet<PositionVertex> removedVertices = new HashSet<>();
-//            for (Position position : unPrunnableVertices.keySet()) {
-//                if (!Collections.disjoint(pathsSet, gettableWatchedDictionary.get(position))) {
-//                    removedVertices.add(unPrunnableVertices.get(position));
-//                    for (Position position1 : gettableWatchedDictionary.get(position)) {
-//                        consider adding try and catch
-//                        graph.removeVertex(prunnableVertices.remove(position1));
-//                    }
-//                }
-//            }
-//            graph.removeAllVertices(removedVertices);
-//            for (PositionVertex removedVertex : removedVertices) {
-//                unPrunnableVertices.remove(removedVertex.getPosition());
-//            }
-//        }
         if (addUnprunnables)
             connectPrunnableVerticesInGraph(roomMapState);
-            // for "Jump (Bounded)"
-        else if (RoomMap.MOVEMENT_METHOD.endsWith(")")) {
-            toRemove.clear();
-//            distanceFactor = (Math.log(unPrunnableVertices.size()) / Math.log(2)) + 1;
-            double closerDistance = HUGE_DOUBLE_VALUE;
-            // check distance to each pivot and cutoff all the far pivots
-            for (Position pivot : unPrunnableVertices.keySet()) {
-                double dist = DistanceService.getWeight(agentPosition, pivot);
-                closerDistance = Math.min(dist, closerDistance);
-                if (dist > distanceFactor * closerDistance) {
-                    toRemove.add(pivot);
-                    for (Position watcher : gettableWatchedDictionary.get(pivot)) {
-                        if (prunnableVertices.containsKey(watcher))
-                            graph.removeVertex(prunnableVertices.remove(watcher));
-                    }
-                }
-            }
-            for (Position position : toRemove) {
-                unPrunnableVertices.remove(position);
-            }
-            for (Position pivot : unPrunnableVertices.keySet()) {
-                double dist = DistanceService.getWeight(agentPosition, pivot);
-                if (dist > distanceFactor * closerDistance) {
-                    toRemove.add(pivot);
-                    for (Position watcher : gettableWatchedDictionary.get(pivot)) {
-                        if (prunnableVertices.containsKey(watcher))
-                            graph.removeVertex(prunnableVertices.remove(watcher));
-                    }
-                }
-            }
 
+        if(includeWhiteCells)
+            addWhiteCells(allWatchers, visualSet, gettableWatchedDictionary, whiteCellsPivots);
+    }
+
+    private void addWhiteCells(HashSet<Position> allWatchers, HashSet<Position> visualSet, HashMap<Position, HashSet<Position>> gettableWatchedDictionary, List<Position> whiteCellsPivots) {
+        if(whiteCellsPivots == null)
+            return;
+        for (int i = 0; i < whiteCellsPivots.size(); i++) {
+            Position whiteCellPivot = whiteCellsPivots.get(i);
+            if(whiteCells.contains(whiteCellPivot) || allWatchers.contains(whiteCellPivot))
+                continue;
+            allWatchers.addAll(gettableWatchedDictionary.get(whiteCellPivot));
+            for (Position position : gettableWatchedDictionary.get(whiteCellPivot)) {
+                if (!unPrunnableVertices.containsKey(position) && (RoomMap.HEURISTIC_GRAPH_METHOD.equals("All") || isFrontier(position, gettableWatchedDictionary.get(whiteCellPivot), visualSet))) {
+                    whiteCells.add(position);
+                }
+            }
         }
     }
 
