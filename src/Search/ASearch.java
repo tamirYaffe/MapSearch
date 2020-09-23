@@ -36,6 +36,8 @@ abstract public class ASearch {
 
         while (openSize() > 0) {
             current = getBest();
+            if(current == null)
+                continue;
 //            System.out.println(((RoomMapState)current._currentProblemState).getPosition() + "," + current.getH());
             if (current.isGoal()) {
                 System.out.println("\rexpanded: " + expanded + "\tgenerated: " + generated + "\tduplicates: " + duplicates + "\t\tg: " + current.getG() + "\t\th: " + current.getH() + "\t\tf: " + (current.getF()) + "\t\tTime: " + (System.currentTimeMillis() - start) + "ms" + (admissible ? "\t Admissible\n" : "\t Not Admissible!!!\n"));
