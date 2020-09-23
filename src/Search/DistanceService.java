@@ -103,15 +103,16 @@ public class DistanceService {
     }
 
     public static double getWeight(Position current, Position other) {
-        UndirectedWeightedEdge edge = pathsGraph.getEdge(current, other);
-        if (edge == null) {//
+        return getPath(current, other).getWeight();
+//        UndirectedWeightedEdge edge = pathsGraph.getEdge(current, other);
+//        if (edge == null) {//
 //            addEdgesToPathsGraphWithUpdates(getPositionPaths(current), current);
 //            addEdgesToPathsGraph(getPositionPaths(current), current);
 //            edge = pathsGraph.getEdge(current, other);
-            edge = pathsGraph.addEdge(current, other);
-            pathsGraph.setEdgeWeight(edge, getPathWeight(current, other));
-        }
-        return pathsGraph.getEdgeWeight(edge);
+//            edge = pathsGraph.addEdge(current, other);
+//            pathsGraph.setEdgeWeight(edge, getPathWeight(current, other));
+//        }
+//        return pathsGraph.getEdgeWeight(edge);
     }
 
     private static void addEdgesToPathsGraph(ShortestPathAlgorithm.SingleSourcePaths<Position, UndirectedWeightedEdge> positionPaths, Position position) {
@@ -194,20 +195,30 @@ public class DistanceService {
     }
 
     public static GraphPath<Position, UndirectedWeightedEdge> getPath(Position source, Position target) {
+        GraphPath<Position, UndirectedWeightedEdge>  path;
         if (pathsMap.containsKey(source)) {
             if (pathsMap.get(source).containsKey(target)) {
                 return pathsMap.get(source).get(target);
             } else {
-//                GraphPath<Position, UndirectedWeightedEdge> path = AStarShortestPath.getPath(source, target);
-                GraphPath<Position, UndirectedWeightedEdge> path = dijkstraShortestPath.getPath(source, target);
+                // check opposite path
+                if(pathsMap.containsKey(target) && pathsMap.get(target).containsKey(source))
+                    path = pathsMap.get(target).get(source);
+                else{
+                    //path = AStarShortestPath.getPath(source, target);
+                    path = dijkstraShortestPath.getPath(source, target);
+                }
                 pathsMap.get(source).put(target, path);
             }
         } else {
-//            GraphPath<Position, UndirectedWeightedEdge> path = AStarShortestPath.getPath(source, target);
-            GraphPath<Position, UndirectedWeightedEdge> path = dijkstraShortestPath.getPath(source, target);
             pathsMap.put(source, new HashMap<>());
+            // check opposite path
+            if(pathsMap.containsKey(target) && pathsMap.get(target).containsKey(source))
+                path = pathsMap.get(target).get(source);
+            else{
+                //path = AStarShortestPath.getPath(source, target);
+                path = dijkstraShortestPath.getPath(source, target);
+            }
             pathsMap.get(source).put(target, path);
-            return path;
         }
         return pathsMap.get(source).get(target);
 //        if (!pathsGraph.containsEdge(source, target))
