@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.*;
 
 public class DistanceService {
-//    private static DijkstraShortestPath<Position, UndirectedWeightedEdge> dijkstraShortestPath;
+    private static DijkstraShortestPath<Position, UndirectedWeightedEdge> dijkstraShortestPath;
     private static AStarShortestPath<Position, UndirectedWeightedEdge> AStarShortestPath;
     private static Graph<Position, UndirectedWeightedEdge> pathsGraph = new DefaultUndirectedWeightedGraph<>(UndirectedWeightedEdge.class);
     private static Graph<Position, UndirectedWeightedEdge> graph = new DefaultUndirectedWeightedGraph<>(UndirectedWeightedEdge.class);
@@ -60,7 +60,7 @@ public class DistanceService {
             addEdges(graph, vertexPosition, roomMap.getVisualDictionary());
         }
         AStarShortestPath = new AStarShortestPath<>(graph, DistanceService::manhattanDistance);
-//        dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        dijkstraShortestPath = new DijkstraShortestPath<>(graph);
     }
 
 
@@ -92,7 +92,10 @@ public class DistanceService {
     }
 
     public static GraphPath<Position, UndirectedWeightedEdge> minPath(Position source, Position sink) {
-        return AStarShortestPath.getPath(source, sink);
+//        GraphPath<Position, UndirectedWeightedEdge> path = AStarShortestPath.getPath(source, sink);
+//        GraphPath<Position, UndirectedWeightedEdge> path_d = dijkstraShortestPath.getPath(source, sink);
+//        return path_d;
+        return getPath(source, sink);
     }
 
     public static ShortestPathAlgorithm.SingleSourcePaths<Position, UndirectedWeightedEdge> getPositionPaths(Position position) {
@@ -195,11 +198,13 @@ public class DistanceService {
             if (pathsMap.get(source).containsKey(target)) {
                 return pathsMap.get(source).get(target);
             } else {
-                GraphPath<Position, UndirectedWeightedEdge> path = AStarShortestPath.getPath(source, target);
+//                GraphPath<Position, UndirectedWeightedEdge> path = AStarShortestPath.getPath(source, target);
+                GraphPath<Position, UndirectedWeightedEdge> path = dijkstraShortestPath.getPath(source, target);
                 pathsMap.get(source).put(target, path);
             }
         } else {
-            GraphPath<Position, UndirectedWeightedEdge> path = AStarShortestPath.getPath(source, target);
+//            GraphPath<Position, UndirectedWeightedEdge> path = AStarShortestPath.getPath(source, target);
+            GraphPath<Position, UndirectedWeightedEdge> path = dijkstraShortestPath.getPath(source, target);
             pathsMap.put(source, new HashMap<>());
             pathsMap.get(source).put(target, path);
             return path;
