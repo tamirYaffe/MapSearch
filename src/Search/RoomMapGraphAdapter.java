@@ -161,10 +161,11 @@ public class RoomMapGraphAdapter {
         for (Map.Entry<Position, PositionVertex> entry1 : prunnableVertices.entrySet()) {
             Position key1 = entry1.getKey();
             PositionVertex value1 = entry1.getValue();
-            List<Position> path = DistanceService.getPath(agentPosition, key1).getVertexList();
+            GraphPath<Position, UndirectedWeightedEdge> graphPath = DistanceService.getPath(agentPosition, key1);
+            List<Position> path = graphPath.getVertexList();
             if (Collections.disjoint(path.subList(1, path.size() - 1), prunnableVertices.keySet())) {
                 UndirectedWeightedEdge edge = graph.addEdge(agentVertex, value1);
-                double w = path.size() - 1;
+                double w = graphPath.getWeight();
                 graph.setEdgeWeight(edge, w);
                 reachablePrunnableVertices.add(key1);
             }
@@ -347,10 +348,11 @@ public class RoomMapGraphAdapter {
                 PositionVertex value2 = entry2.getValue();
                 if (key1.equals(key2) || graph.containsEdge(value2, value1) || isSameComponent(value1, value2))
                     continue;
-                List<Position> path = DistanceService.getPath(key1, key2).getVertexList();
+                GraphPath<Position, UndirectedWeightedEdge> graphPath = DistanceService.getPath(key1, key2);
+                List<Position> path = graphPath.getVertexList();
                 if (!path.contains(roomMapState.getPosition()) && Collections.disjoint(path.subList(1, path.size() - 1), prunnableVertices.keySet())) {
                     UndirectedWeightedEdge edge = graph.addEdge(value1, value2);
-                    double w = path.size() - 1;
+                    double w = graphPath.getWeight();
                     graph.setEdgeWeight(edge, w);
                 }
             }
