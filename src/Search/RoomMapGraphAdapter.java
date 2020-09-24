@@ -60,7 +60,7 @@ public class RoomMapGraphAdapter {
         if(includeWhiteCells)
             reachablePrunnableVertices.addAll(whiteCells);
         // for "Jump (Bounded)"
-        if (RoomMap.MOVEMENT_METHOD.endsWith(")")) {
+        if (RoomMap.MOVEMENT_METHOD.endsWith(")") && withDistanceFactor) {
             HashSet<Position> toRemove = new HashSet<>();
             Position agentPosition = roomMapState.getPosition();
             double closerDistance = HUGE_DOUBLE_VALUE;
