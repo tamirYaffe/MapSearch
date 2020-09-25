@@ -15,7 +15,8 @@ public class PathFinding {
     }
 
     public PathFindingPath getPath(Position source, Position sink) {
-        PathFindingProblem problem = new PathFindingProblem(map, source, sink, new PathFindingEuclidianHeuristic());
+//        PathFindingProblem problem = new PathFindingProblem(map, source, sink, new PathFindingEuclidianHeuristic());
+        PathFindingProblem problem = new PathFindingProblem(map, source, sink, new PathFindingManhattanDistanceHeuristic());
         List<IProblemMove> solution = solver.solve(problem);
         return getSolutionPath(problem, solution);
     }
