@@ -9,6 +9,7 @@ public class RoomMapJumpStep implements IProblemMove {
     private final Position source;
     private final Position target;
     private ArrayList<Position> path;
+    private double pathCost;
 
     public ArrayList<Position> getPath() {
         return path;
@@ -17,13 +18,17 @@ public class RoomMapJumpStep implements IProblemMove {
     public RoomMapJumpStep(Position source, Position target) {
         this.source = source;
         this.target = target;
-        GraphPath<Position, Search.UndirectedWeightedEdge> path = DistanceService.getPath(source, target);
-        this.path = new ArrayList<>(path.getVertexList());
+        PathFindingPath pathFind = DistanceService.getPathFind(source, target);
+        this.path = new ArrayList<>(pathFind.getPath());
+        this.pathCost = pathFind.getPathCost();
+//        GraphPath<Position, Search.UndirectedWeightedEdge> path = DistanceService.minPath(source, target);
+//        this.path = new ArrayList<>(path.getVertexList());
+//        this.pathCost = this.path.size() - 1;
     }
 
     @Override
     public double getCost() {
-        return path.size() - 1;
+        return pathCost;
     }
 
     @Override

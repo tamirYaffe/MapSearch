@@ -42,9 +42,8 @@ public class RoomMapState implements IProblemState {
 
     public void createGraphAdapter() {
         if(HEURISTIC_METHOD.equals("MST") || HEURISTIC_METHOD.equals("TSP") || MOVEMENT_METHOD.startsWith("Jump"))
-            graphAdapter = new RoomMapGraphAdapter(roomMap.getWatchedDictionary(),
-                    this, HEURISTIC_METHOD.equals("MST") || HEURISTIC_METHOD.equals("TSP"),
-                    false, true, true);
+            graphAdapter = new RoomMapGraphAdapter(roomMap.getWatchedDictionary(), this, HEURISTIC_METHOD.equals("MST") || HEURISTIC_METHOD.equals("TSP"),
+                    true, false, false);
         if (MOVEMENT_METHOD.startsWith("Jump"))
             updateNeighbors(graphAdapter.getReachablePrunnableVertices());
         else
@@ -175,11 +174,17 @@ public class RoomMapState implements IProblemState {
             case "Expanding Border":
                 for (Position neighbor : nextPoints) {
                     RoomMapJumpStep step = new RoomMapJumpStep(position, neighbor);
-                    moveList.add(step);
+                    ArrayList<Position> path = step.getPath();
+
+                    //keep only closest jumps
+                    if (Collections.disjoint(nextPoints,path.subList(1,path.size()-1))){
+                        moveList.add(step);
+                        toRemove.add(path.get(path.size()-1));
+                    }
                 }
                 break;
         }
-
+        nextPoints.retainAll(toRemove);
         return moveList;
     }
 

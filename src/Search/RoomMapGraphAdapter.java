@@ -33,7 +33,7 @@ public class RoomMapGraphAdapter {
     private HashMap<Position, PositionVertex> unPrunnableVertices;
     private Map<PositionVertex, PositionVertex> watchingDictionary;
     private static final int HUGE_DOUBLE_VALUE = 0x7fffff00;
-    static double distanceFactor = HUGE_DOUBLE_VALUE;
+    static double distanceFactor = 2;
     HashSet<Position> whiteCells = new HashSet<>();
     // Flags
     boolean includeWhiteCells;
@@ -56,7 +56,10 @@ public class RoomMapGraphAdapter {
         unPrunnableVertices = new HashMap<>();
         reachablePrunnableVertices = new HashSet<>();
         addVerticesToGraph(watchedDictionary, roomMapState, isForHeuristic);
-        addAgentToGraph(roomMapState);
+        if (!withFarthest) // adding farthest to Heuristic in a optimal and costly manner.(optimal paper)
+            addAgentToGraph(roomMapState, watchedDictionary);
+        else
+            addAgentToGraph(roomMapState);
         if(includeWhiteCells)
             reachablePrunnableVertices.addAll(whiteCells);
         // for "Jump (Bounded)"
@@ -79,33 +82,6 @@ public class RoomMapGraphAdapter {
                 reachablePrunnableVertices.remove(position);
             }
         }
-    }
-
-    private void addAgentToGraph(RoomMapState roomMapState, boolean isFrontFrontiers) {
-        if (isFrontFrontiers) {
-            HashMap<Position, HashSet<Position>> gettableWatchedDictionary = new HashMap<>(((RoomMap) roomMapState.getProblem()).getWatchedDictionary());
-            Position agentPosition = roomMapState.getPosition();
-            PositionVertex agentVertex = new PositionVertex(agentPosition, PositionVertex.TYPE.UNPRUNNABLE);
-            graph.addVertex(agentVertex);
-            unPrunnableVertices.put(agentPosition, agentVertex);
-            for (Map.Entry<Position, PositionVertex> unprunnableVertice : unPrunnableVertices.entrySet()) {
-                Position watchedPosition = unprunnableVertice.getKey();
-                if (watchedPosition.equals(agentPosition)) continue;
-                HashSet<Position> prunnableSet = new HashSet<>(gettableWatchedDictionary.get(watchedPosition));
-                prunnableSet.retainAll(prunnableVertices.keySet());
-                for (Position prunnablePosition : prunnableSet) {
-                    GraphPath<Position, UndirectedWeightedEdge> path = DistanceService.getPath(agentPosition, prunnablePosition);
-                    if (path.getLength() > 1 && Collections.disjoint(path.getVertexList().subList(1, path.getLength()), gettableWatchedDictionary.get(watchedPosition))) {
-                        UndirectedWeightedEdge edge = graph.addEdge(agentVertex, prunnableVertices.get(prunnablePosition));
-                        if (edge != null)
-                            graph.setEdgeWeight(edge, path.getWeight());
-                    } else {
-                        graph.removeVertex(prunnableVertices.remove(prunnablePosition));
-
-                    }
-                }
-            }
-        } else addAgentToGraph(roomMapState);
     }
 
     public void pruneGraph() {
@@ -161,11 +137,13 @@ public class RoomMapGraphAdapter {
         for (Map.Entry<Position, PositionVertex> entry1 : prunnableVertices.entrySet()) {
             Position key1 = entry1.getKey();
             PositionVertex value1 = entry1.getValue();
-            GraphPath<Position, UndirectedWeightedEdge> graphPath = DistanceService.getPath(agentPosition, key1);
-            List<Position> path = graphPath.getVertexList();
+//            GraphPath<Position, UndirectedWeightedEdge> graphPath = DistanceService.getPath(agentPosition, key1);
+//            List<Position> path = graphPath.getVertexList();
+            PathFindingPath findingPath = DistanceService.getPathFind(agentPosition, key1);
+            List<Position> path = findingPath.getPath();
             if (Collections.disjoint(path.subList(1, path.size() - 1), prunnableVertices.keySet())) {
                 UndirectedWeightedEdge edge = graph.addEdge(agentVertex, value1);
-                double w = graphPath.getWeight();
+                double w = findingPath.getPathCost();
                 graph.setEdgeWeight(edge, w);
                 reachablePrunnableVertices.add(key1);
             }
@@ -173,6 +151,7 @@ public class RoomMapGraphAdapter {
 //            graph.setEdgeWeight(edge, DistanceService.getWeight(agentPosition, key1));
         }
     }
+
 
     private void addAgentToGraph(RoomMapState s, TreeMap<Position, HashSet<Position>> watchedDictionary) {
         HashMap<Position, HashSet<Position>> gettableWatchedDictionary = new HashMap<>(watchedDictionary);
@@ -184,7 +163,9 @@ public class RoomMapGraphAdapter {
         for (Map.Entry<Position, PositionVertex> entry1 : prunnableVertices.entrySet()) {
             Position key = entry1.getKey();
             PositionVertex value = entry1.getValue();
-            List<Position> path = DistanceService.getPath(agentPosition, key).getVertexList();
+//            List<Position> path = DistanceService.getPath(agentPosition, key).getVertexList();
+            PathFindingPath findingPath = DistanceService.getPathFind(agentPosition, key);
+            List<Position> path = findingPath.getPath();
 
             //check that it isn't itself that gets in the way
             List<Position> pathSet = new ArrayList<>(path.subList(1, path.size() - 1));
@@ -223,7 +204,9 @@ public class RoomMapGraphAdapter {
             for (Position position : gettableWatchedDictionary.get(unReachableUnPrunnableVertex.getPosition())) {
                 PositionVertex value = new PositionVertex(position, PositionVertex.TYPE.PRUNNABLE);
                 if (!prunnableVertices.containsKey(position)) continue;
-                List<Position> path = DistanceService.getPath(agentPosition, position).getVertexList();
+//                List<Position> path = DistanceService.getPath(agentPosition, position).getVertexList();
+                PathFindingPath findingPath = DistanceService.getPathFind(agentPosition, position);
+                List<Position> path = findingPath.getPath();
                 if (Collections.disjoint(path.subList(1, path.size() - 1), prunnableVertices.keySet())) {
                     UndirectedWeightedEdge edge = graph.addEdge(agentVertex, value);
                     double w = path.size() - 1;
@@ -239,7 +222,9 @@ public class RoomMapGraphAdapter {
                     PositionVertex value2 = entry2.getValue();
                     if (key1.equals(key2) || graph.containsEdge(value2, value1) || isSameComponent(value1, value2))
                         continue;
-                    List<Position> path = DistanceService.getPath(key1, key2).getVertexList();
+//                    List<Position> path = DistanceService.getPath(key1, key2).getVertexList();
+                    PathFindingPath findingPath = DistanceService.getPathFind(key1, key2);
+                    List<Position> path = findingPath.getPath();
                     if (!path.contains(s.getPosition()) && Collections.disjoint(path.subList(1, path.size() - 1), prunnableVertices.keySet())) {
                         UndirectedWeightedEdge edge = graph.addEdge(value1, value2);
                         double w = path.size() - 1;
@@ -249,7 +234,6 @@ public class RoomMapGraphAdapter {
             }
         }
     }
-
     private void removeUnPrunnable(PositionVertex unPrunnable, HashMap<Position, HashSet<Position>> gettableWatchedDictionary) {
         if (!unPrunnableVertices.containsKey(unPrunnable.getPosition()))
             return;
@@ -269,15 +253,12 @@ public class RoomMapGraphAdapter {
         Position agentPosition = roomMapState.getPosition();
         List<Position> whiteCellsPivots = new ArrayList<>();
 
-//        boolean isTSP = roomMapState.getProblem().getProblemHeuristic().toString().contains("TSP");
-
         for (Map.Entry<Position, HashSet<Position>> entry : watchedDictionary.entrySet()) {
             Position watchedPosition = entry.getKey();
-            if (roomMapState.getSeen().contains(watchedPosition))
-                continue;
+            if (roomMapState.getSeen().contains(watchedPosition)) continue;
+            HashSet<Position> watchersSet = entry.getValue();
             if(prunnableVertices.containsKey(watchedPosition) || unPrunnableVertices.containsKey(watchedPosition))
                 continue;
-            HashSet<Position> watchersSet = entry.getValue();
             if (!Collections.disjoint(watchersSet, prunnableVertices.keySet())){
                 if(includeWhiteCells)
                     whiteCellsPivots.add(watchedPosition);
@@ -285,8 +266,6 @@ public class RoomMapGraphAdapter {
             }
             if(withFarthest){
                 if (RoomMap.HEURISTIC_GRAPH_METHOD.equals("Farther Frontiers") && checkIfIsntFarther(pathsSet, agentPosition, watchedPosition, watchersSet)){
-                    if(includeWhiteCells)
-                        whiteCellsPivots.add(watchedPosition);
                     continue;
                 }
             }
@@ -297,15 +276,14 @@ public class RoomMapGraphAdapter {
             if (addUnprunnables)
                 graph.addVertex(watchedVertex);
             addPrunabbleVeticesToSingleUnprunnable(watchedVertex, watchersSet, visualSet, toRemove, addUnprunnables);
-//            if (isTSP && unPrunnableVertices.size() > 10)
-//                break;
+
         }
         for (Position position : toRemove) {
             prunnableVertices.remove(position);
         }
+
         if (addUnprunnables)
             connectPrunnableVerticesInGraph(roomMapState);
-
         if(includeWhiteCells)
             addWhiteCells(allWatchers, visualSet, gettableWatchedDictionary, whiteCellsPivots);
     }
@@ -331,8 +309,10 @@ public class RoomMapGraphAdapter {
         if (!Collections.disjoint(pathsSet, watchersSet))
             return true;
         // else, it a farther (for now), add the path to it's shortest path watcher to the paths set
-        GraphPath<Position, UndirectedWeightedEdge> newPath = DistanceService.getPath(agentPosition, watchedPosition);
-        List<Position> newPathList = newPath.getVertexList();
+//        GraphPath<Position, UndirectedWeightedEdge> newPath = DistanceService.getPath(agentPosition, watchedPosition);
+//        List<Position> newPathList = newPath.getVertexList();
+        PathFindingPath newPath = DistanceService.getPathFind(agentPosition, watchedPosition);
+        List<Position> newPathList = newPath.getPath();
         newPathList.removeAll(watchersSet);
         //add the new path to the Paths set
         pathsSet.addAll(newPathList);
@@ -348,11 +328,13 @@ public class RoomMapGraphAdapter {
                 PositionVertex value2 = entry2.getValue();
                 if (key1.equals(key2) || graph.containsEdge(value2, value1) || isSameComponent(value1, value2))
                     continue;
-                GraphPath<Position, UndirectedWeightedEdge> graphPath = DistanceService.getPath(key1, key2);
-                List<Position> path = graphPath.getVertexList();
+//                GraphPath<Position, UndirectedWeightedEdge> graphPath = DistanceService.getPath(key1, key2);
+//                List<Position> path = graphPath.getVertexList();
+                PathFindingPath findingPath = DistanceService.getPathFind(key1, key2);
+                List<Position> path = findingPath.getPath();
                 if (!path.contains(roomMapState.getPosition()) && Collections.disjoint(path.subList(1, path.size() - 1), prunnableVertices.keySet())) {
                     UndirectedWeightedEdge edge = graph.addEdge(value1, value2);
-                    double w = graphPath.getWeight();
+                    double w = findingPath.getPathCost();
                     graph.setEdgeWeight(edge, w);
                 }
             }
