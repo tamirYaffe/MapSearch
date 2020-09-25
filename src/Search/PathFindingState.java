@@ -32,22 +32,22 @@ public class PathFindingState implements IProblemState
     private List<PathFindingMove> getLegalMoves() {
         List<PathFindingMove> legalMoves = new ArrayList<>();
         PathFindingMove move;
-        move = new PathFindingMove(UP);
-        checkAndAddMove(legalMoves,move);
-        move = new PathFindingMove(DOWN);
+        move = new PathFindingMove(RIGHT);
         checkAndAddMove(legalMoves,move);
         move = new PathFindingMove(LEFT);
         checkAndAddMove(legalMoves,move);
-        move = new PathFindingMove(RIGHT);
+        move = new PathFindingMove(DOWN);
         checkAndAddMove(legalMoves,move);
-        move = new PathFindingMove(UP_LEFT);
+        move = new PathFindingMove(UP);
         checkAndAddMove(legalMoves,move);
-        move = new PathFindingMove(UP_RIGHT);
-        checkAndAddMove(legalMoves,move);
-        move = new PathFindingMove(DOWN_LEFT);
-        checkAndAddMove(legalMoves,move);
-        move = new PathFindingMove(DOWN_RIGHT);
-        checkAndAddMove(legalMoves,move);
+//        move = new PathFindingMove(UP_LEFT);
+//        checkAndAddMove(legalMoves,move);
+//        move = new PathFindingMove(UP_RIGHT);
+//        checkAndAddMove(legalMoves,move);
+//        move = new PathFindingMove(DOWN_LEFT);
+//        checkAndAddMove(legalMoves,move);
+//        move = new PathFindingMove(DOWN_RIGHT);
+//        checkAndAddMove(legalMoves,move);
         return legalMoves;
     }
 
