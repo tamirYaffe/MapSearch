@@ -75,12 +75,10 @@ public class AStarSearch   extends ASearch
 		if (prevNode==null){
 			openContainer.put(node.currentProblemState,node);
 		}
+		else if(node.getG()<prevNode.getG()){
+			openContainer.replace(node.currentProblemState,node);
+		}
 		openList.add(node);
-//		else if(node.getG()<prevNode.getG()){
-//			prevNode.setG(node.getG());
-//			openContainer.replace(node.currentProblemState,node);
-//			openList.add(node);
-//		}
 	}
 
 	@Override
@@ -99,13 +97,12 @@ public class AStarSearch   extends ASearch
 	public ASearchNode getBest()
 	{
 		ASearchNode res = openList.poll();
-//		double currG = openContainer.get(res.currentProblemState).getG();
-//		int ctr=0;
-//		while (res!=null && currG<res.getG()){
-//			res = openList.poll();
-//			ctr++;
-//		}
-//		System.out.println("**getBest removed "+ctr+ " nodes from open list**");
+		if(res == null)
+			return null;
+		ASearchNode prevNode = openContainer.getOrDefault(res.currentProblemState,null);
+		if (prevNode==null)
+			return null;
+		openContainer.remove(res.currentProblemState);
 		return res;
 	}
 
