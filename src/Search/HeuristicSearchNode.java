@@ -17,6 +17,10 @@ public class HeuristicSearchNode extends BlindSearchNode {
 //        h = this.heuristic.getHeuristic(currentProblemState);
     }
 
+    public void setH(double h) {
+        this.h = h;
+    }
+
     @Override
     public double getH() {
         return h;

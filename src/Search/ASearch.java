@@ -21,6 +21,7 @@ abstract public class ASearch {
     private ASearchNode abstractSearch ( IProblemState problemState ) {
         initLists();
         ASearchNode Vs = createSearchRoot(problemState);
+        hCalculate(Vs);
 //        System.out.println(problemState);
         ASearchNode current;
         addToOpen(Vs);
@@ -48,20 +49,34 @@ abstract public class ASearch {
 //            System.out.println("\ncurrent:\nlast move: " + current.getLastMove() + "\n" + current.currentProblemState + "g: " + current.getG() + "\t\th: " + current.getH() + "\t\tf: " + (current.getF()) + "\n\n\n");
 //            int genID = 0;
             for (ASearchNode Vn : neighbors) {
+                List<ASearchNode> neighborsToAdd = new ArrayList<>();
                 if (isClosed(Vn)) {
                     continue;
                 }
                 if (!isOpen(Vn)) {
 //                    System.out.println("gen"+(++genID)+"\nlast move: " + Vn._currentProblemState.getStateLastMove() + "\n" + Vn._currentProblemState + "g: " + Vn.getG() + "\t\th: " + Vn.getH() + "\t\tf: " + (Vn.getF()) + "\n");
-                    addToOpen(Vn);
+//                    addToOpen(Vn);
+                    neighborsToAdd.add(Vn);
                     generated++;
                 } else {
                     duplicates++;
                     if (getOpen(Vn).getG() > Vn.getG()) {
 //                        System.out.println("gen"+(++genID)+"\nlast move: " + Vn._currentProblemState.getStateLastMove() + "\n" + Vn._currentProblemState + "g: " + Vn.getG() + "\t\th: " + Vn.getH() + "\t\tf: " + (Vn.getF()) + "\n");
-                        addToOpen(Vn);
+//                        addToOpen(Vn);
+                        neighborsToAdd.add(Vn);
                         generated++;
                     }
+                }
+                // calculate neighbors h and perform inconsistency correction for parent.
+                double currentFixedH = current.getH(); // max h(n) - (g(n) - g(prev_n))
+                for (ASearchNode node : neighborsToAdd) {
+                    hCalculate(node);
+                    currentFixedH = Math.max(currentFixedH, node.getH() - (node.getG() - current.getG()));
+                }
+                // perform inconsistency correction for neighbors.
+                for (ASearchNode node : neighborsToAdd) {
+                    ((HeuristicSearchNode)node).setH(Math.max(node.getH(), currentFixedH - (node.getG() - node.prev.getG())));
+                    addToOpen(node);
                 }
             }
             addToClosed(current);
@@ -75,6 +90,19 @@ abstract public class ASearch {
         }
 
         return null;
+    }
+
+    private void hCalculate(ASearchNode node) {
+        if(node.currentProblemState instanceof RoomMapState){
+            double startTime = System.currentTimeMillis();
+            ((RoomMapState) node.currentProblemState).createGraphAdapter();
+            double endOfGraphBuild = System.currentTimeMillis();
+            TestTime.graphCreationSumOfTime+=endOfGraphBuild-startTime;
+            ((HeuristicSearchNode) node).calculateH(node.currentProblemState);
+            double endOfH = System.currentTimeMillis();
+            TestTime.hSumOfTime+=endOfH-endOfGraphBuild;
+            TestTime.numOfNodes++;
+        }
     }
 
 
