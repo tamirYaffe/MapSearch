@@ -70,51 +70,31 @@ public class DistanceService {
     }
 
     public static PathFindingPath getPathFind(Position source, Position target) {
-        PathFindingPath  path;
-        GraphPath<Position, UndirectedWeightedEdge> dpath;
+        PathFindingPath path;
         if (pathsFindMap.containsKey(source)) {
-            if (!pathsFindMap.get(source).containsKey(target)) {
+            if (pathsFindMap.get(source).containsKey(target)) {
+                return pathsFindMap.get(source).get(target);
+            } else {
                 // check opposite path
-                if(pathsFindMap.containsKey(target) && pathsFindMap.get(target).containsKey(source))
+                if (pathsFindMap.containsKey(target) && pathsFindMap.get(target).containsKey(source))
                     path = pathsFindMap.get(target).get(source);
-                else{
-//                    path = pathFinding.getPath(source, target);
+                else {
                     path = aStar.solve(source, target);
-//                    dpath = dijkstraShortestPath.getPath(source, target);
-//                    path = new PathFindingPath(dpath.getVertexList(), dpath.getWeight());
-//                    List<Position> vpath = dpath.getVertexList();
-//                    for (int i = 0; i < vpath.size(); i++) {
-//                        if (!path.getPath().get(i).equals(vpath.get(i))){
-//                            System.out.println(path.getPath());
-//                            System.out.println(dpath.getVertexList());
-//                        }
-//                    }
                 }
                 pathsFindMap.get(source).put(target, path);
             }
         } else {
             pathsFindMap.put(source, new HashMap<>());
             // check opposite path
-            if(pathsFindMap.containsKey(target) && pathsFindMap.get(target).containsKey(source))
+            if (pathsFindMap.containsKey(target) && pathsFindMap.get(target).containsKey(source))
                 path = pathsFindMap.get(target).get(source);
-            else{
-                //path = pathFinding.getPath(source, target);
+            else {
                 path = aStar.solve(source, target);
-//                dpath = dijkstraShortestPath.getPath(source, target);
-//                path = new PathFindingPath(dpath.getVertexList(), dpath.getWeight());
-//                List<Position> vpath = dpath.getVertexList();
-//                for (int i = 0; i < vpath.size(); i++) {
-//                    if (!path.getPath().get(i).equals(vpath.get(i))){
-//                        System.out.println(path.getPath());
-//                        System.out.println(dpath.getVertexList());
-//                    }
-//                }
             }
             pathsFindMap.get(source).put(target, path);
         }
         return pathsFindMap.get(source).get(target);
     }
-
 
 
     private static void addEdges(Graph<Position, UndirectedWeightedEdge> graph, Position vertexPosition, HashMap<Position, HashSet<Position>> verticesPositions) {
