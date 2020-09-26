@@ -62,16 +62,6 @@ public class AStarSearch   extends ASearch
 	public void addToOpen(ASearchNode node)
 	{
 		ASearchNode prevNode = openContainer.getOrDefault(node.currentProblemState,null);
-		if(node.currentProblemState instanceof RoomMapState){
-			double start = System.currentTimeMillis();
-			((RoomMapState) node.currentProblemState).createGraphAdapter();
-			double endOfGraphBuild = System.currentTimeMillis();
-			TestTime.graphCreationSumOfTime+=endOfGraphBuild-start;
-			((HeuristicSearchNode) node).calculateH(node.currentProblemState);
-			double endOfH = System.currentTimeMillis();
-			TestTime.hSumOfTime+=endOfH-endOfGraphBuild;
-			TestTime.numOfNodes++;
-		}
 		if (prevNode==null){
 			openContainer.put(node.currentProblemState,node);
 		}
