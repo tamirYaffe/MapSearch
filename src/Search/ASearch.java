@@ -74,20 +74,23 @@ abstract public class ASearch {
                     }
                 }
             }
-            double currentFixedH = current.getH(); // max h(n) - (g(n) - g(prev_n))
-            double minF = HUGE_DOUBLE_VALUE;
-            for (ASearchNode node : neighborsToAdd) {
-                hCalculate(node);
-                minF = Math.min(minF, node.getF());
-            }
-            // calculate neighbors h and perform inconsistency correction for parent.
-            for (ASearchNode node : neighborsToAdd) {
-                if(node.getF() == minF)
-                    currentFixedH = Math.max(currentFixedH, node.getH() - (node.getG() - current.getG()));
-            }
+//            double currentFixedH = current.getH(); // max h(n) - (g(n) - g(prev_n))
+//            double currentFixedH = ((HeuristicSearchNode)current).oldF - current.getG(); // max h(n) - (g(n) - g(prev_n))
+//            double minF = HUGE_DOUBLE_VALUE;
+//            for (ASearchNode node : neighborsToAdd) {
+//                hCalculate(node);
+//                minF = Math.min(minF, node.getF());
+//            }
+//            // calculate neighbors h and perform inconsistency correction for parent.
+//            for (ASearchNode node : neighborsToAdd) {
+//                double hDifference = node.getH() - (node.getG() - current.getG());
+//                if(node.getF() == minF)
+//                    currentFixedH = Math.max(currentFixedH, hDifference);
+//            }
             // perform inconsistency correction for neighbors.
             for (ASearchNode node : neighborsToAdd) {
-                ((HeuristicSearchNode)node).setH(Math.max(node.getH(), currentFixedH - (node.getG() - node.prev.getG())));
+                hCalculate(node);
+                ((HeuristicSearchNode)node).setH(Math.max(node.getH(), node.prev.getH() - (node.getG() - node.prev.getG())));
                 addToOpen(node);
             }
             addToClosed(current);
