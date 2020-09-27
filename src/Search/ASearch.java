@@ -11,6 +11,7 @@ abstract public class ASearch {
     public static int duplicates;
     public static int immediacies;
     public static double rootH = 0.0;
+    private static final int HUGE_DOUBLE_VALUE = 0x7fffff00;
 
     public List<IProblemMove> solve ( IProblem problem ) {
         IProblemState problemState = problem.getProblemState();
@@ -23,7 +24,8 @@ abstract public class ASearch {
         ASearchNode Vs = createSearchRoot(problemState);
         hCalculate(Vs);
 //        System.out.println(problemState);
-        ASearchNode current;
+        ASearchNode current = null;
+        ASearchNode debugPrev;
         addToOpen(Vs);
         rootH = Vs.getH();
         System.out.println("Root.H: " + rootH);
@@ -36,9 +38,13 @@ abstract public class ASearch {
 
 
         while (openSize() > 0) {
+            debugPrev = current;
             current = getBest();
             if(current == null)
                 continue;
+            if(debugPrev != null && current.getF()< debugPrev.getF()){
+                System.out.println("problem");
+            }
 //            System.out.println(((RoomMapState)current._currentProblemState).getPosition() + "," + current.getH());
             if (current.isGoal()) {
                 System.out.println("\rexpanded: " + expanded + "\tgenerated: " + generated + "\tduplicates: " + duplicates + "\t\tg: " + current.getG() + "\t\th: " + current.getH() + "\t\tf: " + (current.getF()) + "\t\tTime: " + (System.currentTimeMillis() - start) + "ms" + (admissible ? "\t Admissible\n" : "\t Not Admissible!!!\n"));
@@ -68,11 +74,16 @@ abstract public class ASearch {
                     }
                 }
             }
-            // calculate neighbors h and perform inconsistency correction for parent.
             double currentFixedH = current.getH(); // max h(n) - (g(n) - g(prev_n))
+            double minF = HUGE_DOUBLE_VALUE;
             for (ASearchNode node : neighborsToAdd) {
                 hCalculate(node);
-                currentFixedH = Math.max(currentFixedH, node.getH() - (node.getG() - current.getG()));
+                minF = Math.min(minF, node.getF());
+            }
+            // calculate neighbors h and perform inconsistency correction for parent.
+            for (ASearchNode node : neighborsToAdd) {
+                if(node.getF() == minF)
+                    currentFixedH = Math.max(currentFixedH, node.getH() - (node.getG() - current.getG()));
             }
             // perform inconsistency correction for neighbors.
             for (ASearchNode node : neighborsToAdd) {
