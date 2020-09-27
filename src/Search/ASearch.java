@@ -48,8 +48,8 @@ abstract public class ASearch {
             List<ASearchNode> neighbors = current.getNeighbors();
 //            System.out.println("\ncurrent:\nlast move: " + current.getLastMove() + "\n" + current.currentProblemState + "g: " + current.getG() + "\t\th: " + current.getH() + "\t\tf: " + (current.getF()) + "\n\n\n");
 //            int genID = 0;
+            List<ASearchNode> neighborsToAdd = new ArrayList<>();
             for (ASearchNode Vn : neighbors) {
-                List<ASearchNode> neighborsToAdd = new ArrayList<>();
                 if (isClosed(Vn)) {
                     continue;
                 }
@@ -67,17 +67,17 @@ abstract public class ASearch {
                         generated++;
                     }
                 }
-                // calculate neighbors h and perform inconsistency correction for parent.
-                double currentFixedH = current.getH(); // max h(n) - (g(n) - g(prev_n))
-                for (ASearchNode node : neighborsToAdd) {
-                    hCalculate(node);
-                    currentFixedH = Math.max(currentFixedH, node.getH() - (node.getG() - current.getG()));
-                }
-                // perform inconsistency correction for neighbors.
-                for (ASearchNode node : neighborsToAdd) {
-                    ((HeuristicSearchNode)node).setH(Math.max(node.getH(), currentFixedH - (node.getG() - node.prev.getG())));
-                    addToOpen(node);
-                }
+            }
+            // calculate neighbors h and perform inconsistency correction for parent.
+            double currentFixedH = current.getH(); // max h(n) - (g(n) - g(prev_n))
+            for (ASearchNode node : neighborsToAdd) {
+                hCalculate(node);
+                currentFixedH = Math.max(currentFixedH, node.getH() - (node.getG() - current.getG()));
+            }
+            // perform inconsistency correction for neighbors.
+            for (ASearchNode node : neighborsToAdd) {
+                ((HeuristicSearchNode)node).setH(Math.max(node.getH(), currentFixedH - (node.getG() - node.prev.getG())));
+                addToOpen(node);
             }
             addToClosed(current);
 //            System.out.println(current._currentProblemState);
