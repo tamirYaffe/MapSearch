@@ -1,33 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import View.MapGrid?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ChoiceBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.VBox?>
+<?import View.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<BorderPane fx:id="borderPane" onKeyPressed="#KeyPressed" xmlns="http://javafx.com/javafx/8.0.999-ea"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
+<BorderPane fx:id="borderPane" onKeyPressed="#KeyPressed" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="Controller">
     <top>
         <VBox BorderPane.alignment="CENTER">
             <BorderPane.margin>
-                <Insets/>
+                <Insets />
             </BorderPane.margin>
             <MenuBar>
                 <Menu mnemonicParsing="false" text="File">
-                    <MenuItem fx:id="fileSaveButton" mnemonicParsing="false" text="Save"/>
-                    <MenuItem fx:id="fileLoadButton" mnemonicParsing="false" text="Load"/>
+                    <MenuItem fx:id="fileSaveButton" mnemonicParsing="false" text="Save" />
+                    <MenuItem fx:id="fileLoadButton" mnemonicParsing="false" text="Load" />
                 </Menu>
             </MenuBar>
         </VBox>
@@ -36,111 +23,119 @@
         <VBox BorderPane.alignment="CENTER">
             <Label text="LOS">
                 <VBox.margin>
-                    <Insets left="5.0" top="5.0"/>
+                    <Insets left="5.0" top="5.0" />
                 </VBox.margin>
             </Label>
             <ChoiceBox fx:id="los">
                 <VBox.margin>
-                    <Insets left="5.0"/>
+                    <Insets left="5.0" />
                 </VBox.margin>
             </ChoiceBox>
             <Label text="Heuristic">
                 <VBox.margin>
-                    <Insets left="5.0" top="5.0"/>
+                    <Insets left="5.0" top="5.0" />
                 </VBox.margin>
             </Label>
             <ChoiceBox fx:id="heuristics">
                 <VBox.margin>
-                    <Insets left="5.0"/>
+                    <Insets left="5.0" />
                 </VBox.margin>
             </ChoiceBox>
             <Label text="Movement">
                 <VBox.margin>
-                    <Insets left="5.0" top="5.0"/>
+                    <Insets left="5.0" top="5.0" />
                 </VBox.margin>
             </Label>
             <ChoiceBox fx:id="movements">
                 <VBox.margin>
-                    <Insets left="5.0"/>
+                    <Insets left="5.0" />
                 </VBox.margin>
             </ChoiceBox>
             <Label text="Heuristic Graph">
                 <VBox.margin>
-                    <Insets left="5.0" top="5.0"/>
+                    <Insets left="5.0" top="5.0" />
                 </VBox.margin>
             </Label>
             <ChoiceBox fx:id="heuristicGraph">
                 <VBox.margin>
-                    <Insets left="5.0"/>
+                    <Insets left="5.0" />
                 </VBox.margin>
             </ChoiceBox>
-            <BorderPane.margin>
-                <Insets left="10.0"/>
-            </BorderPane.margin>
+         <HBox prefHeight="20.0" prefWidth="200.0">
+            <children>
+               <CheckBox id="check_No_Whites" fx:id="check_No_Whites" contentDisplay="BOTTOM" ellipsisString="" mnemonicParsing="false" text="No Whites" textOverrun="CLIP"/>
+               <CheckBox id="check_Farthest" fx:id="check_Farthest" contentDisplay="BOTTOM" ellipsisString="" mnemonicParsing="false" text="Farthest" textOverrun="CLIP" />
+               <CheckBox id="check_Bounded" fx:id="check_Bounded" contentDisplay="BOTTOM" ellipsisString="" mnemonicParsing="false" text="Bounded" textOverrun="CLIP" />
+            </children>
+            <padding>
+               <Insets bottom="5.0" top="5.0" />
+            </padding>
+            <opaqueInsets>
+               <Insets />
+            </opaqueInsets>
+            <VBox.margin>
+               <Insets left="5.0" right="5.0" />
+            </VBox.margin>
+         </HBox>
             <GridPane prefHeight="281.0" prefWidth="150.0">
                 <columnConstraints>
-                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="153.0" minWidth="10.0" prefWidth="104.0"/>
-                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="77.0" minWidth="1.0" prefWidth="46.0"/>
+                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="153.0" minWidth="10.0" prefWidth="104.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="77.0" minWidth="1.0" prefWidth="46.0" />
                 </columnConstraints>
                 <rowConstraints>
-                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                    <RowConstraints maxHeight="59.0" minHeight="10.0" prefHeight="29.0" vgrow="SOMETIMES"/>
-                    <RowConstraints maxHeight="59.0" minHeight="10.0" prefHeight="29.0" vgrow="SOMETIMES"/>
-                    <RowConstraints maxHeight="54.0" minHeight="10.0" prefHeight="54.0" vgrow="SOMETIMES"/>
-                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints maxHeight="59.0" minHeight="10.0" prefHeight="29.0" vgrow="SOMETIMES" />
+                    <RowConstraints maxHeight="59.0" minHeight="10.0" prefHeight="29.0" vgrow="SOMETIMES" />
+                    <RowConstraints maxHeight="54.0" minHeight="10.0" prefHeight="54.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 </rowConstraints>
-                <Label text="Distance Factor:"/>
-                <TextField fx:id="textField_distanceFactor" text="2" GridPane.columnIndex="1"/>
-                <Label text="map rows:" GridPane.rowIndex="1"/>
-                <TextField fx:id="textField_rowSize" text="0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-                <Label text="map columns:" GridPane.rowIndex="2"/>
-                <TextField fx:id="textField_columnSize" text="0" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-                <Button id="button_loadMap" fx:id="btn_loadMap" mnemonicParsing="false" onAction="#loadMap"
-                        prefHeight="27.0" prefWidth="156.0" text="Load Map" GridPane.columnSpan="2"
-                        GridPane.rowIndex="5"/>
-                <Button id="button_generateMap" fx:id="btn_generateMap" mnemonicParsing="false"
-                        onAction="#generateMap" prefHeight="27.0" prefWidth="156.0" text="Generate Map"
-                        GridPane.columnSpan="2" GridPane.rowIndex="3"/>
-                <Button id="button_solveMap" fx:id="btn_solveMap" mnemonicParsing="false" onAction="#solveMap"
-                        prefHeight="27.0" prefWidth="161.0" text="Solve Map" GridPane.columnSpan="2"
-                        GridPane.rowIndex="4"/>
-                <Label text="solution:" GridPane.rowIndex="6"/>
+                <Label text="Distance Factor:" />
+                <TextField fx:id="textField_distanceFactor" text="2" GridPane.columnIndex="1" />
+                <Label text="map rows:" GridPane.rowIndex="1" />
+                <TextField fx:id="textField_rowSize" text="0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                <Label text="map columns:" GridPane.rowIndex="2" />
+                <TextField fx:id="textField_columnSize" text="0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                <Button id="button_loadMap" fx:id="btn_loadMap" mnemonicParsing="false" onAction="#loadMap" prefHeight="27.0" prefWidth="156.0" text="Load Map" GridPane.columnSpan="2" GridPane.rowIndex="5" />
+                <Button id="button_generateMap" fx:id="btn_generateMap" mnemonicParsing="false" onAction="#generateMap" prefHeight="27.0" prefWidth="156.0" text="Generate Map" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+                <Button id="button_solveMap" fx:id="btn_solveMap" mnemonicParsing="false" onAction="#solveMap" prefHeight="27.0" prefWidth="161.0" text="Solve Map" GridPane.columnSpan="2" GridPane.rowIndex="4" />
+                <Label text="solution:" GridPane.rowIndex="6" />
                 <TextArea fx:id="solution" GridPane.rowIndex="7">
                     <GridPane.margin>
-                        <Insets top="150.0"/>
+                        <Insets top="150.0" />
                     </GridPane.margin>
                 </TextArea>
             </GridPane>
+            <BorderPane.margin>
+                <Insets left="10.0" />
+            </BorderPane.margin>
         </VBox>
     </left>
     <bottom>
         <VBox>
             <Label text="X: " fx:id="xIndex">
                 <VBox.margin>
-                    <Insets left="5.0" top="10.0"/>
+                    <Insets left="5.0" top="10.0" />
                 </VBox.margin>
             </Label>
             <Label fx:id="yIndex" text="Y: ">
                 <VBox.margin>
-                    <Insets left="5.0" bottom="10.0"/>
+                    <Insets bottom="10.0" left="5.0" />
                 </VBox.margin>
             </Label>
             <padding>
-                <Insets bottom="10.0"/>
+                <Insets bottom="10.0" />
             </padding>
         </VBox>
     </bottom>
     <center>
         <AnchorPane BorderPane.alignment="CENTER">
-            <MapGrid fx:id="mapGrid" onMouseClicked="#getFocus" style=" -fx-border-color:black; -fx-border-width: 15;"
-                     AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="17.0"
-                     AnchorPane.topAnchor="20.0"/>
+            <MapGrid fx:id="mapGrid" onMouseClicked="#getFocus" style=" -fx-border-color:black; -fx-border-width: 15;" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="17.0" AnchorPane.topAnchor="20.0" />
         </AnchorPane>
     </center>
 </BorderPane>

@@ -26,7 +26,7 @@ public class RoomMap implements IProblem {
         heuristic = new ZeroHeuristic();
     }
 
-    public RoomMap(int[][] room, Position startPosition, String movement, String heuristic, String los, String heuristicGraph, double distFactor) {
+    public RoomMap(int[][] room, Position startPosition, String movement, String heuristic, String los, String heuristicGraph, double distFactor, boolean isNoWhites, boolean isFarthest, boolean isBounded) {
         self = new RoomMapService(room, los);
         this.startPosition = new Position(startPosition);
         switch (heuristic) {
@@ -49,6 +49,9 @@ public class RoomMap implements IProblem {
         HEURISTIC_METHOD = heuristic;
         MOVEMENT_METHOD = movement;
         HEURISTIC_GRAPH_METHOD = heuristicGraph;
+        RoomMapGraphAdapter.includeWhiteCells = !isNoWhites;
+        RoomMapGraphAdapter.withFarthest = isFarthest;
+        RoomMapGraphAdapter.withDistanceFactor = isBounded;
         if (distFactor>=1){
             RoomMapGraphAdapter.distanceFactor = distFactor;
         }
