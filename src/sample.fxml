@@ -61,6 +61,16 @@
                     <Insets left="5.0" />
                 </VBox.margin>
             </ChoiceBox>
+            <Label text="Algorithm">
+                <VBox.margin>
+                    <Insets left="5.0" top="5.0" />
+                </VBox.margin>
+            </Label>
+            <ChoiceBox fx:id="algorithm_choiceBox">
+                <VBox.margin>
+                    <Insets left="5.0" />
+                </VBox.margin>
+            </ChoiceBox>
          <HBox prefHeight="20.0" prefWidth="200.0">
             <children>
                <CheckBox id="check_No_Whites" fx:id="check_No_Whites" contentDisplay="BOTTOM" ellipsisString="" mnemonicParsing="false" text="No Whites" textOverrun="CLIP"/>
@@ -97,15 +107,17 @@
                 </rowConstraints>
                 <Label text="Distance Factor:" />
                 <TextField fx:id="textField_distanceFactor" text="2" GridPane.columnIndex="1" />
-                <Label text="map rows:" GridPane.rowIndex="1" />
-                <TextField fx:id="textField_rowSize" text="0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                <Label text="map columns:" GridPane.rowIndex="2" />
-                <TextField fx:id="textField_columnSize" text="0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                <Button id="button_loadMap" fx:id="btn_loadMap" mnemonicParsing="false" onAction="#loadMap" prefHeight="27.0" prefWidth="156.0" text="Load Map" GridPane.columnSpan="2" GridPane.rowIndex="5" />
-                <Button id="button_generateMap" fx:id="btn_generateMap" mnemonicParsing="false" onAction="#generateMap" prefHeight="27.0" prefWidth="156.0" text="Generate Map" GridPane.columnSpan="2" GridPane.rowIndex="3" />
-                <Button id="button_solveMap" fx:id="btn_solveMap" mnemonicParsing="false" onAction="#solveMap" prefHeight="27.0" prefWidth="161.0" text="Solve Map" GridPane.columnSpan="2" GridPane.rowIndex="4" />
-                <Label text="solution:" GridPane.rowIndex="6" />
-                <TextArea fx:id="solution" GridPane.rowIndex="7">
+                <Label text="Weight" GridPane.rowIndex="1"/>
+                <TextField fx:id="textField_weight" text="1" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Label text="map rows:" GridPane.rowIndex="2" />
+                <TextField fx:id="textField_rowSize" text="0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                <Label text="map columns:" GridPane.rowIndex="3" />
+                <TextField fx:id="textField_columnSize" text="0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                <Button id="button_generateMap" fx:id="btn_generateMap" mnemonicParsing="false" onAction="#generateMap" prefHeight="27.0" prefWidth="156.0" text="Generate Map" GridPane.columnSpan="2" GridPane.rowIndex="4" />
+                <Button id="button_solveMap" fx:id="btn_solveMap" mnemonicParsing="false" onAction="#solveMap" prefHeight="27.0" prefWidth="161.0" text="Solve Map" GridPane.columnSpan="2" GridPane.rowIndex="5" />
+                <Button id="button_loadMap" fx:id="btn_loadMap" mnemonicParsing="false" onAction="#loadMap" prefHeight="27.0" prefWidth="156.0" text="Load Map" GridPane.columnSpan="2" GridPane.rowIndex="6" />
+                <Label text="solution:" GridPane.rowIndex="7" />
+                <TextArea fx:id="solution" GridPane.rowIndex="10">
                     <GridPane.margin>
                         <Insets top="150.0" />
                     </GridPane.margin>

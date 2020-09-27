@@ -343,7 +343,7 @@ public class Model {
         } while (!blankList.isEmpty());
     }
 
-    public void solveMap(String movement, String heuristic, String los, String heuristicGraph, double distFactor, boolean isNoWhites, boolean isFarthest, boolean isBounded) {
+    public void solveMap(String movement, String heuristic, String los, String heuristicGraph, String algorithm, double distFactor, double w, boolean isNoWhites, boolean isFarthest, boolean isBounded) {
         consoleString = "";
         if (map == null)
             generateMap();
@@ -353,7 +353,7 @@ public class Model {
 //        UniformCostSearch solver = new UniformCostSearch();
 //        PureHeuristicSearch solver = new PureHeuristicSearch();
         long totalTime = 0;
-        RoomMap problem = new RoomMap(map, agent, movement, heuristic, los, heuristicGraph, distFactor, isNoWhites, isFarthest, isBounded);
+        RoomMap problem = new RoomMap(map, agent, movement, heuristic, los, heuristicGraph, algorithm, distFactor,w, isNoWhites, isFarthest, isBounded);
         DistanceService.setRoomMap(problem);
         watchedDictionary = problem.getVisualDictionary();
         consoleString += "\nSolver: " + solver.getSolverName();
