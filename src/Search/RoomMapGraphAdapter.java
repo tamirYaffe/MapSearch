@@ -36,20 +36,14 @@ public class RoomMapGraphAdapter {
     static double distanceFactor = 2;
     HashSet<Position> whiteCells = new HashSet<>();
     // Flags
-    boolean includeWhiteCells;
-    boolean withFarthest;
-    boolean withDistanceFactor;
+    static boolean includeWhiteCells = true;
+    static boolean withFarthest = false;
+    static boolean withDistanceFactor = false;
 
     public RoomMapGraphAdapter(TreeMap<Position,
             HashSet<Position>> watchedDictionary,
                                RoomMapState roomMapState,
-                               boolean isForHeuristic,
-                               boolean includeWhiteCells,
-                               boolean withFarthest,
-                               boolean withDistanceFactor) {
-        this.includeWhiteCells = includeWhiteCells;
-        this.withFarthest = withFarthest;
-        this.withDistanceFactor = withDistanceFactor;
+                               boolean isForHeuristic) {
         watchingDictionary = new HashMap<>();
         graph = new DefaultUndirectedWeightedGraph<>(UndirectedWeightedEdge.class);
         prunnableVertices = new HashMap<>();
@@ -63,7 +57,7 @@ public class RoomMapGraphAdapter {
         if(includeWhiteCells)
             reachablePrunnableVertices.addAll(whiteCells);
         // for "Jump (Bounded)"
-        if (RoomMap.MOVEMENT_METHOD.endsWith(")") && withDistanceFactor) {
+        if (withDistanceFactor) {
             HashSet<Position> toRemove = new HashSet<>();
             Position agentPosition = roomMapState.getPosition();
             double closerDistance = HUGE_DOUBLE_VALUE;
@@ -265,7 +259,7 @@ public class RoomMapGraphAdapter {
                 continue;
             }
             if(withFarthest){
-                if (RoomMap.HEURISTIC_GRAPH_METHOD.equals("Farther Frontiers") && checkIfIsntFarther(pathsSet, agentPosition, watchedPosition, watchersSet)){
+                if (checkIfIsntFarther(pathsSet, agentPosition, watchedPosition, watchersSet)){
                     continue;
                 }
             }

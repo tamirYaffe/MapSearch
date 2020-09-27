@@ -42,8 +42,7 @@ public class RoomMapState implements IProblemState {
 
     public void createGraphAdapter() {
         if(HEURISTIC_METHOD.equals("MST") || HEURISTIC_METHOD.equals("TSP") || MOVEMENT_METHOD.startsWith("Jump"))
-            graphAdapter = new RoomMapGraphAdapter(roomMap.getWatchedDictionary(), this, HEURISTIC_METHOD.equals("MST") || HEURISTIC_METHOD.equals("TSP"),
-                    true, false, false);
+            graphAdapter = new RoomMapGraphAdapter(roomMap.getWatchedDictionary(), this, HEURISTIC_METHOD.equals("MST") || HEURISTIC_METHOD.equals("TSP"));
         if (MOVEMENT_METHOD.startsWith("Jump"))
             updateNeighbors(graphAdapter.getReachablePrunnableVertices());
         else

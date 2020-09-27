@@ -1,6 +1,4 @@
 import Search.*;
-import javafx.geometry.Pos;
-import javafx.scene.control.Label;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -82,6 +80,8 @@ public class Model {
         csvResults[0] = name;
         csvResults[1] = "" + map.length;
         csvResults[2] = "" + map[0].length;
+        agent = new Position(7, 6);
+        agent = new Position(0, 39);
     }
 
     public void generateMap(int rows, int columns) {
@@ -182,26 +182,26 @@ public class Model {
 //            } catch (Exception e) {
 //                System.out.println(consoleString + "\ncouldn't finish the TSP!\n\n");
 //            }
-            try {
-                solveMap("Jump", "Zero", "Symmetric BresLos", "Farther Frontiers", 2);
-            } catch (Exception e) {
-                System.out.println(consoleString + "\ncouldn't finish the BRFS!\n\n");
-            }
-            try {
-                solveMap("Jump", "Singleton", "Symmetric BresLos", "Farther Frontiers", 2);
-            } catch (Exception e) {
-                System.out.println(consoleString + "\ncouldn't finish the Singleton!\n\n");
-            }
-            try {
-                solveMap("Jump", "MST", "Symmetric BresLos", "Farther Frontiers", 2);
-            } catch (Exception e) {
-                System.out.println(consoleString + "\ncouldn't finish the MST!\n\n");
-            }
-            try {
-                solveMap("Jump", "TSP", "Symmetric BresLos", "Farther Frontiers", 2);
-            } catch (Exception e) {
-                System.out.println(consoleString + "\ncouldn't finish the TSP!\n\n");
-            }
+//            try {
+//                solveMap("Jump", "Zero", "Symmetric BresLos", "Farther Frontiers", 2, check_No_Whites.isSelected(), check_Farthest.isSelected(), check_Bounded.isSelected());
+//            } catch (Exception e) {
+//                System.out.println(consoleString + "\ncouldn't finish the BRFS!\n\n");
+//            }
+//            try {
+//                solveMap("Jump", "Singleton", "Symmetric BresLos", "Farther Frontiers", 2, check_No_Whites.isSelected(), check_Farthest.isSelected(), check_Bounded.isSelected());
+//            } catch (Exception e) {
+//                System.out.println(consoleString + "\ncouldn't finish the Singleton!\n\n");
+//            }
+//            try {
+//                solveMap("Jump", "MST", "Symmetric BresLos", "Farther Frontiers", 2, check_No_Whites.isSelected(), check_Farthest.isSelected(), check_Bounded.isSelected());
+//            } catch (Exception e) {
+//                System.out.println(consoleString + "\ncouldn't finish the MST!\n\n");
+//            }
+//            try {
+//                solveMap("Jump", "TSP", "Symmetric BresLos", "Farther Frontiers", 2, check_No_Whites.isSelected(), check_Farthest.isSelected(), check_Bounded.isSelected());
+//            } catch (Exception e) {
+//                System.out.println(consoleString + "\ncouldn't finish the TSP!\n\n");
+//            }
 //            try {
 //                solveMap("4-way", "Zero", "8-way", "All", 2);
 //            } catch (Exception e) {
@@ -343,7 +343,7 @@ public class Model {
         } while (!blankList.isEmpty());
     }
 
-    public void solveMap(String movement, String heuristic, String los, String heuristicGraph, double distFactor) {
+    public void solveMap(String movement, String heuristic, String los, String heuristicGraph, double distFactor, boolean isNoWhites, boolean isFarthest, boolean isBounded) {
         consoleString = "";
         if (map == null)
             generateMap();
@@ -353,7 +353,7 @@ public class Model {
 //        UniformCostSearch solver = new UniformCostSearch();
 //        PureHeuristicSearch solver = new PureHeuristicSearch();
         long totalTime = 0;
-        RoomMap problem = new RoomMap(map, agent, movement, heuristic, los, heuristicGraph, distFactor);
+        RoomMap problem = new RoomMap(map, agent, movement, heuristic, los, heuristicGraph, distFactor, isNoWhites, isFarthest, isBounded);
         DistanceService.setRoomMap(problem);
         watchedDictionary = problem.getVisualDictionary();
         consoleString += "\nSolver: " + solver.getSolverName();

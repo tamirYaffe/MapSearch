@@ -1,3 +1,4 @@
+import Search.Position;
 import View.MapGrid;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -11,6 +12,7 @@ import javafx.stage.FileChooser;
 import java.io.File;
 
 public class Controller {
+
     private Model model;
 
     private int densMapIndex = 0;
@@ -34,11 +36,15 @@ public class Controller {
     public ChoiceBox<String> heuristics;
     public ChoiceBox<String> movements;
     public ChoiceBox<String> heuristicGraph;
+    public CheckBox check_No_Whites;
+    public CheckBox check_Farthest;
+    public CheckBox check_Bounded;
+
 
     void setModel(Model model) {
         String[] heuristicsArray = {"Zero", "Singleton", "MST", "MSP", "TSP"};
-        String[] heuristicGraphArray = {"All", "Frontiers", "Front Frontiers", "Farther Frontiers"};
-        String[] movementsArray = {"4-way", "8-way", "Jump", "Jump (Bounded)", "Expanding Border"};
+        String[] heuristicGraphArray = {"All", "Frontiers", "Front Frontiers"};
+        String[] movementsArray = {"4-way", "8-way", "Jump"};
         String[] losArray = {"4-way", "8-way", "Symmetric BresLos", "Asymmetric BresLos"};
         los.setItems(FXCollections.observableArrayList(losArray));
         heuristics.setItems(FXCollections.observableArrayList(heuristicsArray));
@@ -174,7 +180,7 @@ public class Controller {
             alert.setContentText("Please insert Heuristic Graph method");
             alert.show();
         } else {
-            model.solveMap(movements.getValue(), heuristics.getValue(), los.getValue(), heuristicGraph.getValue(), Double.parseDouble(textField_distanceFactor.getText()));
+            model.solveMap(movements.getValue(), heuristics.getValue(), los.getValue(), heuristicGraph.getValue(), Double.parseDouble(textField_distanceFactor.getText()), check_No_Whites.isSelected(), check_Farthest.isSelected(), check_Bounded.isSelected());
             mapGrid.setMap(model.map, model.agent);
             solution.setText(model.consoleString);
         }
@@ -240,10 +246,13 @@ public class Controller {
             mapGrid.setMap(model.map, model.agent);
         if (keyEvent.isControlDown() && keyEvent.getCode().getName().equals("A")) {
             btn_solveMap.requestFocus();
-            movements.setValue("Jump (Bounded)");
+            movements.setValue("Jump");
             heuristics.setValue("TSP");
-            heuristicGraph.setValue("Farther Frontiers");
+            heuristicGraph.setValue("Frontiers");
             los.setValue("Symmetric BresLos");
+            File file = new File("resources/SavedMaps/den101d.map");
+            model.loadMap(new StringMapGenerator().generate(file), file.getName());
+            mapGrid.setMap(model.map, model.agent);
 //            btn_solveMap.fire();
         }
         if (keyEvent.isControlDown() && keyEvent.getCode().getName().equals("S")) {
@@ -256,18 +265,25 @@ public class Controller {
         }
         if (keyEvent.isControlDown() && keyEvent.getCode().getName().equals("D")) {
             btn_solveMap.requestFocus();
-            movements.setValue("4-way");
+            movements.setValue("Jump");
             heuristics.setValue("TSP");
-            heuristicGraph.setValue("All");
+            heuristicGraph.setValue("Frontiers");
             los.setValue("Symmetric BresLos");
+//            textField_distanceFactor.setText("1.2");
             textField_rowSize.setText("15");
             textField_columnSize.setText("15");
-            btn_generateMap.fire();
+//            check_No_Whites.setSelected(true);
+//            check_Farthest.setSelected(true);
+//            check_Bounded.setSelected(true);
+            File file = new File("resources/SavedMaps/den101d.map");
+            model.loadMap(new StringMapGenerator().generate(file), file.getName());
+            model.agent = new Position(0,39);
+            mapGrid.setMap(model.map, model.agent);
 //            btn_solveMap.fire();
         }
         if (keyEvent.isControlDown() && keyEvent.getCode().getName().equals("F")) {
-            movements.setValue("4-way");
-            heuristics.setValue("MST");
+            movements.setValue("Jump");
+            heuristics.setValue("TSP");
             heuristicGraph.setValue("Frontiers");
             los.setValue("Symmetric BresLos");
             textField_rowSize.setText("15");
