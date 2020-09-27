@@ -1,3 +1,4 @@
+import Search.HeuristicSearchNode;
 import Search.Position;
 import View.MapGrid;
 import javafx.collections.FXCollections;
@@ -10,6 +11,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 
 import java.io.File;
+import java.util.Arrays;
 
 public class Controller {
 
@@ -27,6 +29,7 @@ public class Controller {
     public TextField textField_rowSize;
     public TextField textField_columnSize;
     public TextField textField_distanceFactor;
+    public TextField textField_weight;
     public Button btn_generateMap;
     public Button btn_solveMap;
     public Button btn_loadMap;
@@ -36,6 +39,7 @@ public class Controller {
     public ChoiceBox<String> heuristics;
     public ChoiceBox<String> movements;
     public ChoiceBox<String> heuristicGraph;
+    public ChoiceBox<String> algorithm_choiceBox;
     public CheckBox check_No_Whites;
     public CheckBox check_Farthest;
     public CheckBox check_Bounded;
@@ -46,10 +50,12 @@ public class Controller {
         String[] heuristicGraphArray = {"All", "Frontiers", "Front Frontiers"};
         String[] movementsArray = {"4-way", "8-way", "Jump"};
         String[] losArray = {"4-way", "8-way", "Symmetric BresLos", "Asymmetric BresLos"};
+        String[] algorithmArray = {"WA*", "XUP", "XDP"};
         los.setItems(FXCollections.observableArrayList(losArray));
         heuristics.setItems(FXCollections.observableArrayList(heuristicsArray));
         movements.setItems(FXCollections.observableArrayList(movementsArray));
         heuristicGraph.setItems(FXCollections.observableArrayList(heuristicGraphArray));
+        algorithm_choiceBox.setItems(FXCollections.observableArrayList(algorithmArray));
         this.model = model;
         solution.setWrapText(true);
         solution.setEditable(false);
@@ -179,8 +185,14 @@ public class Controller {
             alert.setHeaderText("Heuristic Graph Selection");
             alert.setContentText("Please insert Heuristic Graph method");
             alert.show();
+        } else if (algorithm_choiceBox.getValue() == null) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("input alert");
+            alert.setHeaderText("Algorithm Selection");
+            alert.setContentText("Please insert Algorithm to know the F computation method");
+            alert.show();
         } else {
-            model.solveMap(movements.getValue(), heuristics.getValue(), los.getValue(), heuristicGraph.getValue(), Double.parseDouble(textField_distanceFactor.getText()), check_No_Whites.isSelected(), check_Farthest.isSelected(), check_Bounded.isSelected());
+            model.solveMap(movements.getValue(), heuristics.getValue(), los.getValue(), heuristicGraph.getValue(), algorithm_choiceBox.getValue(), Double.parseDouble(textField_distanceFactor.getText()), Double.parseDouble(textField_weight.getText()), check_No_Whites.isSelected(), check_Farthest.isSelected(), check_Bounded.isSelected());
             mapGrid.setMap(model.map, model.agent);
             solution.setText(model.consoleString);
         }
@@ -269,12 +281,14 @@ public class Controller {
             heuristics.setValue("TSP");
             heuristicGraph.setValue("Frontiers");
             los.setValue("Symmetric BresLos");
+            algorithm_choiceBox.setValue("WA*");
 //            textField_distanceFactor.setText("1.2");
+            textField_weight.setText("1");
             textField_rowSize.setText("15");
             textField_columnSize.setText("15");
-//            check_No_Whites.setSelected(true);
-//            check_Farthest.setSelected(true);
-//            check_Bounded.setSelected(true);
+            check_No_Whites.setSelected(true);
+            check_Farthest.setSelected(true);
+            check_Bounded.setSelected(true);
             File file = new File("resources/SavedMaps/den101d.map");
             model.loadMap(new StringMapGenerator().generate(file), file.getName());
             model.agent = new Position(0,39);

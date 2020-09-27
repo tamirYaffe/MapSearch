@@ -1,8 +1,8 @@
 package Search;
 
-import com.mxgraph.layout.mxCircleLayout;
-import com.mxgraph.layout.mxIGraphLayout;
-import com.mxgraph.util.mxCellRenderer;
+//import com.mxgraph.layout.mxCircleLayout;
+//import com.mxgraph.layout.mxIGraphLayout;
+//import com.mxgraph.util.mxCellRenderer;
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.Graphs;
@@ -11,7 +11,7 @@ import org.jgrapht.alg.shortestpath.AStarShortestPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.alg.shortestpath.TreeSingleSourcePathsImpl;
 import org.jgrapht.alg.util.Pair;
-import org.jgrapht.ext.JGraphXAdapter;
+//import org.jgrapht.ext.JGraphXAdapter;
 import org.jgrapht.graph.DefaultUndirectedWeightedGraph;
 
 import javax.imageio.ImageIO;
@@ -207,27 +207,27 @@ public class DistanceService {
         }
     }
 
-    public static void printGraph(String path) {
-        try {
-//            File imgFile = new File("resources/graph.png");
-            File imgFile = new File(path);
-            imgFile.createNewFile();
-            JGraphXAdapter<Position, UndirectedWeightedEdge> graphAdapter =
-                    new JGraphXAdapter<Position, UndirectedWeightedEdge>(pathsGraph);
-            mxIGraphLayout layout = new mxCircleLayout(graphAdapter);
-//            mxHierarchicalLayout layout = new mxHierarchicalLayout(graphAdapter);
-//            layout.setInterHierarchySpacing(layout.getInterHierarchySpacing() * 15);
-//            layout.setInterRankCellSpacing(layout.getInterRankCellSpacing() * 15);
-            layout.execute(graphAdapter.getDefaultParent());
-            BufferedImage image =
-                    mxCellRenderer.createBufferedImage(graphAdapter, null, 2, Color.WHITE, true, null);
-            imgFile = new File(path);
-            ImageIO.write(image, "PNG", imgFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        System.exit(0);
-    }
+//    public static void printGraph(String path) {
+//        try {
+////            File imgFile = new File("resources/graph.png");
+//            File imgFile = new File(path);
+//            imgFile.createNewFile();
+//            JGraphXAdapter<Position, UndirectedWeightedEdge> graphAdapter =
+//                    new JGraphXAdapter<Position, UndirectedWeightedEdge>(pathsGraph);
+//            mxIGraphLayout layout = new mxCircleLayout(graphAdapter);
+////            mxHierarchicalLayout layout = new mxHierarchicalLayout(graphAdapter);
+////            layout.setInterHierarchySpacing(layout.getInterHierarchySpacing() * 15);
+////            layout.setInterRankCellSpacing(layout.getInterRankCellSpacing() * 15);
+//            layout.execute(graphAdapter.getDefaultParent());
+//            BufferedImage image =
+//                    mxCellRenderer.createBufferedImage(graphAdapter, null, 2, Color.WHITE, true, null);
+//            imgFile = new File(path);
+//            ImageIO.write(image, "PNG", imgFile);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        System.exit(0);
+//    }
 
     public static GraphPath<Position, UndirectedWeightedEdge> getPath(Position source, Position target) {
         GraphPath<Position, UndirectedWeightedEdge>  path;
