@@ -17,7 +17,7 @@ public class RoomMapCSVWriter {
             write.writeNext(record);
 //            write.flush();
             write.close();
-            System.out.println("\radded results to: "+fileName);
+//            System.out.println("\radded results to: "+fileName);
         } catch (IOException e) {
             e.printStackTrace();
         }

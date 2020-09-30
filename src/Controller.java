@@ -4,6 +4,7 @@ import View.MapGrid;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -219,8 +220,7 @@ public class Controller {
             yIndex.setText("Y: " + (int) y);
             if (mouseEvent.isShiftDown()) {
                 mapGrid.showWatchers(model.getWatchedDictionary(), (int) x, (int) y);
-            }
-            else if (solution.getText() != null && !solution.getText().equals("")) {
+            } else if (solution.getText() != null && !solution.getText().equals("")) {
                 if (mouseEvent.isShiftDown()) {
                     model.showBeforeMove();
                 } else {
@@ -291,7 +291,7 @@ public class Controller {
             check_Bounded.setSelected(true);
             File file = new File("resources/SavedMaps/den101d.map");
             model.loadMap(new StringMapGenerator().generate(file), file.getName());
-            model.agent = new Position(0,39);
+            model.agent = new Position(0, 39);
             mapGrid.setMap(model.map, model.agent);
 //            btn_solveMap.fire();
         }
@@ -335,6 +335,208 @@ public class Controller {
                 heuristics.setValue("Zero");
             }
         }
+
+        if (keyEvent.isControlDown() && keyEvent.getCode().getName().equals("G")) {
+//            runMaze15X15(new Position(0,0));
+//            runMaze15X15(new Position(12,0));
+//            runMaze15X15(new Position(10,0));
+//            runMaze15X15(new Position(0,1));
+//            runMaze15X15(new Position(4,2));
+//            runMaze15X15(new Position(0,3));
+//            runMaze15X15(new Position(4,4));
+//            runMaze15X15(new Position(6,4));
+//            runMaze15X15(new Position(8,4));
+//            runMaze15X15(new Position(10,6));
+//            runMaze15X15(new Position(14,6));
+//            runMaze15X15(new Position(12,7));
+//            runMaze15X15(new Position(2,8));
+//            runMaze15X15(new Position(6,8));
+//            runMaze15X15(new Position(8,8));
+//            runMaze15X15(new Position(4,10));
+//            runMaze15X15(new Position(8,10));
+//            runMaze15X15(new Position(10,10));
+//            runMaze15X15(new Position(12,10));
+//            runMaze15X15(new Position(0,11));
+//            runMaze15X15(new Position(8,11));
+//            runMaze15X15(new Position(10,12));
+//            runMaze15X15(new Position(12,12));
+//            runMaze15X15(new Position(14,12));
+//            runMaze15X15(new Position(0,13));
+//            //runMaze15X15(new Position(12,13));
+//            runMaze15X15(new Position(2,14));
+//            runMaze15X15(new Position(6,14));
+//            runMaze15X15(new Position(14,14));
+            runDen405d(new Position(0,32));
+            runDen405d(new Position(0,50));
+            runDen405d(new Position(1,21));
+            runDen405d(new Position(1,37));
+            runDen405d(new Position(1,44));
+            runDen405d(new Position(3,9));
+            runDen405d(new Position(3,26));
+            runDen405d(new Position(4,31));
+            runDen405d(new Position(6,0));
+            runDen405d(new Position(8,10));
+            runDen405d(new Position(8,55));
+            runDen405d(new Position(12,41));
+            runDen405d(new Position(14,56));
+            runDen405d(new Position(14,68));
+            runDen405d(new Position(15,23));
+            runDen405d(new Position(18,25));
+            runDen405d(new Position(20,59));
+            runDen405d(new Position(21,61));
+            runDen405d(new Position(24,31));
+            runDen405d(new Position(24,49));
+            runDen405d(new Position(25,52));
+            runDen405d(new Position(26,31));
+            runDen405d(new Position(30,41));
+            runDen405d(new Position(33,51));
+            runDen405d(new Position(34,33));
+            runDen405d(new Position(35,51));
+            runDen405d(new Position(37,37));
+            runDen405d(new Position(37,47));
+            runDen405d(new Position(39,41));
+            runLak103d(new Position(6,0));
+            runLak103d(new Position(12,0));
+            runLak103d(new Position(1,6));
+            runLak103d(new Position(12,7));
+            runLak103d(new Position(8,8));
+            runLak103d(new Position(16,8));
+            runLak103d(new Position(21,11));
+            runLak103d(new Position(10,12));
+            runLak103d(new Position(9,16));
+            runLak103d(new Position(3,19));
+            runLak103d(new Position(5,19));
+            runLak103d(new Position(19,20));
+            runLak103d(new Position(22,20));
+            runLak103d(new Position(6,24));
+            runLak103d(new Position(29,24));
+            runLak103d(new Position(6,28));
+            runLak103d(new Position(42,30));
+            runLak103d(new Position(25,31));
+            runLak103d(new Position(21,32));
+            runLak103d(new Position(2,33));
+            runLak103d(new Position(42,33));
+            runLak103d(new Position(15,35));
+            runLak103d(new Position(22,36));
+            runLak103d(new Position(42,37));
+            runLak103d(new Position(10,41));
+            runLak103d(new Position(33,41));
+            runLak103d(new Position(44,41));
+            runLak103d(new Position(8,44));
+            runLak103d(new Position(26,45));
+            runLak103d(new Position(8,46));
+        }
         keyEvent.consume();
+    }
+
+    private void runWithWeights() {
+        for (int i = 0; i < 10; i++) {
+            double w = 1 + ((Math.pow(2, i) - 1) / 20);
+            textField_weight.setText(String.format("%.1f", w));
+            algorithm_choiceBox.setValue("WA*");
+            btn_solveMap.fire();
+            algorithm_choiceBox.setValue("XUP");
+            btn_solveMap.fire();
+            algorithm_choiceBox.setValue("XDP");
+            btn_solveMap.fire();
+        }
+    }
+
+    private void runWithDistanceFactor() {
+        for (int i = 0; i < 5; i++) {
+            double df = 1 + ((Math.pow(2, i) - 1) / 10);
+            textField_distanceFactor.setText(String.format("%.1f", df));
+            runWithWeights();
+        }
+    }
+
+    private void runMaze15X15(Position p){
+        btn_solveMap.requestFocus();
+        movements.setValue("Jump");
+        heuristics.setValue("TSP");
+        heuristicGraph.setValue("Frontiers");
+        los.setValue("Symmetric BresLos");
+        textField_weight.setText("1");
+        textField_rowSize.setText("15");
+        textField_columnSize.setText("15");
+        check_No_Whites.setSelected(false);
+        check_Farthest.setSelected(false);
+        check_Bounded.setSelected(false);
+        File file = new File("resources/SavedMaps/maze_15X15.map");
+        model.loadMap(new StringMapGenerator().generate(file), file.getName());
+        model.agent = p;
+        mapGrid.setMap(model.map, model.agent);
+        runAllPermotations();
+    }
+
+
+    private void runDen405d(Position p){
+        btn_solveMap.requestFocus();
+        movements.setValue("Jump");
+        heuristics.setValue("TSP");
+        heuristicGraph.setValue("Frontiers");
+        los.setValue("Symmetric BresLos");
+        textField_weight.setText("1");
+        textField_rowSize.setText("15");
+        textField_columnSize.setText("15");
+        check_No_Whites.setSelected(false);
+        check_Farthest.setSelected(false);
+        check_Bounded.setSelected(false);
+        File file = new File("resources/SavedMaps/den405d.map");
+        model.loadMap(new StringMapGenerator().generate(file), file.getName());
+        model.agent = p;
+        mapGrid.setMap(model.map, model.agent);
+        runAllPermotations();
+    }
+
+    private void runLak103d(Position p){
+        btn_solveMap.requestFocus();
+        movements.setValue("Jump");
+        heuristics.setValue("TSP");
+        heuristicGraph.setValue("Frontiers");
+        los.setValue("Symmetric BresLos");
+        textField_weight.setText("1");
+        textField_rowSize.setText("15");
+        textField_columnSize.setText("15");
+        check_No_Whites.setSelected(false);
+        check_Farthest.setSelected(false);
+        check_Bounded.setSelected(false);
+        File file = new File("resources/SavedMaps/den405d.map");
+        model.loadMap(new StringMapGenerator().generate(file), file.getName());
+        model.agent = p;
+        mapGrid.setMap(model.map, model.agent);
+        runAllPermotations();
+    }
+
+    private void runAllPermotations(){
+        //Optimal:
+        runWithWeights();
+        //No Whites:
+        check_No_Whites.setSelected(true);
+        runWithWeights();
+        //Farthest:
+        check_No_Whites.setSelected(false);
+        check_Farthest.setSelected(true);
+        runWithWeights();
+        //Bounded:
+        check_Farthest.setSelected(false);
+        check_Bounded.setSelected(true);
+        runWithDistanceFactor();
+        //No Whites + Farthest:
+        check_No_Whites.setSelected(true);
+        check_Farthest.setSelected(true);
+        check_Bounded.setSelected(false);
+        runWithWeights();
+        //No Whites + Bounded:
+        check_Farthest.setSelected(false);
+        check_Bounded.setSelected(true);
+        runWithDistanceFactor();
+        //Farthest + Bounded:
+        check_No_Whites.setSelected(false);
+        check_Farthest.setSelected(true);
+        runWithDistanceFactor();
+        //AIC:
+        check_No_Whites.setSelected(true);
+        runWithDistanceFactor();
     }
 }
