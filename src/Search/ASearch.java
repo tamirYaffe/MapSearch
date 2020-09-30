@@ -2,6 +2,7 @@ package Search;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 abstract public class ASearch {
@@ -35,7 +36,7 @@ abstract public class ASearch {
         immediacies = 0;
         boolean admissible = true;
         double start = System.currentTimeMillis();
-
+        List<ASearchNode> lowFNodes = new ArrayList<>();
 
         while (openSize() > 0) {
             debugPrev = current;
@@ -49,48 +50,53 @@ abstract public class ASearch {
             if (current.isGoal()) {
                 System.out.println("\rexpanded: " + expanded + "\tgenerated: " + generated + "\tduplicates: " + duplicates + "\t\tg: " + current.getG() + "\t\th: " + current.getH() + "\t\tf: " + (current.getF()) + "\t\tTime: " + (System.currentTimeMillis() - start) + "ms" + (admissible ? "\t Admissible\n" : "\t Not Admissible!!!\n"));
                 System.out.println("calculated Average PerformMove Time: "+TestTime.calculateAveragePerformMoveTime()+" calculated Average Graph Creation Time: "+TestTime.calculateAverageGraphCreationTime()+" calculated Average H Time: "+TestTime.calculateAverageHTime());
+                System.out.println();
+//                ASearchNode secondSolution = secondSearch(lowFNodes);
                 return current;
             }
             List<ASearchNode> neighbors = current.getNeighbors();
 //            System.out.println("\ncurrent:\nlast move: " + current.getLastMove() + "\n" + current.currentProblemState + "g: " + current.getG() + "\t\th: " + current.getH() + "\t\tf: " + (current.getF()) + "\n\n\n");
 //            int genID = 0;
             List<ASearchNode> neighborsToAdd = new ArrayList<>();
+            double currentFixedH = current.getH(); // max h(n) - (g(n) - g(prev_n))
             for (ASearchNode Vn : neighbors) {
                 if (isClosed(Vn)) {
                     continue;
                 }
                 if (!isOpen(Vn)) {
-//                    System.out.println("gen"+(++genID)+"\nlast move: " + Vn._currentProblemState.getStateLastMove() + "\n" + Vn._currentProblemState + "g: " + Vn.getG() + "\t\th: " + Vn.getH() + "\t\tf: " + (Vn.getF()) + "\n");
-//                    addToOpen(Vn);
+                    hCalculate(Vn);
+                    double hDifference = Vn.getH() - (Vn.getG() - current.getG());
+                    currentFixedH = Math.max(currentFixedH, hDifference);
                     neighborsToAdd.add(Vn);
                     generated++;
                 } else {
                     duplicates++;
                     if (getOpen(Vn).getG() > Vn.getG()) {
-//                        System.out.println("gen"+(++genID)+"\nlast move: " + Vn._currentProblemState.getStateLastMove() + "\n" + Vn._currentProblemState + "g: " + Vn.getG() + "\t\th: " + Vn.getH() + "\t\tf: " + (Vn.getF()) + "\n");
-//                        addToOpen(Vn);
+                        hCalculate(Vn);
+                        double hDifference = Vn.getH() - (Vn.getG() - current.getG());
+                        currentFixedH = Math.max(currentFixedH, hDifference);
                         neighborsToAdd.add(Vn);
                         generated++;
                     }
+                    // similar solution check by their new position and seen list
+//                    if (getOpen(Vn).getG() == Vn.getG()) {
+//                        HashSet<Position> newSeen = ((RoomMapState)Vn.currentProblemState).getSeen();
+//                        HashSet<Position> prevSeen = ((RoomMapState)getOpen(Vn).currentProblemState).getSeen();
+//                        if(!prevSeen.containsAll(newSeen)){
+//                            hCalculate(Vn);
+//                            double hDifference = Vn.getH() - (Vn.getG() - current.getG());
+//                            currentFixedH = Math.max(currentFixedH, hDifference);
+//                            neighborsToAdd.add(Vn);
+//                            generated++;
+//                        }
+//                    }
                 }
             }
 //            double currentFixedH = current.getH(); // max h(n) - (g(n) - g(prev_n))
 //            double currentFixedH = ((HeuristicSearchNode)current).oldF - current.getG(); // max h(n) - (g(n) - g(prev_n))
-//            double minF = HUGE_DOUBLE_VALUE;
-//            for (ASearchNode node : neighborsToAdd) {
-//                hCalculate(node);
-//                minF = Math.min(minF, node.getF());
-//            }
-//            // calculate neighbors h and perform inconsistency correction for parent.
-//            for (ASearchNode node : neighborsToAdd) {
-//                double hDifference = node.getH() - (node.getG() - current.getG());
-//                if(node.getF() == minF)
-//                    currentFixedH = Math.max(currentFixedH, hDifference);
-//            }
             // perform inconsistency correction for neighbors.
             for (ASearchNode node : neighborsToAdd) {
-                hCalculate(node);
-                ((HeuristicSearchNode)node).setH(Math.max(node.getH(), node.prev.getH() - (node.getG() - node.prev.getG())));
+                ((HeuristicSearchNode)node).setH(Math.max(node.getH(), currentFixedH - (node.getG() - node.prev.getG())));
                 addToOpen(node);
             }
             addToClosed(current);
