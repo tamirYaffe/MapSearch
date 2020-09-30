@@ -8,6 +8,7 @@ import java.util.*;
 
 import static Search.RoomMap.HEURISTIC_METHOD;
 import static Search.RoomMap.MOVEMENT_METHOD;
+import static Search.RoomMapGraphAdapter.includeWhiteCells;
 import static Search.RoomMap8WayStep.SQRT_OF_TWO;
 
 public class RoomMapState implements IProblemState {
@@ -19,6 +20,7 @@ public class RoomMapState implements IProblemState {
     private HashSet<Position> nextPoints;       //neighbor positions
     private short immediate;
     private RoomMapGraphAdapter graphAdapter;
+    private static boolean computeAllPaths = true;
 
 
     public RoomMapState(RoomMap roomMap, Position position, HashSet<Position> seen, IProblemMove lastStep) {
@@ -172,19 +174,35 @@ public class RoomMapState implements IProblemState {
             case "Jump (Bounded)":
             case "Expanding Border":
                 for (Position neighbor : nextPoints) {
-                    RoomMapJumpStep step = new RoomMapJumpStep(position, neighbor);
-                    ArrayList<Position> path = step.getPath();
-
-                    //keep only closest jumps
-                    if (Collections.disjoint(nextPoints,path.subList(1,path.size()-1))){
-                        moveList.add(step);
-                        toRemove.add(path.get(path.size()-1));
+                    if(computeAllPaths){
+                        AStarAllPaths aStarAllPaths = new AStarAllPaths(roomMap, seen);
+                        List<AStarAllPaths.PathFindingSeen> allPaths = aStarAllPaths.solve(position, neighbor);
+                        for (AStarAllPaths.PathFindingSeen findingPathSeen : allPaths){
+                            RoomMapJumpStep step = new RoomMapJumpStep(position, neighbor, findingPathSeen);
+                            addToMoveList(moveList, toRemove, step);
+                        }
+                    }
+                    else {
+                        RoomMapJumpStep step = new RoomMapJumpStep(position, neighbor);
+                        addToMoveList(moveList, toRemove, step);
                     }
                 }
                 break;
         }
         nextPoints.retainAll(toRemove);
         return moveList;
+    }
+
+    private void addToMoveList(List<IProblemMove> moveList, HashSet<Position> toRemove, RoomMapJumpStep step) {
+        ArrayList<Position> path = step.getPath();
+        //keep only closest jumps (used for when including white cells)
+        if (includeWhiteCells) {
+            if (Collections.disjoint(nextPoints, path.subList(1, path.size() - 1))) {
+                moveList.add(step);
+                toRemove.add(path.get(path.size() - 1));
+            }
+        } else
+            moveList.add(step);
     }
 
     @Override
@@ -214,10 +232,16 @@ public class RoomMapState implements IProblemState {
         double start = System.currentTimeMillis();
         RoomMap newProblem = roomMap;
         Position newPosition = move.getNewPosition(position);
+//        HashSet<Position> newSeen = null;
         HashSet<Position> newSeen = new HashSet<>(seen);
         if (MOVEMENT_METHOD.startsWith("Jump") /*|| MOVEMENT_METHOD.equals("Expanding Border")*/) {
-            for (Position position : ((RoomMapJumpStep) move).getPath()) {
-                newSeen.addAll(roomMap.getVisualNeighbors(position));
+            if(false)
+                newSeen = ((RoomMapJumpStep) move).getSeen();
+//                newSeen.addAll(((RoomMapJumpStep) move).getSeen());
+            else{
+                for (Position position : ((RoomMapJumpStep) move).getPath()) {
+                    newSeen.addAll(roomMap.getVisualNeighbors(position));
+                }
             }
         } else {
             // Validation
