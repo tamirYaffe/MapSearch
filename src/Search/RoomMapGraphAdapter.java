@@ -10,6 +10,7 @@ package Search;
 //import java.io.IOException;
 //import org.jgrapht.ext.JGraphXAdapter;
 
+import javafx.geometry.Pos;
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.Graphs;
@@ -54,7 +55,7 @@ public class RoomMapGraphAdapter {
             addAgentToGraph(roomMapState, watchedDictionary);
         else
             addAgentToGraph(roomMapState);
-        if(includeWhiteCells)
+        if (includeWhiteCells)
             reachablePrunnableVertices.addAll(whiteCells);
         // for "Jump (Bounded)"
         if (withDistanceFactor) {
@@ -135,6 +136,8 @@ public class RoomMapGraphAdapter {
 //            List<Position> path = graphPath.getVertexList();
             PathFindingPath findingPath = DistanceService.getPathFind(agentPosition, key1);
             List<Position> path = findingPath.getPath();
+            if(path.size() < 2)
+                System.out.println("yay");
             if (Collections.disjoint(path.subList(1, path.size() - 1), prunnableVertices.keySet())) {
                 UndirectedWeightedEdge edge = graph.addEdge(agentVertex, value1);
                 double w = findingPath.getPathCost();
@@ -228,6 +231,7 @@ public class RoomMapGraphAdapter {
             }
         }
     }
+
     private void removeUnPrunnable(PositionVertex unPrunnable, HashMap<Position, HashSet<Position>> gettableWatchedDictionary) {
         if (!unPrunnableVertices.containsKey(unPrunnable.getPosition()))
             return;
@@ -251,19 +255,19 @@ public class RoomMapGraphAdapter {
             Position watchedPosition = entry.getKey();
             if (roomMapState.getSeen().contains(watchedPosition)) continue;
             HashSet<Position> watchersSet = entry.getValue();
-            if(prunnableVertices.containsKey(watchedPosition) || unPrunnableVertices.containsKey(watchedPosition))
+            if (prunnableVertices.containsKey(watchedPosition) || unPrunnableVertices.containsKey(watchedPosition))
                 continue;
-            if (!Collections.disjoint(watchersSet, prunnableVertices.keySet())){
-                if(includeWhiteCells)
+            if (!Collections.disjoint(watchersSet, prunnableVertices.keySet())) {
+                if (includeWhiteCells)
                     whiteCellsPivots.add(watchedPosition);
                 continue;
             }
-            if(withFarthest){
-                if (checkIfIsntFarther(pathsSet, agentPosition, watchedPosition, watchersSet)){
+            if (withFarthest) {
+                if (checkIfIsntFarther(pathsSet, agentPosition, watchedPosition, watchersSet)) {
                     continue;
                 }
             }
-            if(includeWhiteCells)
+            if (includeWhiteCells)
                 allWatchers.addAll(watchersSet);
             PositionVertex watchedVertex = new PositionVertex(watchedPosition, PositionVertex.TYPE.UNPRUNNABLE);
             unPrunnableVertices.put(watchedPosition, watchedVertex);
@@ -278,16 +282,16 @@ public class RoomMapGraphAdapter {
 
         if (addUnprunnables)
             connectPrunnableVerticesInGraph(roomMapState);
-        if(includeWhiteCells)
+        if (includeWhiteCells)
             addWhiteCells(allWatchers, visualSet, gettableWatchedDictionary, whiteCellsPivots);
     }
 
     private void addWhiteCells(HashSet<Position> allWatchers, HashSet<Position> visualSet, HashMap<Position, HashSet<Position>> gettableWatchedDictionary, List<Position> whiteCellsPivots) {
-        if(whiteCellsPivots == null)
+        if (whiteCellsPivots == null)
             return;
         for (int i = 0; i < whiteCellsPivots.size(); i++) {
             Position whiteCellPivot = whiteCellsPivots.get(i);
-            if(whiteCells.contains(whiteCellPivot) || allWatchers.contains(whiteCellPivot))
+            if (whiteCells.contains(whiteCellPivot) || allWatchers.contains(whiteCellPivot))
                 continue;
             allWatchers.addAll(gettableWatchedDictionary.get(whiteCellPivot));
             for (Position position : gettableWatchedDictionary.get(whiteCellPivot)) {
@@ -407,7 +411,8 @@ public class RoomMapGraphAdapter {
         graph.removeEdge(start, start);
 //        TwoOptHeuristicTSP<PositionVertex, UndirectedWeightedEdge> heldKarpTSP = new TwoOptHeuristicTSP<>();
         HeldKarpTSP<PositionVertex, UndirectedWeightedEdge> heldKarpTSP = new HeldKarpTSP<>();
-        double h = heldKarpTSP.getTour(graph).getWeight();
+        GraphPath<PositionVertex, UndirectedWeightedEdge> tour = heldKarpTSP.getTour(graph);
+        double h = tour.getWeight();
         return h > 0 ? h - HUGE_DOUBLE_VALUE : h;
 
     }
@@ -529,6 +534,60 @@ public class RoomMapGraphAdapter {
             graph.removeVertex(pivot);
             return getSimplePathWeight(next, mspWeight);
         }
+    }
+
+    public void abstractGraph(TreeMap<Position, HashSet<Position>> watchedDictionary, Position agentPosition) {
+        Graph<PositionVertex, UndirectedWeightedEdge> abstractGraph = new DefaultUndirectedWeightedGraph<>(UndirectedWeightedEdge.class);
+        for (PositionVertex unprunedVertex : unPrunnableVertices.values()) {
+            abstractGraph.addVertex(unprunedVertex);
+        }
+        for (PositionVertex unprunedVertex1 : unPrunnableVertices.values()) {
+            for (PositionVertex unprunedVertex2 : unPrunnableVertices.values()) {
+                if (!unprunedVertex1.equals(unprunedVertex2) &&
+                        !abstractGraph.containsEdge(unprunedVertex1, unprunedVertex2)
+                        && !abstractGraph.containsEdge(unprunedVertex1, unprunedVertex2)) {
+                    double weight = minAbstractedPathWeight(unprunedVertex1, unprunedVertex2, watchedDictionary);
+                    UndirectedWeightedEdge newEdge = abstractGraph.addEdge(unprunedVertex1, unprunedVertex2);
+                    abstractGraph.setEdgeWeight(newEdge, weight);
+                }
+            }
+        }
+        PositionVertex agentPositionVertex = new PositionVertex(agentPosition, PositionVertex.TYPE.UNPRUNNABLE);
+        abstractGraph.addVertex(agentPositionVertex);
+        for (PositionVertex unprunedVertex : unPrunnableVertices.values()) {
+            double weight = minAgentAbstractedPathWeight(agentPositionVertex, unprunedVertex, watchedDictionary);
+            UndirectedWeightedEdge newEdge = abstractGraph.addEdge(agentPositionVertex, unprunedVertex);
+            abstractGraph.setEdgeWeight(newEdge, weight);
+        }
+        graph = abstractGraph;
+    }
+
+    private double minAgentAbstractedPathWeight(PositionVertex agentPositionVertex, PositionVertex unprunedVertex, TreeMap<Position, HashSet<Position>> watchedDictionary) {
+        double abstractedPathWeight = HUGE_DOUBLE_VALUE;
+        HashMap<Position, HashSet<Position>> gettableWatchedDictionary = new HashMap<>(watchedDictionary);
+        List<Position> group = new ArrayList<>(gettableWatchedDictionary.get(unprunedVertex.getPosition()));
+        for (Position position : group) {
+            double pathWeight = DistanceService.getPathFind(agentPositionVertex.getPosition(), position).getPathCost();
+            abstractedPathWeight = Math.min(abstractedPathWeight, pathWeight);
+        }
+        return abstractedPathWeight;
+    }
+
+    private double minAbstractedPathWeight(PositionVertex unprunedVertex1, PositionVertex unprunedVertex2,
+                                           TreeMap<Position, HashSet<Position>> watchedDictionary) {
+        double abstractedPathWeight = HUGE_DOUBLE_VALUE;
+        HashMap<Position, HashSet<Position>> gettableWatchedDictionary = new HashMap<>(watchedDictionary);
+        List<Position> group1 = new ArrayList<>(gettableWatchedDictionary.get(unprunedVertex1.getPosition()));
+        List<Position> group2 = new ArrayList<>(gettableWatchedDictionary.get(unprunedVertex2.getPosition()));
+        for (Position pos1 : group1) {
+            for (Position pos2 : group2) {
+                if (pos1.equals(pos2))
+                    return 0;
+                double pathWeight = DistanceService.getPathFind(pos1, pos2).getPathCost();
+                abstractedPathWeight = Math.min(abstractedPathWeight, pathWeight);
+            }
+        }
+        return abstractedPathWeight;
     }
 
     private class VertexInfo {
