@@ -28,7 +28,7 @@ abstract public class ASearch {
         ASearchNode debugPrev;
         addToOpen(Vs);
         rootH = Vs.getH();
-        System.out.println("Root.H: " + rootH);
+//        System.out.println("Root.H: " + rootH);
         expanded = 0;
         generated = 0;
         duplicates = 0;
@@ -42,13 +42,14 @@ abstract public class ASearch {
             current = getBest();
             if(current == null)
                 continue;
-            if(debugPrev != null && current.getF()< debugPrev.getF()){
-                System.out.println("problem");
-            }
+//            if(debugPrev != null && current.getF()< debugPrev.getF()){
+//                System.out.println("problem");
+//            }
+//            System.out.println(((RoomMapState)current._currentProblemState).getPosition() + "," + current.getH());
 //            System.out.println(((RoomMapState)current._currentProblemState).getPosition() + "," + current.getH());
             if (current.isGoal()) {
-                System.out.println("\rexpanded: " + expanded + "\tgenerated: " + generated + "\tduplicates: " + duplicates + "\t\tg: " + current.getG() + "\t\th: " + current.getH() + "\t\tf: " + (current.getF()) + "\t\tTime: " + (System.currentTimeMillis() - start) + "ms" + (admissible ? "\t Admissible\n" : "\t Not Admissible!!!\n"));
-                System.out.println("calculated Average PerformMove Time: "+TestTime.calculateAveragePerformMoveTime()+" calculated Average Graph Creation Time: "+TestTime.calculateAverageGraphCreationTime()+" calculated Average H Time: "+TestTime.calculateAverageHTime());
+//                System.out.println("\rexpanded: " + expanded + "\tgenerated: " + generated + "\tduplicates: " + duplicates + "\t\tg: " + current.getG() + "\t\th: " + current.getH() + "\t\tf: " + (current.getF()) + "\t\tTime: " + (System.currentTimeMillis() - start) + "ms" + (admissible ? "\t Admissible\n" : "\t Not Admissible!!!\n"));
+//                System.out.println("calculated Average PerformMove Time: "+TestTime.calculateAveragePerformMoveTime()+" calculated Average Graph Creation Time: "+TestTime.calculateAverageGraphCreationTime()+" calculated Average H Time: "+TestTime.calculateAverageHTime());
                 return current;
             }
             List<ASearchNode> neighbors = current.getNeighbors();
@@ -95,8 +96,8 @@ abstract public class ASearch {
             expanded++;
             immediacies+=current.getImmediate();
 //            if (expanded % 1000 == 0 || (System.currentTimeMillis() - start) % 1000 < 50)
-            if (current.getH() > 1000 - current.getG()) admissible = false;
-            System.out.print("\rexpanded: " + expanded + "\tgenerated: " + generated + "\tduplicates: " + duplicates + "\t\tg: " + current.getG() + "\t\th: " + current.getH() + "\t\tf: " + (current.getF()) + "\t\tTime: " + (System.currentTimeMillis() - start) + "ms" + (admissible ? "\t Admissible" : "\t Not Admissible!!!"));
+//            if (current.getH() > 1000 - current.getG()) admissible = false;
+//            System.out.print("\rexpanded: " + expanded + "\tgenerated: " + generated + "\tduplicates: " + duplicates + "\t\tg: " + current.getG() + "\t\th: " + current.getH() + "\t\tf: " + (current.getF()) + "\t\tTime: " + (System.currentTimeMillis() - start) + "ms" + (admissible ? "\t Admissible" : "\t Not Admissible!!!"));
 //            System.out.print("\rg: " + current.getG() + "\th: " + current.getH() + "\tf: " + (current.getF()) + (admissible? "\t Admissible" : "\t Not Admissible!!!"));
         }
 

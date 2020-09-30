@@ -22,23 +22,26 @@ public class Model {
      * csvResults[4] = Solver's Name
      * csvResults[5] = Algorithm's Name
      * csvResults[6] = Weight
-     * csvResults[7] = Heuristic (if available)
-     * csvResults[8] = Time took to finish the run
-     * csvResults[9] = Number of Generated Nodes
-     * csvResults[10] =Number of Duplicate Nodes
-     * csvResults[11] =Number of Expanded Nodes
-     * csvResults[12] = Graph Type
-     * csvResults[13] = Distance Factor (for bounded jump)
-     * csvResults[14] = Solution Length
-     * csvResults[15] = Start Position
-     * csvResults[16] = Line of Sight method
-     * csvResults[17] = Movement method
+     * csvResults[7] = is No Whites on
+     * csvResults[8] = is Farthest on
+     * csvResults[9] = is Bounded on
+     * csvResults[10] = Heuristic (if available)
+     * csvResults[11] = Time took to finish the run
+     * csvResults[12] = Number of Generated Nodes
+     * csvResults[13] = Number of Duplicate Nodes
+     * csvResults[14] = Number of Expanded Nodes
+     * csvResults[15] = Graph Type
+     * csvResults[16] = Distance Factor (for bounded jump)
+     * csvResults[17] = Solution Length
+     * csvResults[18] = Start Position
+     * csvResults[18] = Line of Sight method
+     * csvResults[18] = Movement method
      * csvResults[18] = Root H (heuristic value)
      */
-    private String[] csvResults = new String[20];
+    private String[] csvResults = new String[23];
 
     public void loadMap(int[][] map, String name) {
-        csvResults = new String[20];
+        csvResults = new String[23];
         this.map = map;
         //Map1
         agent = new Position(58, 54);
@@ -87,7 +90,7 @@ public class Model {
         MazeGenerator mapGenerator = new MazeGenerator();
         this.map = mapGenerator.generate(rows, columns);
         agent = mapGenerator.getStartPosition();
-        csvResults = new String[20];
+        csvResults = new String[23];
         consoleString = "";
         csvResults[0] = "RoomMap Random map";
         csvResults[1] = "" + rows;
@@ -98,7 +101,7 @@ public class Model {
 //        MapGenerator mapGenerator=new MapGenerator();
 //        map=mapGenerator.generate(rows,columns);
         mapChooser++;
-        csvResults = new String[20];
+        csvResults = new String[23];
         int[][] map = null;
         switch (mapChooser % 3) {
             case 1:
@@ -139,6 +142,7 @@ public class Model {
         csvResults[1] = String.valueOf(map.length);
         csvResults[2] = String.valueOf(map[0].length);
     }
+
 
     public void densityGraphBuilder(int rows, int columns) {
         if (map == null)
@@ -358,6 +362,9 @@ public class Model {
         consoleString += "\nSolver: " + solver.getSolverName();
         consoleString += "\nAlgorithm: " + algorithm;
         consoleString += "\nWeight: " + w;
+        consoleString += "\nisNoWhites: " + (isNoWhites?"Yes":"No");
+        consoleString += "\nisFarthest: " + (isFarthest?"Yes":"No");
+        consoleString += "\nisBounded: " + (isBounded?"Yes":"No");
         consoleString += "\nH alg: " + heuristic;
         consoleString += "\nLOS: " + los;
         consoleString += "\nGraph: " + heuristicGraph;
@@ -387,32 +394,38 @@ public class Model {
             csvResults[5] = algorithm;
             // csvResults[6] = Weight
             csvResults[6] = String.valueOf(w);
-            //csvResults[7] = Heuristic
-            csvResults[7] = heuristic;
-            //csvResults[8] = Time took to finish the run
-            csvResults[8] = Double.toString(totalTime);
-            //csvResults[9] = Number of Generated Nodes
-            csvResults[9] = Integer.toString(ASearch.generated);
-            //csvResults[10] = Number of Duplicate Nodes
-            csvResults[10] = Integer.toString(ASearch.duplicates);
-            //csvResults[11] = Number of Expanded Nodes
-            csvResults[11] = Integer.toString(ASearch.expanded);
-            // csvResults[12] = Graph Type
-            csvResults[12] = heuristicGraph;
-            // csvResults[13] = Distance Factor (for bounded jump)
-            csvResults[13] = "" + distFactor;
-            //csvResults[14] = Solution Length
-            csvResults[14] = Integer.toString((int) cost);
-            //csvResults[15] = Start Position
-            csvResults[15] = problem.getStartPosition().toString().replace(",", ";");
-            // csvResults[16] = Line of Sight method
-            csvResults[16] = los;
-            // csvResults[17] = Movement method
-            csvResults[17] = movement;
-            // csvResults[18] = Root H (heuristic value)
-            csvResults[18] = Double.toString(ASearch.rootH);
-            // csvResults[19] = Date
-            csvResults[19] = new Date().toString();
+            //csvResults[7] = is No Whites on
+            csvResults[7] = (isNoWhites?"X":"");
+            //csvResults[8] = is Farthest on
+            csvResults[8] = (isFarthest?"X":"");
+            //csvResults[9] = is Bounded on
+            csvResults[9] = (isBounded?"X":"");
+            //csvResults[10] = Heuristic
+            csvResults[10] = heuristic;
+            //csvResults[11] = Time took to finish the run
+            csvResults[11] = Double.toString(totalTime);
+            //csvResults[12] = Number of Generated Nodes
+            csvResults[12] = Integer.toString(ASearch.generated);
+            //csvResults[13] = Number of Duplicate Nodes
+            csvResults[13] = Integer.toString(ASearch.duplicates);
+            //csvResults[14] = Number of Expanded Nodes
+            csvResults[14] = Integer.toString(ASearch.expanded);
+            // csvResults[15] = Graph Type
+            csvResults[15] = heuristicGraph;
+            // csvResults[16] = Distance Factor (for bounded jump)
+            csvResults[16] = "" + distFactor;
+            //csvResults[17] = Solution Length
+            csvResults[17] = Integer.toString((int) cost);
+            //csvResults[18] = Start Position
+            csvResults[18] = problem.getStartPosition().toString().replace(",", ";");
+            // csvResults[19] = Line of Sight method
+            csvResults[19] = los;
+            // csvResults[20] = Movement method
+            csvResults[20] = movement;
+            // csvResults[21] = Root H (heuristic value)
+            csvResults[21] = Double.toString(ASearch.rootH);
+            // csvResults[22] = Date
+            csvResults[22] = new Date().toString();
 
             RoomMapCSVWriter.writeToCSV(resultsFileName, csvResults);
         } else {                // invalid solution
@@ -420,7 +433,7 @@ public class Model {
         }
         int totalTimeMinuts = (int) ((totalTime / 1000) % 60);
         consoleString += "\n\nTotal time:  " + (int) (totalTime / 60000) + ":" + (totalTimeMinuts > 9 ? totalTimeMinuts : "0" + totalTimeMinuts) + " min\n";
-        System.out.println(consoleString);
+//        System.out.println(consoleString);
     }
 
     private double checkSolution(IProblem instance, List<IProblemMove> solution) {
