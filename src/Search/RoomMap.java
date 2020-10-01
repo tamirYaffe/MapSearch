@@ -13,6 +13,7 @@ public class RoomMap implements IProblem {
     static String MOVEMENT_METHOD = "4-way";
     static String HEURISTIC_GRAPH_METHOD = "All";
     static String HEURISTIC_METHOD = "MST";
+    static boolean computeAllPaths = true;
 
 
     public RoomMap() {
@@ -26,7 +27,7 @@ public class RoomMap implements IProblem {
         heuristic = new ZeroHeuristic();
     }
 
-    public RoomMap(int[][] room, Position startPosition, String movement, String heuristic, String los, String heuristicGraph, String algorithm, double distFactor, double w, boolean isNoWhites, boolean isFarthest, boolean isBounded) {
+    public RoomMap(int[][] room, Position startPosition, String movement, String heuristic, String los, String heuristicGraph, String algorithm, double distFactor, double w, boolean isNoWhites, boolean isFarthest, boolean isBounded, boolean computeAllPaths) {
         self = new RoomMapService(room, los);
         this.startPosition = new Position(startPosition);
         switch (heuristic) {
@@ -54,6 +55,7 @@ public class RoomMap implements IProblem {
         RoomMapGraphAdapter.includeWhiteCells = !isNoWhites;
         RoomMapGraphAdapter.withFarthest = isFarthest;
         RoomMapGraphAdapter.withDistanceFactor = isBounded;
+        RoomMap.computeAllPaths = computeAllPaths;
         if (distFactor>=1){
             RoomMapGraphAdapter.distanceFactor = distFactor;
         }

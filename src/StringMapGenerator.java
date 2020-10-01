@@ -72,7 +72,7 @@ public class StringMapGenerator {
         try {
             return Integer.parseInt(num);
         } catch (Exception e) {
-            System.out.println("Couldn't read Numbers in: \"" + num + "\"");
+            //System.out.println("Couldn't read Numbers in: \"" + num + "\"");
             e.printStackTrace();
         }
         return 0;

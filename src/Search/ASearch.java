@@ -29,7 +29,7 @@ abstract public class ASearch {
         ASearchNode debugPrev;
         addToOpen(Vs);
         rootH = Vs.getH();
-        System.out.println("Root.H: " + rootH);
+//        System.out.println("Root.H: " + rootH);
         expanded = 0;
         generated = 0;
         duplicates = 0;
@@ -104,7 +104,7 @@ abstract public class ASearch {
             expanded++;
             immediacies+=current.getImmediate();
 //            if (expanded % 1000 == 0 || (System.currentTimeMillis() - start) % 1000 < 50)
-            if (current.getH() > 1000 - current.getG()) admissible = false;
+            if (current.getH() > 137 - current.getG()) admissible = false;
             System.out.print("\rexpanded: " + expanded + "\tgenerated: " + generated + "\tduplicates: " + duplicates + "\t\tg: " + current.getG() + "\t\th: " + current.getH() + "\t\tf: " + (current.getF()) + "\t\tTime: " + (System.currentTimeMillis() - start) + "ms" + (admissible ? "\t Admissible" : "\t Not Admissible!!!"));
 //            System.out.print("\rg: " + current.getG() + "\th: " + current.getH() + "\tf: " + (current.getF()) + (admissible? "\t Admissible" : "\t Not Admissible!!!"));
         }
