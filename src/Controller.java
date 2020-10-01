@@ -44,6 +44,7 @@ public class Controller {
     public CheckBox check_No_Whites;
     public CheckBox check_Farthest;
     public CheckBox check_Bounded;
+    public CheckBox check_computeAllPaths;
 
 
     void setModel(Model model) {
@@ -193,7 +194,10 @@ public class Controller {
             alert.setContentText("Please insert Algorithm to know the F computation method");
             alert.show();
         } else {
-            model.solveMap(movements.getValue(), heuristics.getValue(), los.getValue(), heuristicGraph.getValue(), algorithm_choiceBox.getValue(), Double.parseDouble(textField_distanceFactor.getText()), Double.parseDouble(textField_weight.getText()), check_No_Whites.isSelected(), check_Farthest.isSelected(), check_Bounded.isSelected());
+            model.solveMap(movements.getValue(), heuristics.getValue(), los.getValue(), heuristicGraph.getValue(),
+                    algorithm_choiceBox.getValue(), Double.parseDouble(textField_distanceFactor.getText()),
+                    Double.parseDouble(textField_weight.getText()), check_No_Whites.isSelected(),
+                    check_Farthest.isSelected(), check_Bounded.isSelected(), check_computeAllPaths.isSelected());
             mapGrid.setMap(model.map, model.agent);
             solution.setText(model.consoleString);
         }
@@ -232,7 +236,7 @@ public class Controller {
     }
 
     public void KeyPressed(KeyEvent keyEvent) {
-        System.out.println(keyEvent.getCode());
+//        System.out.println(keyEvent.getCode());
         if (solution.getText() != null && !solution.getText().equals("")) {
             if (keyEvent.getCode().getName().equals("Up")) {
                 model.showNextMove();
@@ -262,10 +266,20 @@ public class Controller {
             heuristics.setValue("TSP");
             heuristicGraph.setValue("Frontiers");
             los.setValue("Symmetric BresLos");
-            File file = new File("resources/SavedMaps/den101d.map");
+            algorithm_choiceBox.setValue("WA*");
+//            textField_distanceFactor.setText("1.2");
+            textField_weight.setText("1");
+            textField_rowSize.setText("15");
+            textField_columnSize.setText("15");
+            check_No_Whites.setSelected(false);
+            check_Farthest.setSelected(false);
+            check_Bounded.setSelected(false);
+            check_computeAllPaths.setSelected(true);
+            File file = new File("resources/SavedMaps/maze_15X15.map");
             model.loadMap(new StringMapGenerator().generate(file), file.getName());
+            model.agent = new Position(10,10);
             mapGrid.setMap(model.map, model.agent);
-//            btn_solveMap.fire();
+            btn_solveMap.fire();
         }
         if (keyEvent.isControlDown() && keyEvent.getCode().getName().equals("S")) {
             btn_solveMap.requestFocus();
@@ -337,102 +351,102 @@ public class Controller {
         }
 
         if (keyEvent.isControlDown() && keyEvent.getCode().getName().equals("G")) {
-//            runMaze15X15(new Position(0,0));
-//            runMaze15X15(new Position(12,0));
-//            runMaze15X15(new Position(10,0));
-//            runMaze15X15(new Position(0,1));
-//            runMaze15X15(new Position(4,2));
-//            runMaze15X15(new Position(0,3));
-//            runMaze15X15(new Position(4,4));
-//            runMaze15X15(new Position(6,4));
-//            runMaze15X15(new Position(8,4));
-//            runMaze15X15(new Position(10,6));
-//            runMaze15X15(new Position(14,6));
-//            runMaze15X15(new Position(12,7));
-//            runMaze15X15(new Position(2,8));
-//            runMaze15X15(new Position(6,8));
-//            runMaze15X15(new Position(8,8));
-//            runMaze15X15(new Position(4,10));
-//            runMaze15X15(new Position(8,10));
-//            runMaze15X15(new Position(10,10));
-//            runMaze15X15(new Position(12,10));
-//            runMaze15X15(new Position(0,11));
-//            runMaze15X15(new Position(8,11));
-//            runMaze15X15(new Position(10,12));
-//            runMaze15X15(new Position(12,12));
-//            runMaze15X15(new Position(14,12));
-//            runMaze15X15(new Position(0,13));
-//            //runMaze15X15(new Position(12,13));
-//            runMaze15X15(new Position(2,14));
-//            runMaze15X15(new Position(6,14));
-//            runMaze15X15(new Position(14,14));
-            runDen405d(new Position(0,32));
-            runDen405d(new Position(0,50));
-            runDen405d(new Position(1,21));
-            runDen405d(new Position(1,37));
-            runDen405d(new Position(1,44));
-            runDen405d(new Position(3,9));
-            runDen405d(new Position(3,26));
-            runDen405d(new Position(4,31));
-            runDen405d(new Position(6,0));
-            runDen405d(new Position(8,10));
-            runDen405d(new Position(8,55));
-            runDen405d(new Position(12,41));
-            runDen405d(new Position(14,56));
-            runDen405d(new Position(14,68));
-            runDen405d(new Position(15,23));
-            runDen405d(new Position(18,25));
-            runDen405d(new Position(20,59));
-            runDen405d(new Position(21,61));
-            runDen405d(new Position(24,31));
-            runDen405d(new Position(24,49));
-            runDen405d(new Position(25,52));
-            runDen405d(new Position(26,31));
-            runDen405d(new Position(30,41));
-            runDen405d(new Position(33,51));
-            runDen405d(new Position(34,33));
-            runDen405d(new Position(35,51));
-            runDen405d(new Position(37,37));
-            runDen405d(new Position(37,47));
-            runDen405d(new Position(39,41));
-            runLak103d(new Position(6,0));
-            runLak103d(new Position(12,0));
-            runLak103d(new Position(1,6));
-            runLak103d(new Position(12,7));
-            runLak103d(new Position(8,8));
-            runLak103d(new Position(16,8));
-            runLak103d(new Position(21,11));
-            runLak103d(new Position(10,12));
-            runLak103d(new Position(9,16));
-            runLak103d(new Position(3,19));
-            runLak103d(new Position(5,19));
-            runLak103d(new Position(19,20));
-            runLak103d(new Position(22,20));
-            runLak103d(new Position(6,24));
-            runLak103d(new Position(29,24));
-            runLak103d(new Position(6,28));
-            runLak103d(new Position(42,30));
-            runLak103d(new Position(25,31));
-            runLak103d(new Position(21,32));
-            runLak103d(new Position(2,33));
-            runLak103d(new Position(42,33));
-            runLak103d(new Position(15,35));
-            runLak103d(new Position(22,36));
-            runLak103d(new Position(42,37));
-            runLak103d(new Position(10,41));
-            runLak103d(new Position(33,41));
-            runLak103d(new Position(44,41));
-            runLak103d(new Position(8,44));
-            runLak103d(new Position(26,45));
-            runLak103d(new Position(8,46));
+//            runMaze15X15(new Position(0, 0));
+//            runMaze15X15(new Position(0, 12));
+//            runMaze15X15(new Position(0, 10));
+//            runMaze15X15(new Position(1, 0));
+//            runMaze15X15(new Position(2, 4));
+//            runMaze15X15(new Position(3, 0));
+//            runMaze15X15(new Position(4, 4));
+//            runMaze15X15(new Position(4, 6));
+//            runMaze15X15(new Position(4, 8));
+//            runMaze15X15(new Position(6, 10));
+//            runMaze15X15(new Position(6, 14));
+//            runMaze15X15(new Position(7, 12));
+//            runMaze15X15(new Position(8, 2));
+//            runMaze15X15(new Position(8, 6));
+//            runMaze15X15(new Position(8, 8));
+//            runMaze15X15(new Position(10, 4));
+//            runMaze15X15(new Position(10, 8));
+//            runMaze15X15(new Position(10, 10));
+//            runMaze15X15(new Position(10, 12));
+//            runMaze15X15(new Position(11, 0));
+//            runMaze15X15(new Position(11, 8));
+//            runMaze15X15(new Position(12, 10));
+//            runMaze15X15(new Position(12, 12));
+//            runMaze15X15(new Position(12, 14));
+//            runMaze15X15(new Position(13, 0));
+//            runMaze15X15(new Position(13, 12));
+//            runMaze15X15(new Position(14, 2));
+//            runMaze15X15(new Position(14, 6));
+//            runMaze15X15(new Position(14, 14));
+            runDen405d(new Position(0, 32));
+            runDen405d(new Position(0, 50));
+            runDen405d(new Position(1, 21));
+            runDen405d(new Position(1, 37));
+            runDen405d(new Position(1, 44));
+            runDen405d(new Position(3, 9));
+            runDen405d(new Position(3, 26));
+            runDen405d(new Position(4, 31));
+            runDen405d(new Position(6, 0));
+            runDen405d(new Position(8, 10));
+            runDen405d(new Position(8, 55));
+            runDen405d(new Position(12, 41));
+            runDen405d(new Position(14, 56));
+            runDen405d(new Position(14, 68));
+            runDen405d(new Position(15, 23));
+            runDen405d(new Position(18, 25));
+            runDen405d(new Position(20, 59));
+            runDen405d(new Position(21, 61));
+            runDen405d(new Position(24, 31));
+            runDen405d(new Position(24, 49));
+            runDen405d(new Position(25, 52));
+            runDen405d(new Position(26, 31));
+            runDen405d(new Position(30, 41));
+            runDen405d(new Position(33, 51));
+            runDen405d(new Position(34, 33));
+            runDen405d(new Position(35, 51));
+            runDen405d(new Position(37, 37));
+            runDen405d(new Position(37, 47));
+            runDen405d(new Position(39, 41));
+            runLak103d(new Position(6, 0));
+            runLak103d(new Position(12, 0));
+            runLak103d(new Position(1, 6));
+            runLak103d(new Position(12, 7));
+            runLak103d(new Position(8, 8));
+            runLak103d(new Position(16, 8));
+            runLak103d(new Position(21, 11));
+            runLak103d(new Position(10, 12));
+            runLak103d(new Position(9, 16));
+            runLak103d(new Position(3, 19));
+            runLak103d(new Position(5, 19));
+            runLak103d(new Position(19, 20));
+            runLak103d(new Position(22, 20));
+            runLak103d(new Position(6, 24));
+            runLak103d(new Position(29, 24));
+            runLak103d(new Position(6, 28));
+            runLak103d(new Position(42, 30));
+            runLak103d(new Position(25, 31));
+            runLak103d(new Position(21, 32));
+            runLak103d(new Position(2, 33));
+            runLak103d(new Position(42, 33));
+            runLak103d(new Position(15, 35));
+            runLak103d(new Position(22, 36));
+            runLak103d(new Position(42, 37));
+            runLak103d(new Position(10, 41));
+            runLak103d(new Position(33, 41));
+            runLak103d(new Position(44, 41));
+            runLak103d(new Position(8, 44));
+            runLak103d(new Position(26, 45));
+            runLak103d(new Position(8, 46));
         }
         keyEvent.consume();
     }
 
     private void runWithWeights() {
-        for (int i = 0; i < 10; i++) {
-            double w = 1 + ((Math.pow(2, i) - 1) / 20);
-            textField_weight.setText(String.format("%.1f", w));
+        double [] weights = new double[] {1,1.1,1.2,1.4,1.5,1.75,2,3,5,10};
+        for (double weight: weights) {
+            textField_weight.setText(String.format("%.2f", weight));
             algorithm_choiceBox.setValue("WA*");
             btn_solveMap.fire();
             algorithm_choiceBox.setValue("XUP");
@@ -442,15 +456,20 @@ public class Controller {
         }
     }
 
+    private void runRegular(){
+
+        btn_solveMap.fire();
+    }
+
     private void runWithDistanceFactor() {
-        for (int i = 0; i < 5; i++) {
-            double df = 1 + ((Math.pow(2, i) - 1) / 10);
-            textField_distanceFactor.setText(String.format("%.1f", df));
-            runWithWeights();
+        double [] distFactors = new double[] {1,1.1,1.2,1.4,1.5,1.75,2,2.5,3,4,5,8,10};
+        for (double df: distFactors) {
+            textField_distanceFactor.setText(String.format("%.2f", df));
+            runRegular();
         }
     }
 
-    private void runMaze15X15(Position p){
+    private void runMaze15X15(Position p) {
         btn_solveMap.requestFocus();
         movements.setValue("Jump");
         heuristics.setValue("TSP");
@@ -470,7 +489,7 @@ public class Controller {
     }
 
 
-    private void runDen405d(Position p){
+    private void runDen405d(Position p) {
         btn_solveMap.requestFocus();
         movements.setValue("Jump");
         heuristics.setValue("TSP");
@@ -489,7 +508,7 @@ public class Controller {
         runAllPermotations();
     }
 
-    private void runLak103d(Position p){
+    private void runLak103d(Position p) {
         btn_solveMap.requestFocus();
         movements.setValue("Jump");
         heuristics.setValue("TSP");
@@ -508,16 +527,18 @@ public class Controller {
         runAllPermotations();
     }
 
-    private void runAllPermotations(){
+    private void runAllPermotations() {
         //Optimal:
         runWithWeights();
+        algorithm_choiceBox.setValue("WA*");
+        textField_weight.setText("1");
         //No Whites:
         check_No_Whites.setSelected(true);
-        runWithWeights();
+        runRegular();
         //Farthest:
         check_No_Whites.setSelected(false);
         check_Farthest.setSelected(true);
-        runWithWeights();
+        runRegular();
         //Bounded:
         check_Farthest.setSelected(false);
         check_Bounded.setSelected(true);
@@ -526,7 +547,7 @@ public class Controller {
         check_No_Whites.setSelected(true);
         check_Farthest.setSelected(true);
         check_Bounded.setSelected(false);
-        runWithWeights();
+        runRegular();
         //No Whites + Bounded:
         check_Farthest.setSelected(false);
         check_Bounded.setSelected(true);

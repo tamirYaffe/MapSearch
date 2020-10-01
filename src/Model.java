@@ -346,7 +346,7 @@ public class Model {
         } while (!blankList.isEmpty());
     }
 
-    public void solveMap(String movement, String heuristic, String los, String heuristicGraph, String algorithm, double distFactor, double w, boolean isNoWhites, boolean isFarthest, boolean isBounded) {
+    public void solveMap(String movement, String heuristic, String los, String heuristicGraph, String algorithm, double distFactor, double w, boolean isNoWhites, boolean isFarthest, boolean isBounded, boolean computeAllPaths) {
         consoleString = "";
         if (map == null)
             generateMap();
@@ -356,7 +356,7 @@ public class Model {
 //        UniformCostSearch solver = new UniformCostSearch();
 //        PureHeuristicSearch solver = new PureHeuristicSearch();
         long totalTime = 0;
-        RoomMap problem = new RoomMap(map, agent, movement, heuristic, los, heuristicGraph, algorithm, distFactor, w, isNoWhites, isFarthest, isBounded);
+        RoomMap problem = new RoomMap(map, agent, movement, heuristic, los, heuristicGraph, algorithm, distFactor, w, isNoWhites, isFarthest, isBounded, computeAllPaths);
         DistanceService.setRoomMap(problem);
         watchedDictionary = problem.getVisualDictionary();
         consoleString += "\nSolver: " + solver.getSolverName();
@@ -433,7 +433,7 @@ public class Model {
         }
         int totalTimeMinuts = (int) ((totalTime / 1000) % 60);
         consoleString += "\n\nTotal time:  " + (int) (totalTime / 60000) + ":" + (totalTimeMinuts > 9 ? totalTimeMinuts : "0" + totalTimeMinuts) + " min\n";
-//        System.out.println(consoleString);
+        System.out.println(consoleString);
     }
 
     private double checkSolution(IProblem instance, List<IProblemMove> solution) {
