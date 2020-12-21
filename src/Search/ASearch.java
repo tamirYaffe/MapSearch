@@ -122,6 +122,10 @@ abstract public class ASearch {
             double endOfH = System.currentTimeMillis();
             TestTime.hSumOfTime+=endOfH-endOfGraphBuild;
             TestTime.numOfNodes++;
+
+            // delete all unnecessary data
+            ((RoomMapState) node.currentProblemState).deleteUnnecessaryData();
+//            node.currentProblemState = null;
         }
     }
 

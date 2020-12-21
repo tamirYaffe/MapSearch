@@ -411,4 +411,9 @@ public class RoomMapState implements IProblemState {
     public RoomMapGraphAdapter getGraphAdapter() {
         return graphAdapter;
     }
+
+    public void deleteUnnecessaryData() {
+        graphAdapter.deleteUnnecessaryData();
+        graphAdapter = null;
+    }
 }

@@ -590,6 +590,15 @@ public class RoomMapGraphAdapter {
         return abstractedPathWeight;
     }
 
+    public void deleteUnnecessaryData() {
+        graph = null;
+        reachablePrunnableVertices.clear();
+        prunnableVertices.clear();
+        unPrunnableVertices.clear();
+        watchingDictionary.clear();
+        whiteCells.clear();
+    }
+
     private class VertexInfo {
         int id;
         boolean spanned;
