@@ -20,7 +20,7 @@ public class RoomMapState implements IProblemState {
     private HashSet<Position> nextPoints;       //neighbor positions
     private short immediate;
     private RoomMapGraphAdapter graphAdapter;
-    private static boolean computeAllPaths = true;
+    private static boolean computeAllPaths = false;
 
 
     public RoomMapState(RoomMap roomMap, Position position, HashSet<Position> seen, IProblemMove lastStep) {
