@@ -53,8 +53,8 @@ public class AStar {
                     if(i == 0 && j == 0)
                         continue;
                     // 4-way movement constraint.
-                    if(i != 0 && j != 0)
-                        continue;
+//                    if(i != 0 && j != 0)
+//                        continue;
                     Position neighborPosition = new Position(this.position.getY()+j, this.position.getX()+i);
                     // check legal move
                     if(neighborPosition.getX() < 0 || neighborPosition.getX() >= map[0].length ||

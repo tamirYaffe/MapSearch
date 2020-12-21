@@ -77,7 +77,8 @@ public class DistanceService {
             } else {
                 // check opposite path
                 if (pathsFindMap.containsKey(target) && pathsFindMap.get(target).containsKey(source)){
-                    path = pathsFindMap.get(target).get(source);
+                    PathFindingPath oppositePath = pathsFindMap.get(target).get(source);
+                    path = new PathFindingPath(new ArrayList<>(oppositePath.getPath()), oppositePath.getPathCost());
                     Collections.reverse(path.getPath());
                 }
                 else {
@@ -89,7 +90,8 @@ public class DistanceService {
             pathsFindMap.put(source, new HashMap<>());
             // check opposite path
             if (pathsFindMap.containsKey(target) && pathsFindMap.get(target).containsKey(source)){
-                path = pathsFindMap.get(target).get(source);
+                PathFindingPath oppositePath = pathsFindMap.get(target).get(source);
+                path = new PathFindingPath(new ArrayList<>(oppositePath.getPath()), oppositePath.getPathCost());
                 Collections.reverse(path.getPath());
             }
             else {

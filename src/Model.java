@@ -82,6 +82,7 @@ public class Model {
         csvResults[2] = "" + map[0].length;
         agent = new Position(7, 6);
         agent = new Position(0, 39);
+        agent = new Position(1, 1);
     }
 
     public void generateMap(int rows, int columns) {

@@ -9,6 +9,11 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner; // Import the Scanner class to read text files
+
 import java.io.File;
 
 public class Controller {
@@ -98,13 +103,41 @@ public class Controller {
 
     public void loadMap(ActionEvent event) {
         String path = "";
-        File file = loadMapFile(path);
+//        File file = loadMapFile(path);
+        File file = new File("resources/SavedMaps/building.txt");
         if (file != null) {
 //            model.loadMap(new StringMapGenerator().generate(file),new Position(yIndex,xIndex));
-            model.loadMap(new StringMapGenerator().generate(file), file.getName());
+//            model.loadMap(new StringMapGenerator().generate(file), file.getName());
+            int[][]loaded_map = loadBinaryMap(file);
+            model.loadMap(loaded_map, file.getName());
             mapGrid.setMap(model.map, model.agent);
         }
         event.consume();
+    }
+
+    private int[][] loadBinaryMap(File file) {
+        List<String> lines = new ArrayList<>();
+        try {
+            Scanner myReader = new Scanner(file);
+            while (myReader.hasNextLine()) {
+                String line = myReader.nextLine();
+                line = line.replaceAll(" ", "");
+                lines.add(line);
+            }
+
+        }catch (FileNotFoundException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+        int num_of_rows = lines.size();
+        int num_of_columns = lines.get(0).length();
+        int[][] map = new int[num_of_rows][num_of_columns];
+        for (int row = 0; row < num_of_rows; row++) {
+            for (int col = 0; col < num_of_columns; col++) {
+                map[row][col] = Character.getNumericValue(lines.get(row).charAt(col));
+            }
+        }
+        return map;
     }
 
     private File showMaps(String location) {
