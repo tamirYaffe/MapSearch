@@ -20,7 +20,6 @@ public class RoomMapState implements IProblemState {
     private HashSet<Position> nextPoints;       //neighbor positions
     private short immediate;
     private RoomMapGraphAdapter graphAdapter;
-    private static boolean computeAllPaths = true;
 
 
     public RoomMapState(RoomMap roomMap, Position position, HashSet<Position> seen, IProblemMove lastStep) {
@@ -174,18 +173,8 @@ public class RoomMapState implements IProblemState {
             case "Jump (Bounded)":
             case "Expanding Border":
                 for (Position neighbor : nextPoints) {
-                    if(computeAllPaths){
-                        AStarAllPaths aStarAllPaths = new AStarAllPaths(roomMap, seen);
-                        List<AStarAllPaths.PathFindingSeen> allPaths = aStarAllPaths.solve(position, neighbor);
-                        for (AStarAllPaths.PathFindingSeen findingPathSeen : allPaths){
-                            RoomMapJumpStep step = new RoomMapJumpStep(position, neighbor, findingPathSeen);
-                            addToMoveList(moveList, toRemove, step);
-                        }
-                    }
-                    else {
-                        RoomMapJumpStep step = new RoomMapJumpStep(position, neighbor);
-                        addToMoveList(moveList, toRemove, step);
-                    }
+                    RoomMapJumpStep step = new RoomMapJumpStep(position, neighbor);
+                    addToMoveList(moveList, toRemove, step);
                 }
                 break;
         }
